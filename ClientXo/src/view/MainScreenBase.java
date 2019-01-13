@@ -1,12 +1,19 @@
 package view;
 
+
+import commontxo.NotificationGameResult;
 import controller.GameController;
 import controller.MyGui;
 import commontxo.PlayerList;
 import java.util.ArrayList;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -26,12 +33,10 @@ public class MainScreenBase extends AnchorPane {
     protected final Button button0;
     protected final ImageView imageView;
 
-    GameController controller;
     MyGui myGui;
 
     public MainScreenBase(MyGui g) {
 
-//        controller = new GameController();
         myGui = g;
         btnPlayWithComputer = new Button();
         listView = new ListView<>();
@@ -95,7 +100,7 @@ public class MainScreenBase extends AnchorPane {
         imageView.setPickOnBounds(true);
         imageView.setPreserveRatio(true);
         imageView.setImage(new Image(getClass().getResource("../images/Logout.png").toExternalForm()));
-        imageView.setOnMousePressed(e->{
+        imageView.setOnMousePressed(e -> {
             myGui.signOut();
         });
 
@@ -107,32 +112,49 @@ public class MainScreenBase extends AnchorPane {
         getChildren().add(label2);
         getChildren().add(button0);
         getChildren().add(imageView);
-//        try {
-//            //        ArrayList<PlayerList> playerList =  myGui.getPlayerListData();
-//            myGui.getPlayerListData();
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-
     }
 
-    
     public void populateListView(ArrayList<PlayerList> playerList) {
-        //put data in listview
-//        ListProperty<String> listProperty = new SimpleListProperty<>();
-//        listProperty.set(FXCollections.observableArrayList(playerList));
-//        listView.itemsProperty().bind(listProperty);
-        System.out.println("menjfkswkspl");
         ObservableList<PlayerList> list = FXCollections.observableArrayList(playerList);
 
         listView.setItems(list);
-        listView.setCellFactory(new Callback<ListView<PlayerList>, ListCell<PlayerList>>() {
-            @Override
-            public ListCell<PlayerList> call(ListView<PlayerList> param) {
-                return new XCell();
+        listView.setCellFactory((ListView<PlayerList> param) -> new XCell(this));
+
+    }
+
+    public void showRequestNotification(String playerUserName, NotificationGameResult result) {
+        ButtonType yes = new ButtonType("yes", ButtonBar.ButtonData.OK_DONE);
+        ButtonType no = new ButtonType("no", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        Platform.runLater(() -> {
+            Alert a = new Alert(AlertType.WARNING,
+                    ".",
+                    yes,
+                    no);
+            a.setTitle("Request");
+            a.setHeaderText(playerUserName + " wants to play with you");
+            if (a.showAndWait().get() == yes) {
+                result.onReturn(true);
+            } else if (a.showAndWait().get() == no) {
+                result.onReturn(false);
             }
         });
+    }
 
+    public void refuseGameRequest(String playerUserName) {
+        ButtonType ok = new ButtonType("ok", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        Platform.runLater(() -> {
+            Alert a = new Alert(AlertType.WARNING,
+                    ".",
+                    ok);
+            a.setTitle("Request Refuse");
+            a.setHeaderText(playerUserName + " don't want to play with you");
+        });
+    }
+
+    void sendGameRequest(String playerUserName, String opponentName) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

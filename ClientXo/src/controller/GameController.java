@@ -9,6 +9,7 @@ import model.InGamePlayer;
 import model.GameModle;
 import view.Gui;
 import commontxo.ClientCallBack;
+import commontxo.NotificationGameResult;
 import commontxo.Player;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import javafx.scene.image.ImageView;
 public class GameController {
 
     MyGui myGUI;
-    GameModle myModle;
+    public GameModle myModle;
 
     int[] positions = new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2};
     int[][] winningPositions = new int[][]{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
@@ -63,13 +64,13 @@ public class GameController {
         myGUI.displayMessage(myMessage);
     }
 
-    public void unRegister() {
-        try {
-            myModle.getServerInstance().unRegister(myModle, "Abdo");
-        } catch (RemoteException ex) {
-            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+//    public void unRegister() {
+//        try {
+//            myModle.getServerInstance().unRegister(myModle, "Abdo");
+//        } catch (RemoteException ex) {
+//            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
     void getSelectedImgView(String id) {
         getPositionFromId(id);
@@ -231,4 +232,24 @@ public class GameController {
         myModle.getServerInstance().signOut(myModle.me);
     }
 
+    public void setArrayPosition(int[] positions) {
+        this.positions=positions;
+    }
+
+    public int[] getArrayPosition() {
+        return positions;
+    }
+
+
+    public void showRequestNotification(String playerUserName, NotificationGameResult result) {
+        myGUI.showRequestNotification(playerUserName,result);
+    }
+
+    public void refuseGameRequest(String playerUserName) {
+        myGUI.refuseGameRequest(playerUserName);
+    }
+
+    public void sendGameRequest(){
+        
+    }
 }

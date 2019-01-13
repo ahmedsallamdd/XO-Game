@@ -6,6 +6,11 @@
 package view;
 
 import commontxo.PlayerList;
+import controller.MyGui;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -28,15 +33,31 @@ class XCell extends ListCell<PlayerList> {
     Button btnJoinRoom = new Button("Challenge");
     ImageView imgViewState = new ImageView();
     PlayerList lastItem;
+    MainScreenBase myMainScreenBase;
+    String opponentName;
 
-    public XCell() {
+    
+    public XCell(MainScreenBase m) {
         super();
         hbox.getChildren().addAll(lblUsername, pane, lblScore, pane1, imgViewState, pane2, btnJoinRoom);
         HBox.setHgrow(pane, Priority.ALWAYS);
         HBox.setHgrow(pane1, Priority.ALWAYS);
         HBox.setHgrow(pane2, Priority.ALWAYS);
+        
+        myMainScreenBase = m;
+        Platform.runLater(() -> {
+            opponentName = lblUsername.getText();
+        });
         btnJoinRoom.setOnAction((ActionEvent event) -> {
-            System.out.println(lastItem + " : " + event);
+            try {
+                boolean isAccepted = MyGui.myController.myModle.getServerInstance()
+                        .sendGameRequest(
+                                MyGui.myController
+                                        .myModle.me.getPlayerUserName(),
+                        opponentName);
+            } catch (RemoteException ex) {
+                Logger.getLogger(XCell.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
     }
 

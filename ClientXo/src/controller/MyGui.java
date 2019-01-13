@@ -1,5 +1,6 @@
 package controller;
 
+import commontxo.NotificationGameResult;
 import view.SignUpFXBase;
 import view.LoginFXBase;
 import view.MainScreenBase;
@@ -17,7 +18,8 @@ import view.SinglePlayerGui;
 
 public class MyGui extends Application {
 
-    static GameController myController;
+    public static GameController myController;
+
     Stage stage;
     private Scene scene;
 
@@ -121,7 +123,6 @@ public class MyGui extends Application {
 
     public void signOut() {
         try {
-            myController.myModle.getServerInstance().leaveServer(myController.myModle.me.getPlayerUserName());
             myController.signOut();
             createLoginScreen();
             
@@ -135,4 +136,11 @@ public class MyGui extends Application {
         scene.setRoot(singlePlayerScreen);
         stage.setScene(scene);
     }
-};
+    void showRequestNotification(String playerUserName, NotificationGameResult result) {
+        mainScreen.showRequestNotification(playerUserName,result);
+    }
+
+    void refuseGameRequest(String playerUserName) {
+        mainScreen.refuseGameRequest(playerUserName);
+    }
+}
