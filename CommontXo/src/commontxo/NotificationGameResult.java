@@ -5,12 +5,14 @@
  */
 package commontxo;
 
+import java.io.Serializable;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 /**
  *
  * @author Abdo Amin
  */
-public interface NotificationGameResult extends Remote {
-    public void onReturn(boolean accept);
+public interface NotificationGameResult extends Remote, Serializable{
+    public void onReturn(boolean accept) throws RemoteException;
 }

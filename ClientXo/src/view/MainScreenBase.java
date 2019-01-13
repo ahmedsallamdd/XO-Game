@@ -2,10 +2,12 @@ package view;
 
 
 import commontxo.NotificationGameResult;
-import controller.GameController;
 import controller.MyGui;
 import commontxo.PlayerList;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,12 +17,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.Callback;
 
 public class MainScreenBase extends AnchorPane {
 
@@ -134,9 +134,17 @@ public class MainScreenBase extends AnchorPane {
             a.setTitle("Request");
             a.setHeaderText(playerUserName + " wants to play with you");
             if (a.showAndWait().get() == yes) {
-                result.onReturn(true);
+                try {
+                    result.onReturn(true);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else if (a.showAndWait().get() == no) {
-                result.onReturn(false);
+                try {
+                    result.onReturn(false);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

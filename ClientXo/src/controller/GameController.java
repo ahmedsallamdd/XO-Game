@@ -11,6 +11,7 @@ import view.Gui;
 import commontxo.ClientCallBack;
 import commontxo.NotificationGameResult;
 import commontxo.Player;
+import commontxo.PlayerList;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -39,7 +40,7 @@ public class GameController {
     public GameController(MyGui g) {
 //        myGUI = new MyGui(this);
 //        Application.launch(MyGui.class);
-          myGUI = g;
+        myGUI = g;
         try {
             myModle = new GameModle(this);
             inGamePlayer0 = new InGamePlayer();
@@ -51,8 +52,8 @@ public class GameController {
     }
 
     void startGameRoom() {
-        names = new ArrayList<String>(myModle.gameRoom.getPlayers().keySet());
-
+        names = new ArrayList<>(myModle.gameRoom.getPlayers().keySet());
+        System.out.println("start game");
         inGamePlayer0.setPlayerName(names.get(0));
         inGamePlayer0.setPlayerSymbol(0);
 
@@ -71,7 +72,6 @@ public class GameController {
 //            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //    }
-
     void getSelectedImgView(String id) {
         getPositionFromId(id);
     }
@@ -221,11 +221,21 @@ public class GameController {
     }
 
     void playWithComputer() {
-        System.out.println("mgldfk");
+        System.out.println("playing with computer");
     }
 
     public void showPlayerList() throws RemoteException {
-        myGUI.getPlayerListData(myModle.getServerInstance().initOnlineList());
+        ArrayList<PlayerList> list = myModle.getServerInstance().initOnlineList();
+
+        for (PlayerList pl : list) {
+            if (pl.getName().equals(myModle.me.getPlayerUserName())) {
+                list.remove(pl);
+                break;
+            }
+
+        }
+        myGUI.getPlayerListData(list);
+        
     }
 
     void signOut() throws RemoteException {
@@ -233,23 +243,22 @@ public class GameController {
     }
 
     public void setArrayPosition(int[] positions) {
-        this.positions=positions;
+        this.positions = positions;
     }
 
     public int[] getArrayPosition() {
         return positions;
     }
 
-
     public void showRequestNotification(String playerUserName, NotificationGameResult result) {
-        myGUI.showRequestNotification(playerUserName,result);
+        myGUI.showRequestNotification(playerUserName, result);
     }
 
     public void refuseGameRequest(String playerUserName) {
         myGUI.refuseGameRequest(playerUserName);
     }
 
-    public void sendGameRequest(){
-        
+    public void sendGameRequest() {
+
     }
 }
