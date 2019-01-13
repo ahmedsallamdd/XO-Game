@@ -1,5 +1,7 @@
-package clientxo;
+package view;
 
+import clientxo.GameController;
+import clientxo.MyGui;
 import commontxo.PlayerList;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -121,7 +123,7 @@ public class MainScreenBase extends AnchorPane {
     }
 
     
-    void populateListView(ArrayList<PlayerList> playerList) {
+    public void populateListView(ArrayList<PlayerList> playerList) {
         //put data in listview
 //        ListProperty<String> listProperty = new SimpleListProperty<>();
 //        listProperty.set(FXCollections.observableArrayList(playerList));

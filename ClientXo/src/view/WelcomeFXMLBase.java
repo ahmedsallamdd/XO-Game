@@ -1,5 +1,7 @@
-package clientxo;
+package view;
 
+import clientxo.GameController;
+import clientxo.MyGui;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -23,7 +25,7 @@ public class WelcomeFXMLBase extends AnchorPane {
     protected final Button onlineBtn;
     protected final ImageView gameImage;
     private GameController controller;
-    private MyGui myGui;
+    public MyGui myGui;
 
     public WelcomeFXMLBase(MyGui myGUI) {
 

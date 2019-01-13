@@ -5,6 +5,9 @@
  */
 package clientxo;
 
+import model.InGamePlayer;
+import model.GameModle;
+import view.Gui;
 import commontxo.ClientCallBack;
 import commontxo.Player;
 import commontxo.PlayerList;
@@ -37,7 +40,7 @@ public class GameController {
     InGamePlayer inGamePlayer0;
     InGamePlayer inGamePlayer1;
 
-    GameController(MyGui g) {
+    public GameController(MyGui g) {
 //        myGUI = new MyGui(this);
 //        Application.launch(MyGui.class);
           myGUI = g;
@@ -242,7 +245,7 @@ public class GameController {
         System.out.println("mgldfk");
     }
 
-    void showPlayerList() throws RemoteException {
+    public void showPlayerList() throws RemoteException {
         myGUI.getPlayerListData(myModle.getServerInstance().initOnlineList());
     }
 

@@ -1,4 +1,4 @@
-package clientxo;
+package view;
 
 import java.util.Random;
 import javafx.scene.image.Image;

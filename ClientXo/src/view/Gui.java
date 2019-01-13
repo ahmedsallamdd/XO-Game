@@ -1,5 +1,7 @@
-package clientxo;
+package view;
 
+import clientxo.GameController;
+import clientxo.MyGui;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -8,7 +10,7 @@ import javafx.scene.layout.RowConstraints;
 
 public class Gui extends AnchorPane {
 
-    protected final GridPane gridPane;
+    public final GridPane gridPane;
     protected final ColumnConstraints columnConstraints;
     protected final ColumnConstraints columnConstraints0;
     protected final ColumnConstraints columnConstraints1;

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clientxo;
+package model;
 
+import clientxo.GameController;
 import commontxo.ChatRoom;
 import commontxo.ServerCallBack;
 import commontxo.ClientCallBack;
@@ -27,15 +28,15 @@ import java.util.logging.Logger;
  */
 public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
-    GameController myController;
+    public GameController myController;
     private ServerCallBack server;
-    Player me;
+    public Player me;
 
-    ArrayList<PlayerList> onlineList;
-    GameRoom gameRoom;
-    HashMap<String, ChatRoom> chatRooms;//multibale chat rooms
+    public ArrayList<PlayerList> onlineList;
+    public GameRoom gameRoom;
+    public HashMap<String, ChatRoom> chatRooms;//multibale chat rooms
 
-    GameModle(GameController myController) throws RemoteException {
+    public GameModle(GameController myController) throws RemoteException {
         this.myController = myController;
     }
 
