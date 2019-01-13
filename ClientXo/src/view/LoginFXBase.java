@@ -1,6 +1,6 @@
 package view;
 
-import clientxo.MyGui;
+import controller.MyGui;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

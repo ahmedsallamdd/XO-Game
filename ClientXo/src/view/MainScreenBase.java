@@ -1,7 +1,7 @@
 package view;
 
-import clientxo.GameController;
-import clientxo.MyGui;
+import controller.GameController;
+import controller.MyGui;
 import commontxo.PlayerList;
 import java.rmi.RemoteException;
 import java.util.ArrayList;

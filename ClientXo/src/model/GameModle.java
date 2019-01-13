@@ -5,7 +5,7 @@
  */
 package model;
 
-import clientxo.GameController;
+import controller.GameController;
 import commontxo.ChatRoom;
 import commontxo.ServerCallBack;
 import commontxo.ClientCallBack;
@@ -143,6 +143,16 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
             gameRoom.removePlayer(userNameWhoLeft);
 
         }
+    }
+
+    @Override
+    public void setArrayPosition(int[] positions) throws RemoteException {
+        myController.setArrayPosition(positions);
+    }
+
+    @Override
+    public int[] getArrayPosition() throws RemoteException {
+        return myController.getArrayPosition();
     }
 
 }

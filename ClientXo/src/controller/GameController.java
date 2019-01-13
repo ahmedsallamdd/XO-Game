@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clientxo;
+package controller;
 
 import model.InGamePlayer;
 import model.GameModle;
@@ -251,6 +251,14 @@ public class GameController {
 
     void signOut() throws RemoteException {
         myModle.getServerInstance().signOut(myModle.me);
+    }
+
+    public void setArrayPosition(int[] positions) {
+        this.positions=positions;
+    }
+
+    public int[] getArrayPosition() {
+        return positions;
     }
 
 }

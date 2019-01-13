@@ -1,7 +1,7 @@
 package view;
 
-import clientxo.GameController;
-import clientxo.MyGui;
+import controller.GameController;
+import controller.MyGui;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;

@@ -20,6 +20,10 @@ public interface ClientCallBack extends Remote{
     public void joinGameRoom(String roomName,ClientCallBack creatorClient) throws RemoteException;
     
    public void addPlayerToGameRoom(String playerUserName,ClientCallBack player) throws RemoteException;
+   
+   public void setArrayPosition(int[] positions) throws RemoteException;
+   
+   public int[] getArrayPosition() throws RemoteException;
     
     public void leaveGameRoom() throws RemoteException;
     

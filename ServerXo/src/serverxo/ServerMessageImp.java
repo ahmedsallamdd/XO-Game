@@ -210,7 +210,9 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
         if (gameRooms.containsKey(roomName)) {
             ArrayList<String> usersNames = (ArrayList<String>) gameRooms.get(roomName).getPlayers().keySet();
             clients.get(myUserName).joinGameRoom(roomName, gameRooms.get(roomName).getPlayers().get(usersNames.get(0)));
-
+            //to start game from last played step
+            clients.get(myUserName).setArrayPosition(
+                    gameRooms.get(roomName).getPlayers().get(usersNames.get(0)).getArrayPosition());
             for (int i = 1; i < gameRooms.get(roomName).getPlayers().size(); i++) {
                 clients.get(myUserName).addPlayerToGameRoom(usersNames.get(i),
                         gameRooms.get(roomName).getPlayers().get(usersNames.get(i)));

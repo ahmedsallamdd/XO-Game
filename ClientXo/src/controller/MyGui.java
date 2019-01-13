@@ -1,4 +1,4 @@
-package clientxo;
+package controller;
 
 import view.SignUpFXBase;
 import view.LoginFXBase;

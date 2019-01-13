@@ -1,7 +1,7 @@
 package view;
 
-import clientxo.GameController;
-import clientxo.MyGui;
+import controller.GameController;
+import controller.MyGui;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
