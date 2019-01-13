@@ -1,5 +1,6 @@
 package controller;
 
+import commontxo.NotificationGameResult;
 import view.SignUpFXBase;
 import view.LoginFXBase;
 import view.MainScreenBase;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 public class MyGui extends Application {
 
     static GameController myController;
+
     Stage stage;
     private Scene scene;
 
@@ -125,5 +127,13 @@ public class MyGui extends Application {
         } catch (RemoteException ex) {
             Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    void showRequestNotification(String playerUserName, NotificationGameResult result) {
+        mainScreen.showRequestNotification(playerUserName,result);
+    }
+
+    void refuseGameRequest(String playerUserName) {
+        mainScreen.refuseGameRequest(playerUserName);
     }
 };

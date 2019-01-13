@@ -10,6 +10,7 @@ import commontxo.ChatRoom;
 import commontxo.ServerCallBack;
 import commontxo.ClientCallBack;
 import commontxo.GameRoom;
+import commontxo.NotificationGameResult;
 import commontxo.Player;
 import commontxo.PlayerList;
 import java.rmi.NotBoundException;
@@ -45,8 +46,6 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
             try {
                 Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
                 server = (ServerCallBack) reg.lookup("GameService");
-//                server.register(this, me.getPlayerUserName());
-//                server.sendGameRequest("sallam", "Abdo");
 
             } catch (RemoteException | NotBoundException e) {
                 System.err.println(e.getMessage());
@@ -56,10 +55,8 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     }
 
     @Override
-    public boolean sendGameNotifigation(String playerUserName) throws RemoteException {
-        //TODO Create Dialog
-        System.out.println("sendGameNotifigation");
-        return true;
+    public void sendGameNotification(String playerUserName,NotificationGameResult result) throws RemoteException {
+        myController.showRequestNotification(playerUserName,result);
     }
 
     @Override
@@ -153,6 +150,11 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     @Override
     public int[] getArrayPosition() throws RemoteException {
         return myController.getArrayPosition();
+    }
+
+    @Override
+    public void refuseGameRequest(String playerUserName) throws RemoteException {
+        myController.refuseGameRequest(playerUserName);
     }
 
 }

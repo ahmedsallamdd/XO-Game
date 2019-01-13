@@ -12,7 +12,7 @@ public interface ServerCallBack extends Remote {
     void register(ClientCallBack clientRef, String playerUserName) throws RemoteException;
 
     //function inside signOut related to server not at this interfce //deprecated :D
-    void unRegister(ClientCallBack clientRef, String playerUserName) throws RemoteException;
+//    void unRegister(String playerUserName) throws RemoteException;
 
     //game
     boolean sendGameRequest(String myUserName, String oppesiteUserName) throws RemoteException;
@@ -26,7 +26,7 @@ public interface ServerCallBack extends Remote {
 
     public void leftChatRoom(String myUserName, String playerUserName) throws RemoteException;
 
-    public void leaveServer(String gameRoom, String myUserName) throws RemoteException;
+    public void leaveServer(String myUserName) throws RemoteException;
     //control
 
     //Call RealTime change //any change

@@ -9,6 +9,7 @@ import model.InGamePlayer;
 import model.GameModle;
 import view.Gui;
 import commontxo.ClientCallBack;
+import commontxo.NotificationGameResult;
 import commontxo.Player;
 import commontxo.PlayerList;
 import java.rmi.RemoteException;
@@ -68,13 +69,13 @@ public class GameController {
         myGUI.displayMessage(myMessage);
     }
 
-    public void unRegister() {
-        try {
-            myModle.getServerInstance().unRegister(myModle, "Abdo");
-        } catch (RemoteException ex) {
-            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+//    public void unRegister() {
+//        try {
+//            myModle.getServerInstance().unRegister(myModle, "Abdo");
+//        } catch (RemoteException ex) {
+//            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
     void getSelectedImgView(String id) {
         getPositionFromId(id);
@@ -259,6 +260,15 @@ public class GameController {
 
     public int[] getArrayPosition() {
         return positions;
+    }
+
+
+    public void showRequestNotification(String playerUserName, NotificationGameResult result) {
+        myGUI.showRequestNotification(playerUserName,result);
+    }
+
+    public void refuseGameRequest(String playerUserName) {
+        myGUI.refuseGameRequest(playerUserName);
     }
 
 }

@@ -15,7 +15,9 @@ import java.rmi.RemoteException;
  */
 public interface ClientCallBack extends Remote{
     //game init
-    public boolean sendGameNotifigation(String playerUserName)throws RemoteException ;
+    public void sendGameNotification(String playerUserName,NotificationGameResult result)throws RemoteException ;
+    
+    public void refuseGameRequest(String playerUserName)throws RemoteException ;
     
     public void joinGameRoom(String roomName,ClientCallBack creatorClient) throws RemoteException;
     
