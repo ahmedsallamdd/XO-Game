@@ -1,11 +1,9 @@
 package view;
 
-import clientxo.GameController;
-import clientxo.MyGui;
+import controller.GameController;
+import controller.MyGui;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -13,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 
 public class WelcomeFXMLBase extends AnchorPane {
 
@@ -36,10 +33,10 @@ public class WelcomeFXMLBase extends AnchorPane {
         singleBtn = new Button();
         onlineBtn = new Button();
         gameImage = new ImageView();
-        
+
         //controller = new GameController();
         this.myGui = myGUI;
-        
+
         setId("AnchorPane");
         setPrefHeight(650.0);
         setPrefWidth(600.0);
@@ -87,9 +84,10 @@ public class WelcomeFXMLBase extends AnchorPane {
         singleBtn.setFont(new Font(17.0));
         BorderPane.setMargin(singleBtn, new Insets(0.0, 0.0, 0.0, 30.0));
         borderPane.setLeft(singleBtn);
-        singleBtn.setOnAction((e->{
+        singleBtn.setOnAction((e -> {
 //            primaryStage.setScene(new Scene(new SinglePlayerGui()));
 //            controller.playWithComputer();
+            myGUI.createSinglePlayerScreen();
         }));
 
         BorderPane.setAlignment(onlineBtn, javafx.geometry.Pos.CENTER);
@@ -117,9 +115,6 @@ public class WelcomeFXMLBase extends AnchorPane {
 
         onlineBtn.setOnAction((ActionEvent event) -> {
             myGUI.createLoginScreen();
-            
-//            Scene newScene = new Scene(new LoginFXBase(primaryStage));
-//            primaryStage.setScene(newScene);
         });
 
     }

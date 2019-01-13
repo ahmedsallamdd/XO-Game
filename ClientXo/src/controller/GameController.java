@@ -3,23 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clientxo;
+package controller;
 
 import model.InGamePlayer;
 import model.GameModle;
 import view.Gui;
 import commontxo.ClientCallBack;
 import commontxo.Player;
-import commontxo.PlayerList;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -193,26 +188,9 @@ public class GameController {
         }
     }
 
-//    public static void main(String args[]) {
-//        GameController myGame = new GameController();
-////        myGame.startGUI();
-//        myGame.myModle.getServerInstance();
-//        try {
-//            myGame.myModle.getServerInstance().sendGameRequest("Abdo", "Sallam");
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-////        Application.launch(myGame.myGUI.getClass(), args);
-//        Platform.runLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                
-//            }
-//        });
-//    }
-
-    public void signUp(String userName, String name, String email, String password) throws RemoteException {
-        myModle.getServerInstance().signUp(userName, name, password, email);
+    public boolean signUp(String userName, String name, String email, String password) throws RemoteException {
+//        myModle.getServerInstance().signUp(userName, name, password, email);
+        return myModle.getServerInstance().signUp(userName, name, password, email);
     }
 
     public boolean signIn(String userName, String password) {

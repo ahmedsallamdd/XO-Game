@@ -1,17 +1,11 @@
 package view;
 
-import clientxo.GameController;
-import clientxo.MyGui;
+import controller.GameController;
+import controller.MyGui;
 import commontxo.PlayerList;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -60,7 +54,7 @@ public class MainScreenBase extends AnchorPane {
         btnPlayWithComputer.setText("Single Player");
 
         btnPlayWithComputer.setOnAction((e -> {
-//            stage.setScene(new Scene(new SinglePlayerGui()));
+            myGui.createSinglePlayerScreen();
             //controller.playWithComputer();
 
             // TODO: clean the matherfuken code from the singlePlayerGui to the controller

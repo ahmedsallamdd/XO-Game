@@ -26,7 +26,7 @@ public interface ServerCallBack extends Remote {
 
     public void leftChatRoom(String myUserName, String playerUserName) throws RemoteException;
 
-    public void leaveServer(String gameRoom, String myUserName) throws RemoteException;
+    public void leaveServer(String myUserName) throws RemoteException;
     //control
 
     //Call RealTime change //any change

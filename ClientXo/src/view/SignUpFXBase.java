@@ -1,11 +1,10 @@
 package view;
 
-import clientxo.MyGui;
+import controller.MyGui;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
@@ -14,7 +13,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 
 public class SignUpFXBase extends AnchorPane {
 
@@ -111,8 +109,9 @@ public class SignUpFXBase extends AnchorPane {
                 System.out.println("UserName is already exist ");
             } else {
                 try {
-                    myGui.signUp(userNameField.getText(), fullNameField.getText(), emailField.getText(), passwordField.getText());
-                    myGui.createMainScreen();
+                    boolean isRegistered = myGui.signUp(userNameField.getText(), fullNameField.getText(), emailField.getText(), passwordField.getText());
+                    if(isRegistered==true)
+                        myGui.createMainScreen();
                 } catch (RemoteException ex) {
                     Logger.getLogger(SignUpFXBase.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -1,4 +1,4 @@
-package clientxo;
+package controller;
 
 import view.SignUpFXBase;
 import view.LoginFXBase;
@@ -10,11 +10,10 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import view.SinglePlayerGui;
 
 public class MyGui extends Application {
 
@@ -26,6 +25,7 @@ public class MyGui extends Application {
     LoginFXBase login;
     SignUpFXBase signUp;
     MainScreenBase mainScreen;
+    SinglePlayerGui singlePlayerScreen;
 
     public MyGui() {
         myController = new GameController(this);
@@ -73,12 +73,12 @@ public class MyGui extends Application {
 
     }
 
-//    void createSignUpScreen() {
-//        signUp = new SignUpFXBase(this);
-//        scene = new Scene(login, 600, 800);
-//        stage.setScene(scene);
-//
-//    }
+    public void createSignUpScreen() {
+        signUp = new SignUpFXBase(this);
+        scene = new Scene(signUp, 600, 800);
+        stage.setScene(scene);
+
+    }
     public boolean checkIfUserExists(String username, String password) {
         return myController.signIn(username, password);
     }
@@ -94,8 +94,8 @@ public class MyGui extends Application {
         return myController.checkUserName(userName);
     }
 
-    public void signUp(String userName, String fullName, String email, String password) throws RemoteException {
-        myController.signUp(userName, fullName, email, password);
+    public boolean signUp(String userName, String fullName, String email, String password) throws RemoteException {
+        return myController.signUp(userName, fullName, email, password);
     }
 
     void getPlayerListData(ArrayList<PlayerList> playerList) {
@@ -121,9 +121,18 @@ public class MyGui extends Application {
 
     public void signOut() {
         try {
+            myController.myModle.getServerInstance().leaveServer(myController.myModle.me.getPlayerUserName());
             myController.signOut();
+            createLoginScreen();
+            
         } catch (RemoteException ex) {
             Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void createSinglePlayerScreen() {
+        singlePlayerScreen = new SinglePlayerGui(this);
+        scene.setRoot(singlePlayerScreen);
+        stage.setScene(scene);
     }
 };

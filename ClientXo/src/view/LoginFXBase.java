@@ -1,24 +1,19 @@
 package view;
 
-import clientxo.MyGui;
+import controller.MyGui;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.Light.Distant;
 import javafx.scene.effect.Lighting;
-import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 
 public class LoginFXBase extends AnchorPane {
 
@@ -104,7 +99,6 @@ public class LoginFXBase extends AnchorPane {
             boolean isFound;
             if (!(userNameField.getText().equals("") || passwordField.getText().equals(""))) {
                 isFound = myGui.checkIfUserExists(userNameField.getText(), passwordField.getText());
-//                isFound = controller.signIn(userNameField.getText(), passwordField.getText());
 
                 if (!isFound) {
                     System.out.println("Wrong username or password!");
@@ -129,12 +123,9 @@ public class LoginFXBase extends AnchorPane {
         VBox.setMargin(signUpBtn, new Insets(20.0, 0.0, 0.0, 0.0));
         signUpBtn.setFont(new Font("Arial", 23.0));
         setOpaqueInsets(new Insets(0.0));
-//        signUpBtn.setOnAction((event) -> {
-//
-//            Scene newScene = new Scene(new SignUpFXBase(stage));
-//            stage.setScene(newScene);
-//
-//        });
+        signUpBtn.setOnAction((event) -> {
+            myGui.createSignUpScreen();
+        });
         containerOfFields.getChildren().add(xoGameImg);
         containerOfFields.getChildren().add(userNameField);
         containerOfFields.getChildren().add(passwordField);

@@ -66,7 +66,6 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                 p.setPlayerState("offline");
                 PlayersInformation.add(p);
             }
-            connection.close();
             stmt.close();
         } catch (SQLException e) {
         }
@@ -230,18 +229,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     }
 
     @Override
-    public void leaveServer(String gameRoom, String myUserName) throws RemoteException {
+    public void leaveServer(String myUserName) throws RemoteException {
         if (clients.containsKey(myUserName)) {
-//            if (gameRooms.containsKey(gameRoom)) {
-//                ArrayList<String> temp = new ArrayList<>(gameRooms.get(gameRoom).getPlayers().keySet());
-//                if (temp.indexOf(myUserName) > 1) {
-//                    gameRooms.get(gameRoom).getPlayers().remove(myUserName);
-//
-//                } else {
-//                    temp.remove(myUserName);
-//                    notifiyGameResult(gameRoom, temp.get(0));
-//                }
-//            }
             clients.forEach((e, client) -> {
                 try {
                     client.leftChatRoom(myUserName);
@@ -252,8 +241,9 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                             .getName()).log(Level.SEVERE, null, ex);
                 }
             });
-            updateList();
             clients.remove(myUserName);
+            updateList();
+            
 
         }
     }
@@ -272,8 +262,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public boolean signUp(String userName, String Name, String upassword, String Email) throws RemoteException {
         try {
-            String query = new String("INSERT INTO `gamexo`.`user` "
-                    + "(`UserName`, `Name`, `UserEmail`, `UserPassword`) values (?, ?, ?, ?)");
+            String query = "INSERT INTO `gamexo`.`user` "
+                    + "(`UserName`, `Name`, `UserEmail`, `UserPassword`) values (?, ?, ?, ?)";
             PreparedStatement p = (PreparedStatement) connection.prepareStatement(query);
             p.setString(1, userName);
             p.setString(2, Name);
@@ -290,6 +280,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             }
             return true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
             return false;
         }
     }

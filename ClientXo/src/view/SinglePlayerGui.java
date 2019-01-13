@@ -1,5 +1,6 @@
 package view;
 
+import controller.MyGui;
 import java.util.Random;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -33,8 +34,10 @@ public class SinglePlayerGui extends AnchorPane {
     protected int[][] winningPositions;
     protected boolean isFinished = false;
     ImageView imgView;
+    
+    MyGui myGui;
 
-    public SinglePlayerGui() {
+    public SinglePlayerGui(MyGui g) {
 
         gridPane = new GridPane();
         columnConstraints = new ColumnConstraints();
@@ -52,6 +55,8 @@ public class SinglePlayerGui extends AnchorPane {
         img_6 = new ImageView();
         img_7 = new ImageView();
         img_8 = new ImageView();
+        
+        myGui = g;
 
         setId("AnchorPane");
         setPrefHeight(400.0);

@@ -5,7 +5,7 @@
  */
 package model;
 
-import clientxo.GameController;
+import controller.GameController;
 import commontxo.ChatRoom;
 import commontxo.ServerCallBack;
 import commontxo.ClientCallBack;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 
 /**
  *
@@ -34,7 +35,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     public ArrayList<PlayerList> onlineList;
     public GameRoom gameRoom;
-    public HashMap<String, ChatRoom> chatRooms;//multibale chat rooms
+    public HashMap<String, ChatRoom> chatRooms = new HashMap<>();//multibale chat rooms
 
     public GameModle(GameController myController) throws RemoteException {
         this.myController = myController;
@@ -94,7 +95,16 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     @Override
     public void notifiyOnlineList() throws RemoteException {
-        myController.showPlayerList();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    myController.showPlayerList();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(GameModle.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
     }
 
     @Override
@@ -104,7 +114,8 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     @Override
     public void leftChatRoom(String userNameWhoLeft) throws RemoteException {
-        if (!me.getPlayerUserName().equals(userNameWhoLeft)&&chatRooms.containsKey(userNameWhoLeft)) {
+        if (!me.getPlayerUserName().equals(userNameWhoLeft)
+                && chatRooms.containsKey(userNameWhoLeft)) {
             chatRooms.remove(userNameWhoLeft);
         }
     }
@@ -139,9 +150,13 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     @Override
     public void leftGameRoom(String userNameWhoLeft) throws RemoteException {
-        if (gameRoom.getPlayers().containsKey(userNameWhoLeft)) {
-            gameRoom.removePlayer(userNameWhoLeft);
+        if (gameRoom != null) {
+            if (gameRoom.getPlayers().containsKey(userNameWhoLeft)) {
+                gameRoom.removePlayer(userNameWhoLeft);
 
+            }
+        } else {
+            System.out.println("Room equals null..!");
         }
     }
 
