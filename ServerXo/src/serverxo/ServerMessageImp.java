@@ -34,7 +34,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     static String dbName = "gamexo";
     static String url = "jdbc:mysql://localhost:3306/" + dbName;
     static String username = "root";
-    static String password = "0105583448";
+    static String password = "AbdoAmin01";
     static ArrayList<Player> PlayersInformation;
 
     HashMap<String, ClientCallBack> clients = new HashMap<>();
@@ -115,11 +115,15 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     }
 
     @Override
-    public boolean sendGameRequest(String myUserName, String oppesiteUserName) throws RemoteException {
+    public void sendGameRequest(String myUserName, String oppesiteUserName) throws RemoteException {
         if (clients.containsKey(oppesiteUserName) && clients.containsKey(myUserName)) {
-            clients.get(oppesiteUserName).sendGameNotification(myUserName, (boolean accept) -> {
-                if (accept) {
-                    HashMap<String, ClientCallBack> temp = new HashMap<String, ClientCallBack>() {
+            clients.get(oppesiteUserName).sendGameNotification(myUserName);
+        }
+    }
+    
+    @Override
+    public void startGameRoom(String myUserName, String oppesiteUserName) throws RemoteException {
+        HashMap<String, ClientCallBack> temp = new HashMap<String, ClientCallBack>() {
                         {
                             put(myUserName, clients.get(myUserName));
                             put(oppesiteUserName, clients.get(oppesiteUserName));
@@ -131,29 +135,20 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                     clientMapGameRoom.put(oppesiteUserName, newGameRoom.getRoomName());
                     try {
                         //Init GameRoom at Client Side
-                        clients.get(myUserName).joinGameRoom(myUserName, clients.get(myUserName));
+                        clients.get(myUserName).      joinGameRoom(myUserName, clients.get(myUserName));
                         clients.get(oppesiteUserName).joinGameRoom(myUserName, clients.get(myUserName));
                         
                         //pass CleintInterFace
-                        clients.get(myUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
+                        clients.get(myUserName).      addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
                         clients.get(oppesiteUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
+                        
+                        //start game gui 
+                        clients.get(myUserName).      startGame(oppesiteUserName, clients.get(oppesiteUserName));
+                        clients.get(oppesiteUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName));
+                        
                     } catch (RemoteException ex) {
                         Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                }
-                else
-                {
-                    try {
-                        clients.get(myUserName).refuseGameRequest(oppesiteUserName);
-                    } catch (RemoteException ex) {
-                        Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                //Suggestion : make an interface to handle game starting.
-//                return true;
-            });
-        }
-        return false;
     }
 
     @Override
@@ -326,4 +321,6 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             gameRooms.get(gameRoom).removePlayer(userName);
         }
     }
+
+    
 }

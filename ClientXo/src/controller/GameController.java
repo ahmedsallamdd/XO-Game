@@ -9,7 +9,6 @@ import model.InGamePlayer;
 import model.GameModle;
 import view.Gui;
 import commontxo.ClientCallBack;
-import commontxo.NotificationGameResult;
 import commontxo.Player;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -241,15 +240,19 @@ public class GameController {
     }
 
 
-    public void showRequestNotification(String playerUserName, NotificationGameResult result) {
-        myGUI.showRequestNotification(playerUserName,result);
+    public void showRequestNotification(String oppesiteUserName) {
+        myGUI.showRequestNotification(oppesiteUserName);
     }
 
-    public void refuseGameRequest(String playerUserName) {
-        myGUI.refuseGameRequest(playerUserName);
+    public void refuseGameRequest(String oppesiteUserName) {
+        myGUI.refuseGameRequest(oppesiteUserName);
     }
 
     public void sendGameRequest(){
         
+    }
+
+    public void acceptGameRequest(String oppesiteUserName) throws RemoteException {
+        myModle.getServerInstance().startGameRoom(myModle.me.getPlayerUserName(), oppesiteUserName);
     }
 }

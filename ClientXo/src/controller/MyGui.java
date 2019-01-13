@@ -1,6 +1,5 @@
 package controller;
 
-import commontxo.NotificationGameResult;
 import view.SignUpFXBase;
 import view.LoginFXBase;
 import view.MainScreenBase;
@@ -136,11 +135,11 @@ public class MyGui extends Application {
         scene.setRoot(singlePlayerScreen);
         stage.setScene(scene);
     }
-    void showRequestNotification(String playerUserName, NotificationGameResult result) {
-        mainScreen.showRequestNotification(playerUserName,result);
+    void showRequestNotification(String oppesiteUserName) {
+        mainScreen.showRequestNotification(oppesiteUserName);
     }
 
-    void refuseGameRequest(String playerUserName) {
-        mainScreen.refuseGameRequest(playerUserName);
+    void refuseGameRequest(String oppesiteUserName) {
+        mainScreen.refuseGameRequest(oppesiteUserName);
     }
 }

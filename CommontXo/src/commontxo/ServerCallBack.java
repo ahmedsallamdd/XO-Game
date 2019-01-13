@@ -15,7 +15,9 @@ public interface ServerCallBack extends Remote {
 //    void unRegister(String playerUserName) throws RemoteException;
 
     //game
-    boolean sendGameRequest(String myUserName, String oppesiteUserName) throws RemoteException;
+    void sendGameRequest(String myUserName, String oppesiteUserName) throws RemoteException;
+    
+    void startGameRoom(String myUserName, String oppesiteUserName) throws RemoteException;
 
     public void spectateGame(String myUserName, String playerUserName) throws RemoteException;
 
