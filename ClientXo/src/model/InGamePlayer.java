@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package model;
 
 /**
@@ -12,6 +8,15 @@ package model;
 public class InGamePlayer {
     private String playerName;
     private int playerSymbol;
+    private boolean isMyTurn;
+
+    public boolean isIsMyTurn() {
+        return isMyTurn;
+    }
+
+    public void setIsMyTurn(boolean isMyTurn) {
+        this.isMyTurn = isMyTurn;
+    }
 
     public String getPlayerName() {
         return playerName;

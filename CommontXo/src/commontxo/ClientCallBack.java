@@ -15,9 +15,11 @@ import java.rmi.RemoteException;
  */
 public interface ClientCallBack extends Remote{
     //game init
-    public void sendGameNotification(String playerUserName,NotificationGameResult result)throws RemoteException ;
+    public void sendGameNotification(String oppesiteUserName)throws RemoteException ;
     
-    public void refuseGameRequest(String playerUserName)throws RemoteException ;
+    public void acceptGameRequest(String oppesiteUserName)throws RemoteException ;
+    
+    public void refuseGameRequest(String oppesiteUserName)throws RemoteException ;
     
     public void joinGameRoom(String roomName,ClientCallBack creatorClient) throws RemoteException;
     
@@ -26,6 +28,8 @@ public interface ClientCallBack extends Remote{
    public void setArrayPosition(int[] positions) throws RemoteException;
    
    public int[] getArrayPosition() throws RemoteException;
+   
+   public void startGame(String playerUserName,ClientCallBack player) throws RemoteException;
     
     public void leaveGameRoom() throws RemoteException;
     

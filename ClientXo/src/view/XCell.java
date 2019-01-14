@@ -35,25 +35,23 @@ class XCell extends ListCell<PlayerList> {
     MainScreenBase myMainScreenBase;
     String opponentName;
 
-    
     public XCell(MainScreenBase m) {
         super();
         hbox.getChildren().addAll(lblUsername, pane, lblScore, pane1, imgViewState, pane2, btnJoinRoom);
         HBox.setHgrow(pane, Priority.ALWAYS);
         HBox.setHgrow(pane1, Priority.ALWAYS);
         HBox.setHgrow(pane2, Priority.ALWAYS);
-        
+
         myMainScreenBase = m;
         Platform.runLater(() -> {
             opponentName = lblUsername.getText();
         });
         btnJoinRoom.setOnAction((ActionEvent event) -> {
             try {
-                boolean isAccepted = MyGui.myController.myModle.getServerInstance()
+                MyGui.myController.myModle.getServerInstance()
                         .sendGameRequest(
-                                MyGui.myController
-                                        .myModle.me.getPlayerUserName(),
-                        opponentName);
+                                MyGui.myController.myModle.me.getPlayerUserName(),
+                                opponentName);
             } catch (RemoteException ex) {
                 Logger.getLogger(XCell.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -71,7 +69,8 @@ class XCell extends ListCell<PlayerList> {
             lastItem = item;
             lblScore.setText(String.valueOf(item.getScore()));
             lblUsername.setText(item.getName());
-            imgViewState.setImage(item.getRoomName()==null?new Image("/images/available.png"): new Image("/images/busy.png"));
+            imgViewState.setImage(item.getRoomName() == null
+                    ? new Image("/images/available.png") : new Image("/images/busy.png"));
 
 //            item != null ? item : );
             setGraphic(hbox);

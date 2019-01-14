@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package model;
 
 import controller.GameController;
@@ -10,7 +6,6 @@ import commontxo.ChatRoom;
 import commontxo.ServerCallBack;
 import commontxo.ClientCallBack;
 import commontxo.GameRoom;
-import commontxo.NotificationGameResult;
 import commontxo.Player;
 import commontxo.PlayerList;
 import java.rmi.NotBoundException;
@@ -56,8 +51,8 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     }
 
     @Override
-    public void sendGameNotification(String playerUserName,NotificationGameResult result) throws RemoteException {
-        myController.showRequestNotification(playerUserName,result);
+    public void sendGameNotification(String oppesiteUserName) throws RemoteException {
+        myController.showRequestNotification(oppesiteUserName);
     }
 
     @Override
@@ -67,10 +62,6 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
                 put(roomName, creatorClient);
             }
         });
-
-        //TODO Start Game 
-        System.out.println("joinGameRoom");
-        System.out.println(roomName);
     }
 
     @Override
@@ -92,14 +83,11 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     @Override
     public void notifiyOnlineList() throws RemoteException {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    myController.showPlayerList();
-                } catch (RemoteException ex) {
-                    Logger.getLogger(GameModle.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        Platform.runLater(() -> {
+            try {
+                myController.showPlayerList();
+            } catch (RemoteException ex) {
+                Logger.getLogger(GameModle.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
@@ -168,8 +156,20 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     }
 
     @Override
-    public void refuseGameRequest(String playerUserName) throws RemoteException {
-        myController.refuseGameRequest(playerUserName);
+    public void refuseGameRequest(String oppesiteUserName) throws RemoteException {
+        myController.refuseGameRequest(oppesiteUserName);
+    }
+
+    @Override
+    public void acceptGameRequest(String oppesiteUserName) throws RemoteException {
+        myController.acceptGameRequest(oppesiteUserName);
+    }
+
+    @Override
+    public void startGame(String playerUserName, ClientCallBack player) throws RemoteException {
+        //start game gui
+        myController.startGameRoom();
+        System.out.println(playerUserName);
     }
 
 }

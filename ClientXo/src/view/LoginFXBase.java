@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
@@ -26,9 +27,8 @@ public class LoginFXBase extends AnchorPane {
     protected final Button signUpBtn;
 
 //    GameController controller;
-
     MyGui myGui;
-    
+
     public LoginFXBase(MyGui g) {
 
         containerOfFields = new VBox();
@@ -101,7 +101,12 @@ public class LoginFXBase extends AnchorPane {
                 isFound = myGui.checkIfUserExists(userNameField.getText(), passwordField.getText());
 
                 if (!isFound) {
-                    System.out.println("Wrong username or password!");
+                    Alert alerForSignIn = new Alert(Alert.AlertType.ERROR);
+                    alerForSignIn.setHeight(10);
+                    alerForSignIn.setHeaderText(null);
+                    alerForSignIn.setContentText("Wrong username or password!");
+                    alerForSignIn.show();
+
                 } else {
                     try {
                         myGui.createMainScreen();
@@ -111,11 +116,16 @@ public class LoginFXBase extends AnchorPane {
                 }
 
             } else {
-                System.out.println("Fill All Fields");
+                Alert alerForSignIn = new Alert(Alert.AlertType.WARNING);
+                // alerForSignIn.setTitle("Error");
+                alerForSignIn.setHeaderText(null);
+
+                alerForSignIn.setContentText("Fill all fileds!");
+                alerForSignIn.show();
+
             }
 
         });
-
         signUpBtn.setMnemonicParsing(false);
         signUpBtn.setStyle("-fx-background-color: #ff7764; -fx-background-radius: 10;");
         signUpBtn.setText("SignUp");

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="1000.0" style="-fx-background-color: linear-gradient( #173551 0%,#62828f 50% ,#173551 100%);" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane layoutY="-2.0" prefHeight="600.0" prefWidth="1000.0">
+         <right>
+            <AnchorPane prefHeight="502.0" prefWidth="350.0" style="-fx-background-color: #fff; -fx-border-color: #000;" BorderPane.alignment="CENTER">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="13.0" layoutY="14.0" prefHeight="34.0" prefWidth="321.0" style="-fx-background-color: #173551; -fx-background-radius: 10;" text="MY CHAT" textAlignment="CENTER" textFill="#d76767" AnchorPane.bottomAnchor="568.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="14.0">
+                     <font>
+                        <Font name="Arial" size="28.0" />
+                     </font>
+                  </Label>
+                  <ScrollPane layoutX="23.0" layoutY="54.0" prefHeight="473.0" prefWidth="325.0" style="-fx-background-radius: 10;" AnchorPane.bottomAnchor="88.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="53.0">
+                     <content>
+                        <TextArea prefHeight="471.0" prefWidth="321.0" style="-fx-background-radius: 20;" />
+                     </content>
+                  </ScrollPane>
+                  <TextField layoutX="14.0" layoutY="544.0" prefHeight="35.0" prefWidth="245.0" style="-fx-background-radius: 10;" />
+                  <Button layoutX="275.0" layoutY="544.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="63.0" style="-fx-background-color: #d76767; -fx-background-radius: 10;" text="Send" textFill="#f5f5f5">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </AnchorPane>
+         </right>
+         <left>
+            <AnchorPane prefHeight="546.0" prefWidth="203.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER">
+               <children>
+                  <SplitPane dividerPositions="0.5" layoutY="-1.0" orientation="VERTICAL" prefHeight="601.0" prefWidth="203.0" style="-fx-background-color: #fff; -fx-border-color: #000;">
+                    <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                           <children>
+                              <VBox alignment="CENTER" layoutX="50.0" layoutY="132.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Label text="userName1" textFill="#026d94">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" text="999" textAlignment="CENTER" textFill="#6681c5">
+                                       <font>
+                                          <Font name="System Italic" size="64.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                           <children>
+                              <VBox alignment="CENTER" layoutY="-14.0" prefHeight="324.0" prefWidth="199.0" spacing="10.0" AnchorPane.bottomAnchor="-28.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-14.0">
+                                 <children>
+                                    <Label text="UserName2" textFill="#026d94">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" text="999" textAlignment="CENTER" textFill="#6681c5">
+                                       <font>
+                                          <Font name="System Italic" size="64.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                    </items>
+                  </SplitPane>
+               </children>
+            </AnchorPane>
+         </left>
+         <top>
+            <AnchorPane prefHeight="70.0" prefWidth="950.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="295.0" layoutY="25.0" prefHeight="40.0" prefWidth="109.0" text="TIMER :  " textFill="#d76767">
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="405.0" layoutY="26.0" text="00:00:00" textFill="#fffefe">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Label>
+               </children>
+               <BorderPane.margin>
+                  <Insets right="50.0" />
+               </BorderPane.margin>
+            </AnchorPane>
+         </top>
+         <center>
+            <GridPane gridLinesVisible="true" prefHeight="587.0" prefWidth="409.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <BorderPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" />
+               </BorderPane.margin>
+               <children>
+                  <ImageView id="img_0" fitHeight="202.0" fitWidth="143.0" onMousePressed="#changeImg" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView id="img_1" fitHeight="202.0" fitWidth="143.0" onMousePressed="#changeImg" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
+                  <ImageView id="img_2" fitHeight="202.0" fitWidth="143.0" onMousePressed="#changeImg" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" />
+                  <ImageView id="img_3" fitHeight="202.0" fitWidth="142.0" onMousePressed="#changeImg" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" />
+                  <ImageView id="img_4" fitHeight="202.0" fitWidth="143.0" onMousePressed="#changeImg" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <ImageView id="img_5" fitHeight="202.0" fitWidth="143.0" onMousePressed="#changeImg" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <ImageView id="img_6" fitHeight="202.0" fitWidth="143.0" onMousePressed="#changeImg" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" />
+                  <ImageView id="img_7" fitHeight="202.0" fitWidth="143.0" onMousePressed="#changeImg" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <ImageView id="img_8" fitHeight="202.0" fitWidth="143.0" onMousePressed="#changeImg" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+               </children>
+            </GridPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

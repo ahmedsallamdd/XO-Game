@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package serverxo;
 
 import commontxo.ClientCallBack;
@@ -43,16 +38,12 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
 
     HashMap<String, GameRoom> gameRooms = new HashMap<>();//for fast acces
 
-//     @Override
-//    public ArrayList<Player> getAllPlayers() throws RemoteException {
-//        return PlayersInformation;
-//    }
     public void IntializePlayersList() {
         Player p;
 
         try {
             Statement stmt = connection.createStatement();
-            String query = new String("select * from user ");
+            String query = "select * from user ";
             ResultSet s = stmt.executeQuery(query);
 
             while (s.next()) {
@@ -115,45 +106,40 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     }
 
     @Override
-    public boolean sendGameRequest(String myUserName, String oppesiteUserName) throws RemoteException {
+    public void sendGameRequest(String myUserName, String oppesiteUserName) throws RemoteException {
         if (clients.containsKey(oppesiteUserName) && clients.containsKey(myUserName)) {
-            clients.get(oppesiteUserName).sendGameNotification(myUserName, (boolean accept) -> {
-                if (accept) {
-                    HashMap<String, ClientCallBack> temp = new HashMap<String, ClientCallBack>() {
-                        {
-                            put(myUserName, clients.get(myUserName));
-                            put(oppesiteUserName, clients.get(oppesiteUserName));
-                        }
-                    };
-                    GameRoom newGameRoom = new GameRoom(myUserName, temp);
-                    gameRooms.put(myUserName, newGameRoom);
-                    clientMapGameRoom.put(myUserName, newGameRoom.getRoomName());
-                    clientMapGameRoom.put(oppesiteUserName, newGameRoom.getRoomName());
-                    try {
-                        //Init GameRoom at Client Side
-                        clients.get(myUserName).joinGameRoom(myUserName, clients.get(myUserName));
-                        clients.get(oppesiteUserName).joinGameRoom(myUserName, clients.get(myUserName));
-                        
-                        //pass CleintInterFace
-                        clients.get(myUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
-                        clients.get(oppesiteUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
-                    } catch (RemoteException ex) {
-                        Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                else
-                {
-                    try {
-                        clients.get(myUserName).refuseGameRequest(oppesiteUserName);
-                    } catch (RemoteException ex) {
-                        Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                //Suggestion : make an interface to handle game starting.
-//                return true;
-            });
+            clients.get(oppesiteUserName).sendGameNotification(myUserName);
         }
-        return false;
+    }
+
+    @Override
+    public void startGameRoom(String myUserName, String oppesiteUserName) throws RemoteException {
+        HashMap<String, ClientCallBack> temp = new HashMap<String, ClientCallBack>() {
+            {
+                put(myUserName, clients.get(myUserName));
+                put(oppesiteUserName, clients.get(oppesiteUserName));
+            }
+        };
+        GameRoom newGameRoom = new GameRoom(myUserName, temp);
+        gameRooms.put(myUserName, newGameRoom);
+        clientMapGameRoom.put(myUserName, newGameRoom.getRoomName());
+        clientMapGameRoom.put(oppesiteUserName, newGameRoom.getRoomName());
+        try {
+            //Init GameRoom at Client Side
+            clients.get(myUserName).joinGameRoom(myUserName, clients.get(myUserName));
+            clients.get(oppesiteUserName).joinGameRoom(myUserName, clients.get(myUserName));
+
+            //pass CleintInterFace
+            clients.get(myUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
+            clients.get(oppesiteUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
+
+            //start game gui 
+            clients.get(myUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName));
+            clients.get(oppesiteUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName));
+
+        } catch (RemoteException ex) {
+            Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -326,4 +312,5 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             gameRooms.get(gameRoom).removePlayer(userName);
         }
     }
+
 }

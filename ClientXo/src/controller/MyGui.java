@@ -1,6 +1,5 @@
 package controller;
 
-import commontxo.NotificationGameResult;
 import view.SignUpFXBase;
 import view.LoginFXBase;
 import view.MainScreenBase;
@@ -14,7 +13,9 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import view.Gui;
 import view.SinglePlayerGui;
+import view.gameRoomFXMLBase;
 
 public class MyGui extends Application {
 
@@ -28,6 +29,10 @@ public class MyGui extends Application {
     SignUpFXBase signUp;
     MainScreenBase mainScreen;
     SinglePlayerGui singlePlayerScreen;
+    gameRoomFXMLBase multiPlayerScreen;
+    
+    int width = 600;
+    int height = 650;
 
     public MyGui() {
         myController = new GameController(this);
@@ -47,10 +52,9 @@ public class MyGui extends Application {
     }
 
     public static void onImgViewClicked(MouseEvent mouseEvent) {
-        //SelectedImgId = e.getPickResult().getIntersectedNode().getId();
         System.out.println(mouseEvent.getPickResult().getIntersectedNode().getId());
         myController.getSelectedImgView(mouseEvent.getPickResult().getIntersectedNode().getId());
-//        mouseEvent.getPickResult().getIntersectedNode().getId();
+//        myController.switchTurns();
     }
 
     @Override
@@ -60,7 +64,7 @@ public class MyGui extends Application {
         welcome = new WelcomeFXMLBase(this);
 
         stage = primaryStage;
-        scene = new Scene(welcome, 600, 800);
+        scene = new Scene(welcome, width, height);
 
         primaryStage.setTitle("Tic Tac Toe");
         primaryStage.setScene(scene);
@@ -70,14 +74,14 @@ public class MyGui extends Application {
 
     public void createLoginScreen() {
         login = new LoginFXBase(this);
-        scene = new Scene(login, 600, 800);
+        scene.setRoot(login);
         stage.setScene(scene);
 
     }
 
     public void createSignUpScreen() {
         signUp = new SignUpFXBase(this);
-        scene = new Scene(signUp, 600, 800);
+        scene.setRoot(signUp);
         stage.setScene(scene);
 
     }
@@ -88,7 +92,7 @@ public class MyGui extends Application {
     public void createMainScreen() throws RemoteException {
         mainScreen = new MainScreenBase(this);
         getPlayerListData();
-        scene = new Scene(mainScreen, 600, 800);
+        scene.setRoot(mainScreen);
         stage.setScene(scene);
     }
 
@@ -100,19 +104,18 @@ public class MyGui extends Application {
         return myController.signUp(userName, fullName, email, password);
     }
 
-    void getPlayerListData(ArrayList<PlayerList> playerList) {
+    public void getPlayerListData(ArrayList<PlayerList> playerList) {
         mainScreen.populateListView(playerList);
     }
 
-    void getPlayerListData() throws RemoteException {
+    public void getPlayerListData() throws RemoteException {
         myController.showPlayerList();
     }
 
     public static void main(String args[]) {
         launch(args);
-
-//        myGame.startGUI();
         myController.myModle.getServerInstance();
+        
         try {
             myController.myModle.getServerInstance().sendGameRequest("Abdo", "Sallam");
         } catch (RemoteException ex) {
@@ -136,11 +139,17 @@ public class MyGui extends Application {
         scene.setRoot(singlePlayerScreen);
         stage.setScene(scene);
     }
-    void showRequestNotification(String playerUserName, NotificationGameResult result) {
-        mainScreen.showRequestNotification(playerUserName,result);
+    void showRequestNotification(String oppesiteUserName) {
+        mainScreen.showRequestNotification(oppesiteUserName);
     }
 
-    void refuseGameRequest(String playerUserName) {
-        mainScreen.refuseGameRequest(playerUserName);
+    void refuseGameRequest(String oppesiteUserName) {
+        mainScreen.refuseGameRequest(oppesiteUserName);
+    }
+
+    void createMultiPlayerGui() {
+        multiPlayerScreen = new gameRoomFXMLBase(this);
+        scene.setRoot(multiPlayerScreen);
+        stage.setScene(scene);
     }
 }

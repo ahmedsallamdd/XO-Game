@@ -1,7 +1,5 @@
 package view;
 
-
-import commontxo.NotificationGameResult;
 import controller.MyGui;
 import commontxo.PlayerList;
 import java.rmi.RemoteException;
@@ -104,6 +102,32 @@ public class MainScreenBase extends AnchorPane {
             myGui.signOut();
         });
 
+        label0.setLayoutY(18.0);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                label0.setText(String.valueOf(myGui.myController.myModle.me.getPlayerUserName()));
+            }
+        });
+
+        label2.setLayoutY(18.0);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                label2.setText(String.valueOf(myGui.myController.myModle.me.getPlayerScore()));
+            }
+        });
+
+        button0.setOnAction(event -> {
+
+            try {
+                myGui.getPlayerListData();
+            } catch (RemoteException ex) {
+                Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        });
+
         getChildren().add(btnPlayWithComputer);
         getChildren().add(listView);
         getChildren().add(label);
@@ -122,7 +146,7 @@ public class MainScreenBase extends AnchorPane {
 
     }
 
-    public void showRequestNotification(String playerUserName, NotificationGameResult result) {
+    public void showRequestNotification(String oppesiteUserName) {
         ButtonType yes = new ButtonType("yes", ButtonBar.ButtonData.OK_DONE);
         ButtonType no = new ButtonType("no", ButtonBar.ButtonData.CANCEL_CLOSE);
 
@@ -132,16 +156,18 @@ public class MainScreenBase extends AnchorPane {
                     yes,
                     no);
             a.setTitle("Request");
-            a.setHeaderText(playerUserName + " wants to play with you");
+            a.setHeaderText(oppesiteUserName + " wants to play with you");
             if (a.showAndWait().get() == yes) {
                 try {
-                    result.onReturn(true);
+
+                    myGui.myController.myModle.acceptGameRequest(oppesiteUserName);
                 } catch (RemoteException ex) {
                     Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
             } else if (a.showAndWait().get() == no) {
                 try {
-                    result.onReturn(false);
+                    myGui.myController.myModle.refuseGameRequest(oppesiteUserName);
                 } catch (RemoteException ex) {
                     Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
                 }

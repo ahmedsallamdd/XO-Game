@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
@@ -104,14 +105,32 @@ public class SignUpFXBase extends AnchorPane {
 
         signUpBtn.setOnAction((e -> {
             if (userNameField.getText().equals("") || fullNameField.getText().equals("") || emailField.getText().equals("") || passwordField.getText().equals("")) {
-                System.out.println("Fill All Fileds");
+                Alert alerForSignUp = new Alert(Alert.AlertType.WARNING);
+                alerForSignUp.setTitle("Warning");
+                alerForSignUp.setHeaderText(null);
+
+                alerForSignUp.setContentText("Fill all fileds!");
+                alerForSignUp.show();
+
+
             } else if (myGui.checkUserName(userNameField.getText())) {
-                System.out.println("UserName is already exist ");
+                Alert alerForSignUp = new Alert(Alert.AlertType.WARNING);
+                alerForSignUp.setTitle("Warning");
+                alerForSignUp.setHeaderText(null);
+
+                alerForSignUp.setContentText("Username already exist, try another username!");
+                alerForSignUp.show();
+
+
+
             } else {
                 try {
                     boolean isRegistered = myGui.signUp(userNameField.getText(), fullNameField.getText(), emailField.getText(), passwordField.getText());
-                    if(isRegistered==true)
+                 
+                    if(isRegistered)
+                    {
                         myGui.createMainScreen();
+                    }
                 } catch (RemoteException ex) {
                     Logger.getLogger(SignUpFXBase.class.getName()).log(Level.SEVERE, null, ex);
                 }

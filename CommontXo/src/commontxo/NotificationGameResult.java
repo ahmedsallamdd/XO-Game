@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
  *
  * @author Abdo Amin
  */
-public interface NotificationGameResult extends Remote, Serializable{
+public interface NotificationGameResult extends Remote, Serializable {
+
     public void onReturn(boolean accept) throws RemoteException;
 }

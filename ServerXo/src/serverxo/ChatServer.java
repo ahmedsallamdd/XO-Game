@@ -24,17 +24,17 @@ public class ChatServer {
 
     public ChatServer() {
         try {
-ServerMessageImp obj = null;
+            ServerMessageImp obj = null;
             try {
                 obj = new ServerMessageImp();
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ChatServer.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
                 Logger.getLogger(ChatServer.class.getName()).log(Level.SEVERE, null, ex);
-            } 
+            }
             Registry reg = LocateRegistry.createRegistry(1099);
             reg.rebind("GameService", obj);
-    
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }

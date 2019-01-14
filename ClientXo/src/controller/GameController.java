@@ -9,16 +9,17 @@ import model.InGamePlayer;
 import model.GameModle;
 import view.Gui;
 import commontxo.ClientCallBack;
-import commontxo.NotificationGameResult;
 import commontxo.Player;
 import commontxo.PlayerList;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import view.gameRoomFXMLBase;
 
 public class GameController {
 
@@ -26,16 +27,18 @@ public class GameController {
     public GameModle myModle;
 
     int[] positions = new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2};
-    int[][] winningPositions = new int[][]{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
-    {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
+    int[][] winningPositions = new int[][]{
+        {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
+        {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
 
     private int movesCounter = 0;
     private boolean isFinished = false;
-    int activePlayer = 0;
+    public int activePlayer = 0;
 
     ArrayList<String> names;
     InGamePlayer inGamePlayer0;
     InGamePlayer inGamePlayer1;
+    boolean isYourTurn = false;
 
     public GameController(MyGui g) {
 //        myGUI = new MyGui(this);
@@ -51,27 +54,26 @@ public class GameController {
         }
     }
 
-    void startGameRoom() {
+    public void startGameRoom() {
+        //Note to myself: don't worry..the two players have the same tarteeb.
         names = new ArrayList<>(myModle.gameRoom.getPlayers().keySet());
-        System.out.println("start game");
         inGamePlayer0.setPlayerName(names.get(0));
         inGamePlayer0.setPlayerSymbol(0);
+        inGamePlayer0.setIsMyTurn(true);
 
         inGamePlayer1.setPlayerName(names.get(1));
         inGamePlayer1.setPlayerSymbol(1);
+        inGamePlayer0.setIsMyTurn(false);
+
+        Platform.runLater(() -> {
+            myGUI.createMultiPlayerGui();
+        });
     }
 
     public void displayMessage(String myMessage) {
         myGUI.displayMessage(myMessage);
     }
 
-//    public void unRegister() {
-//        try {
-//            myModle.getServerInstance().unRegister(myModle, "Abdo");
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
     void getSelectedImgView(String id) {
         getPositionFromId(id);
     }
@@ -84,9 +86,10 @@ public class GameController {
             symbol = inGamePlayer1.getPlayerSymbol();
         }
         positions[posPlayed] = symbol;
+        System.out.println("[" + posPlayed + "]" + " = " + symbol);
         reDrawGameBoard();
         checkGameResult();
-        switchTurns();
+//        switchTurns();
     }
 
     private void getPositionFromId(String id) {
@@ -95,7 +98,7 @@ public class GameController {
         System.out.println(myModle.gameRoom.getPlayers().size());
         try {
             for (ClientCallBack client : myModle.gameRoom.getPlayers().values()) {
-                if (activePlayer == 0) {
+                if (isYourTurn) {
                     client.play(inGamePlayer0.getPlayerName(), posPlayed);
                 } else {
                     client.play(inGamePlayer1.getPlayerName(), posPlayed);
@@ -106,10 +109,10 @@ public class GameController {
         }
     }
 
-    private void switchTurns() {
+    public void switchTurns() {
         if (activePlayer == 1) {
             activePlayer = 0;
-        } else {
+        } else if (activePlayer == 0) {
             activePlayer = 1;
         }
     }
@@ -117,12 +120,11 @@ public class GameController {
     public void reDrawGameBoard() {
         String imgViewId;
         ImageView imgView;
-        Gui newRoot = new Gui();
+        gameRoomFXMLBase newRoot = new gameRoomFXMLBase(myGUI);
         for (int i = 0; i < positions.length; i++) {
             if (positions[i] != 2) {
                 imgViewId = constructImgeViewId(i);
                 System.out.println(imgViewId);
-//                imgView = (ImageView) myGUI.root.gridPane.lookup("#" + imgViewId);
                 imgView = (ImageView) newRoot.gridPane.lookup("#" + imgViewId);
                 if (positions[i] == 0) {
                     System.out.println("hi");
@@ -132,8 +134,11 @@ public class GameController {
                 }
             }
         }
-        Scene newScene = new Scene(newRoot, 600, 450);
-        myGUI.stage.setScene(newScene);
+        Platform.runLater(() -> {
+            Scene newScene = new Scene(newRoot, 600, 650);
+            myGUI.stage.setScene(newScene);
+        });
+
     }
 
     private String constructImgeViewId(int pos) {
@@ -148,12 +153,10 @@ public class GameController {
 
                 if (positions[winningPosition[0]] == 0) {
                     System.out.println("X has won!");
-                    //movesCounter=9;
                     isFinished = true;
                     return;
                 } else {
                     System.out.println("O has won!");
-                    //movesCounter=9;   
                     isFinished = true;
                     return;
                 }
@@ -189,9 +192,16 @@ public class GameController {
         }
     }
 
+//    public boolean signUp(String userName, String name, String email, String password) throws RemoteException {
+////        myModle.getServerInstance().signUp(userName, name, password, email);
+//        return myModle.getServerInstance().signUp(userName, name, password, email);
+//    }
     public boolean signUp(String userName, String name, String email, String password) throws RemoteException {
-//        myModle.getServerInstance().signUp(userName, name, password, email);
-        return myModle.getServerInstance().signUp(userName, name, password, email);
+        if (myModle.getServerInstance().signUp(userName, name, password, email)) {
+            signIn(userName, password);
+            return true;
+        }
+        return false;
     }
 
     public boolean signIn(String userName, String password) {
@@ -235,7 +245,7 @@ public class GameController {
 
         }
         myGUI.getPlayerListData(list);
-        
+
     }
 
     void signOut() throws RemoteException {
@@ -250,15 +260,19 @@ public class GameController {
         return positions;
     }
 
-    public void showRequestNotification(String playerUserName, NotificationGameResult result) {
-        myGUI.showRequestNotification(playerUserName, result);
+    public void showRequestNotification(String oppesiteUserName) {
+        myGUI.showRequestNotification(oppesiteUserName);
     }
 
-    public void refuseGameRequest(String playerUserName) {
-        myGUI.refuseGameRequest(playerUserName);
+    public void refuseGameRequest(String oppesiteUserName) {
+        myGUI.refuseGameRequest(oppesiteUserName);
     }
 
     public void sendGameRequest() {
 
+    }
+
+    public void acceptGameRequest(String oppesiteUserName) throws RemoteException {
+        myModle.getServerInstance().startGameRoom(myModle.me.getPlayerUserName(), oppesiteUserName);
     }
 }

@@ -28,12 +28,12 @@ public class Gui extends AnchorPane {
     protected final ImageView img_8;
 
     String SelectedImgId = "";
-    GameController controller;
-
-    public Gui() {
+//    GameController controller;
+    MyGui myGui;
+    public Gui(MyGui g) {
 //        controller = new GameController();
-        controller.reDrawGameBoard();
-
+//        controller.reDrawGameBoard();
+        myGui = g;
         gridPane = new GridPane();
         columnConstraints = new ColumnConstraints();
         columnConstraints0 = new ColumnConstraints();
