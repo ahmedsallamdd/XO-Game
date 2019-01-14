@@ -61,6 +61,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
             {
                 put(roomName, creatorClient);
             }
+            
         });
     }
 
@@ -168,8 +169,9 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     @Override
     public void startGame(String playerUserName, ClientCallBack player) throws RemoteException {
         //start game gui
+        setArrayPosition(player.getArrayPosition());
         myController.startGameRoom();
-        System.out.println(playerUserName);
+        
     }
 
 }

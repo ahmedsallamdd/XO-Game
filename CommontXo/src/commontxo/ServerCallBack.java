@@ -19,7 +19,7 @@ public interface ServerCallBack extends Remote {
     
     void startGameRoom(String myUserName, String oppesiteUserName) throws RemoteException;
 
-    public void spectateGame(String myUserName, String playerUserName) throws RemoteException;
+    public void spectateGame(String myUserName, String oppesiteUserName) throws RemoteException;
 
     boolean notifiyGameResult(String roomName, String WinnerUserName) throws RemoteException;
 

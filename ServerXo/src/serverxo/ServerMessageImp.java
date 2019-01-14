@@ -136,6 +136,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             //start game gui 
             clients.get(myUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName));
             clients.get(oppesiteUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName));
+            updateList();
 
         } catch (RemoteException ex) {
             Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
@@ -144,6 +145,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
 
     @Override
     public boolean notifiyGameResult(String roomName, String winnerUserName) throws RemoteException {
+        
         PlayersInformation.forEach(player -> {
             if (player.getPlayerUserName().equals(winnerUserName)) {
                 player.setPlayerScore(player.getPlayerScore() + 10);
@@ -213,12 +215,16 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                             .getName()).log(Level.SEVERE, null, ex);
                 }
             });
+            //this parameters are deprecated and useless 
+            clients.get(myUserName).startGame(myUserName, clients.get(myUserName));
+            updateList();
         }
     }
 
     @Override
     public void leaveServer(String myUserName) throws RemoteException {
         if (clients.containsKey(myUserName)) {
+            //TODO leave gameroom if exist
             clients.forEach((e, client) -> {
                 try {
                     client.leftChatRoom(myUserName);
