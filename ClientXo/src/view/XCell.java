@@ -47,13 +47,23 @@ class XCell extends ListCell<PlayerList> {
             opponentName = lblUsername.getText();
         });
         btnJoinRoom.setOnAction((ActionEvent event) -> {
-            try {
-                MyGui.myController.myModle.getServerInstance()
-                        .sendGameRequest(
-                                MyGui.myController.myModle.me.getPlayerUserName(),
-                                opponentName);
-            } catch (RemoteException ex) {
-                Logger.getLogger(XCell.class.getName()).log(Level.SEVERE, null, ex);
+            if (btnJoinRoom.getText().equals("Challenge")) {
+                try {
+                    MyGui.myController.myModle.getServerInstance()
+                            .sendGameRequest(
+                                    MyGui.myController.myModle.me.getPlayerUserName(),
+                                    opponentName);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(XCell.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+                try {
+                    MyGui.myController.myModle.getServerInstance()
+                            .spectateGame(MyGui.myController.myModle.me.getPlayerUserName(),
+                                    opponentName);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(XCell.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -69,10 +79,11 @@ class XCell extends ListCell<PlayerList> {
             lastItem = item;
             lblScore.setText(String.valueOf(item.getScore()));
             lblUsername.setText(item.getName());
+            if(item.getRoomName() !=null)
+                btnJoinRoom.setText("Spectate");
             imgViewState.setImage(item.getRoomName() == null
                     ? new Image("/images/available.png") : new Image("/images/busy.png"));
 
-//            item != null ? item : );
             setGraphic(hbox);
         }
     }

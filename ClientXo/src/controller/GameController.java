@@ -35,14 +35,12 @@ public class GameController {
     private boolean isFinished = false;
     public int activePlayer = 0;
 
-    ArrayList<String> names;
+    public ArrayList<String> names;
     InGamePlayer inGamePlayer0;
     InGamePlayer inGamePlayer1;
-    boolean isYourTurn = false;
+    boolean isYourTurn;
 
     public GameController(MyGui g) {
-//        myGUI = new MyGui(this);
-//        Application.launch(MyGui.class);
         myGUI = g;
         try {
             myModle = new GameModle(this);
@@ -57,6 +55,7 @@ public class GameController {
     public void startGameRoom() {
         //Note to myself: don't worry..the two players have the same tarteeb.
         names = new ArrayList<>(myModle.gameRoom.getPlayers().keySet());
+//        reDrawGameBoard();
         inGamePlayer0.setPlayerName(names.get(0));
         inGamePlayer0.setPlayerSymbol(0);
         inGamePlayer0.setIsMyTurn(true);
@@ -64,6 +63,9 @@ public class GameController {
         inGamePlayer1.setPlayerName(names.get(1));
         inGamePlayer1.setPlayerSymbol(1);
         inGamePlayer0.setIsMyTurn(false);
+
+        isYourTurn = myModle.me.getPlayerUserName().equals(names.get(0));
+        System.out.println(isYourTurn);
 
         Platform.runLater(() -> {
             myGUI.createMultiPlayerGui();
@@ -75,7 +77,9 @@ public class GameController {
     }
 
     void getSelectedImgView(String id) {
-        getPositionFromId(id);
+        if (isYourTurn == true) {
+            getPositionFromId(id);
+        }
     }
 
     public void modifyPositionsArray(String player, int posPlayed) {
@@ -85,11 +89,11 @@ public class GameController {
         } else {
             symbol = inGamePlayer1.getPlayerSymbol();
         }
-        positions[posPlayed] = symbol;
+        positions[posPlayed] = activePlayer;
         System.out.println("[" + posPlayed + "]" + " = " + symbol);
         reDrawGameBoard();
         checkGameResult();
-//        switchTurns();
+        switchTurns();
     }
 
     private void getPositionFromId(String id) {
@@ -98,8 +102,9 @@ public class GameController {
         System.out.println(myModle.gameRoom.getPlayers().size());
         try {
             for (ClientCallBack client : myModle.gameRoom.getPlayers().values()) {
-                if (isYourTurn) {
+                if (isYourTurn == true) {
                     client.play(inGamePlayer0.getPlayerName(), posPlayed);
+//                    isYourTurn = false;
                 } else {
                     client.play(inGamePlayer1.getPlayerName(), posPlayed);
                 }
@@ -110,10 +115,11 @@ public class GameController {
     }
 
     public void switchTurns() {
-        if (activePlayer == 1) {
-            activePlayer = 0;
-        } else if (activePlayer == 0) {
+        isYourTurn = isYourTurn != true;
+        if (activePlayer == 0) {
             activePlayer = 1;
+        } else {
+            activePlayer = 0;
         }
     }
 
@@ -127,7 +133,6 @@ public class GameController {
                 System.out.println(imgViewId);
                 imgView = (ImageView) newRoot.gridPane.lookup("#" + imgViewId);
                 if (positions[i] == 0) {
-                    System.out.println("hi");
                     imgView.setImage(new Image("/images/X_image.png"));
                 } else {
                     imgView.setImage(new Image("/images/O_image.png"));
@@ -170,8 +175,8 @@ public class GameController {
             isFinished = true;
         }
     }
-    //current player surrender or leave spectate.
 
+    //current player surrender or leave spectate.
     public void withdraw(String myUserName) throws RemoteException {
         //remove Mysilfe ...
         ArrayList<String> temp = new ArrayList<>(myModle.gameRoom.getPlayers().keySet());
@@ -192,10 +197,6 @@ public class GameController {
         }
     }
 
-//    public boolean signUp(String userName, String name, String email, String password) throws RemoteException {
-////        myModle.getServerInstance().signUp(userName, name, password, email);
-//        return myModle.getServerInstance().signUp(userName, name, password, email);
-//    }
     public boolean signUp(String userName, String name, String email, String password) throws RemoteException {
         if (myModle.getServerInstance().signUp(userName, name, password, email)) {
             signIn(userName, password);

@@ -136,6 +136,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             //start game gui 
             clients.get(myUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName));
             clients.get(oppesiteUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName));
+            updateList();
 
         } catch (RemoteException ex) {
             Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
@@ -193,7 +194,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public void spectateGame(String myUserName, String roomName) throws RemoteException {
         if (gameRooms.containsKey(roomName)) {
-            ArrayList<String> usersNames = (ArrayList<String>) gameRooms.get(roomName).getPlayers().keySet();
+            ArrayList<String> usersNames = new ArrayList<> (gameRooms.get(roomName).getPlayers().keySet());
             clients.get(myUserName).joinGameRoom(roomName, gameRooms.get(roomName).getPlayers().get(usersNames.get(0)));
             //to start game from last played step
             clients.get(myUserName).setArrayPosition(
@@ -213,6 +214,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                             .getName()).log(Level.SEVERE, null, ex);
                 }
             });
+            clients.get(myUserName).startGame(myUserName, clients.get(myUserName));
+            updateList();
         }
     }
 
