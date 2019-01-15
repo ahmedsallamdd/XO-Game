@@ -13,7 +13,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import view.Gui;
 import view.SinglePlayerGui;
 import view.gameRoomFXMLBase;
 
@@ -31,7 +30,7 @@ public class MyGui extends Application {
     SinglePlayerGui singlePlayerScreen;
     gameRoomFXMLBase multiPlayerScreen;
     
-    int width = 600;
+    int width = 700;
     int height = 650;
 
     public MyGui() {
@@ -147,9 +146,14 @@ public class MyGui extends Application {
         mainScreen.refuseGameRequest(oppesiteUserName);
     }
 
-    void createMultiPlayerGui() {
+    public void createMultiPlayerGui() {
         multiPlayerScreen = new gameRoomFXMLBase(this);
         scene.setRoot(multiPlayerScreen);
+        stage.setScene(scene);
+    }
+    public void createMultiPlayerGui(gameRoomFXMLBase multiplayerScreen) {
+        this.multiPlayerScreen = multiplayerScreen;
+        scene.setRoot(multiplayerScreen);
         stage.setScene(scene);
     }
 }

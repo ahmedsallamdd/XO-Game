@@ -77,8 +77,11 @@ public class GameController {
     }
 
     void getSelectedImgView(String id) {
-        if (isYourTurn == true) {
-            getPositionFromId(id);
+        ImageView imgView = (ImageView) myGUI.multiPlayerScreen.gridPane.lookup("#" + id);
+        if (isFinished==false) {
+            if (isYourTurn == true && imgView.getImage() == null) {
+                getPositionFromId(id);
+            }
         }
     }
 
@@ -140,8 +143,7 @@ public class GameController {
             }
         }
         Platform.runLater(() -> {
-            Scene newScene = new Scene(newRoot, 600, 650);
-            myGUI.stage.setScene(newScene);
+            myGUI.createMultiPlayerGui(newRoot);
         });
 
     }
@@ -169,10 +171,6 @@ public class GameController {
                 System.out.println("It's a draw!");
                 isFinished = true;
             }
-        }
-        if (movesCounter == 9) {
-            System.out.println("It's a draw!");
-            isFinished = true;
         }
     }
 
