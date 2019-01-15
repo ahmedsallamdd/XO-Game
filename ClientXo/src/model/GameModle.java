@@ -61,7 +61,6 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
             {
                 put(roomName, creatorClient);
             }
-            
         });
     }
 

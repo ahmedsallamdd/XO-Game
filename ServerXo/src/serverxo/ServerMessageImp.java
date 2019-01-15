@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -29,7 +30,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     static String dbName = "gamexo";
     static String url = "jdbc:mysql://localhost:3306/" + dbName;
     static String username = "root";
-    static String password = "0105583448";
+    static String password = "AbdoAmin01";
     static ArrayList<Player> PlayersInformation;
 
     HashMap<String, ClientCallBack> clients = new HashMap<>();
@@ -162,12 +163,10 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                             .getName()).log(Level.SEVERE, null, ex);
                 }
             });
-            clientMapGameRoom.forEach((name, room)
-                    -> {
-                if (room.equals(roomName)) {
-                    clientMapGameRoom.remove(name);
-                }
-            });
+            clientMapGameRoom = new HashMap(clientMapGameRoom.entrySet().stream()
+                    .filter(room -> !room.equals(roomName))
+                    .collect(
+                            Collectors.toMap(x -> x, y -> y)));
             leftChatRoom(gameRooms.get(roomName).getPlayers().keySet().toArray()[0].toString(),
                     gameRooms.get(roomName).getPlayers().keySet().toArray()[1].toString());
             gameRooms.remove(roomName);
@@ -254,6 +253,18 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public boolean signUp(String userName, String Name, String upassword, String Email) throws RemoteException {
         try {
+            for (Player player : PlayersInformation) {
+                if (player.getPlayerUserName().equals(userName)) {
+                    return false;
+                }
+            }
+            Player player = new Player();
+            player.setPlayerUserName(userName);
+            player.setPlayerName(Name);
+            player.setPlayerPassword(upassword);
+            player.setPlayerEmail(Email);
+            player.setPlayerState("online");
+            PlayersInformation.add(player);
             String query = "INSERT INTO `gamexo`.`user` "
                     + "(`UserName`, `Name`, `UserEmail`, `UserPassword`) values (?, ?, ?, ?)";
             PreparedStatement p = (PreparedStatement) connection.prepareStatement(query);
@@ -261,15 +272,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             p.setString(2, Name);
             p.setString(3, Email);
             p.setString(4, upassword);
-            if (p.execute()) {
-                Player player = new Player();
-                player.setPlayerUserName(userName);
-                player.setPlayerName(Name);
-                player.setPlayerPassword(upassword);
-                player.setPlayerEmail(Email);
-                player.setPlayerState("online");
-                PlayersInformation.add(player);
-            }
+            p.execute();
             return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -280,7 +283,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public void signOut(Player player) throws RemoteException {
         for (Player p : PlayersInformation) {
-            if (p.getPlayerUserName().equals(player)) {
+            if (p.getPlayerUserName().equals(player.getPlayerUserName())) {
 //                p.setPlayerState("offline");      //deprecated , called alrady at leaveServer
                 leaveServer(player.getPlayerUserName());
                 break;
@@ -303,7 +306,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
         if (clients.containsKey(userName)) {
             clients.remove(userName);
             for (Player p : PlayersInformation) {
-                if (p.getPlayerUserName().equals(userName) && p.getPlayerPassword().equals(userName)) {
+                if (p.getPlayerUserName().equals(userName)) {
                     p.setPlayerState("offline");
                 }
             }

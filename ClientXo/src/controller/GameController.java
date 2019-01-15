@@ -174,26 +174,38 @@ public class GameController {
         }
     }
 
+    
+    
+    public void leaveServer() throws RemoteException {
+        if(myModle.gameRoom!=null){
+            withdraw();
+        }
+        else
+            myModle.getServerInstance().leaveServer(myModle.me.getPlayerUserName());
+    }
+    
     //current player surrender or leave spectate.
-    public void withdraw(String myUserName) throws RemoteException {
+    public void withdraw() throws RemoteException {
         //remove Mysilfe ...
         ArrayList<String> temp = new ArrayList<>(myModle.gameRoom.getPlayers().keySet());
-        if (temp.indexOf(myUserName) > 1) {
+        if (temp.indexOf(myModle.me.getPlayerUserName()) > 1) {
             myModle.gameRoom.getPlayers().forEach((e, client) -> {
                 try {
-                    client.leftGameRoom(myUserName);
+                    client.leftGameRoom(myModle.me.getPlayerUserName());
                 } catch (RemoteException ex) {
                     Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
             myModle.leaveGameRoom();
-            myModle.getServerInstance().removeClientMapGameRoom(myUserName);
-            myModle.getServerInstance().removePlayerFromGameRoom(myUserName, myModle.gameRoom.getRoomName());
+            myModle.getServerInstance().removeClientMapGameRoom(myModle.me.getPlayerUserName());
+            myModle.getServerInstance().removePlayerFromGameRoom(myModle.me.getPlayerUserName(), myModle.gameRoom.getRoomName());
         } else {
-            temp.remove(myUserName);
+            temp.remove(myModle.me.getPlayerUserName());
             myModle.getServerInstance().notifiyGameResult(myModle.gameRoom.getRoomName(), temp.get(0));
         }
     }
+    
+    
 
     public boolean signUp(String userName, String name, String email, String password) throws RemoteException {
         if (myModle.getServerInstance().signUp(userName, name, password, email)) {

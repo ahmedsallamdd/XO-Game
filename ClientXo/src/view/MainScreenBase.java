@@ -99,7 +99,7 @@ public class MainScreenBase extends AnchorPane {
         imageView.setPreserveRatio(true);
         imageView.setImage(new Image(getClass().getResource("../images/Logout.png").toExternalForm()));
         imageView.setOnMousePressed(e -> {
-            myGui.signOut();
+                myGui.signOut();
         });
 
         label0.setLayoutY(18.0);
