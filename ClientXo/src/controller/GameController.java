@@ -5,10 +5,8 @@
  */
 package controller;
 
-import commontxo.ChatRoom;
 import model.InGamePlayer;
 import model.GameModle;
-import view.Gui;
 import commontxo.ClientCallBack;
 import commontxo.Player;
 import commontxo.PlayerList;
@@ -17,7 +15,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import view.gameRoomFXMLBase;
@@ -68,9 +65,7 @@ public class GameController {
         isYourTurn = myModle.me.getPlayerUserName().equals(names.get(0));
         System.out.println(isYourTurn);
 
-        Platform.runLater(() -> {
-            myGUI.createMultiPlayerGui();
-        });
+        reDrawGameBoard();
     }
 
     void getSelectedImgView(String id) {

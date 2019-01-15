@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import view.gameRoomFXMLBase;
 
 /**
  *
@@ -175,9 +176,10 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     }
 
     @Override
-    public void startGame(String playerUserName, ClientCallBack player) throws RemoteException {
+    public void startGame(String playerUserName, ClientCallBack player, String mode) throws RemoteException {
         //start game gui
         setArrayPosition(player.getArrayPosition());
+        gameRoomFXMLBase.mode = mode;
         myController.startGameRoom();
     }
 

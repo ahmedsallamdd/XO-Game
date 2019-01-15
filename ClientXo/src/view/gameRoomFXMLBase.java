@@ -1,10 +1,7 @@
 package view;
 
 import controller.MyGui;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,6 +19,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 public class gameRoomFXMLBase extends AnchorPane {
+
+    public static String mode;
 
     protected final BorderPane borderPane;
     protected final AnchorPane anchorPane;
@@ -179,7 +178,6 @@ public class gameRoomFXMLBase extends AnchorPane {
 //                Logger.getLogger(gameRoomFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
 //            }
 //        });
-
         BorderPane.setAlignment(anchorPane0, javafx.geometry.Pos.CENTER);
         anchorPane0.setPrefHeight(546.0);
         anchorPane0.setPrefWidth(203.0);
@@ -400,18 +398,31 @@ public class gameRoomFXMLBase extends AnchorPane {
         gridPane.getChildren().add(img_8);
         getChildren().add(borderPane);
         updateChat();
-        
-         button.setOnAction(e -> {
-            
+
+        button.setOnAction(e -> {
+
             myGui.sendMessage(textField.getText());
             textField.setText("");
-            
+
         });
         textField.setOnAction(e -> {
-            
-             myGui.sendMessage(textField.getText());
-             textField.setText("");
-     });
+
+            myGui.sendMessage(textField.getText());
+            textField.setText("");
+        });
+
+        if (mode.equals("spectator")) {
+            img_0.setDisable(true);
+            img_1.setDisable(true);
+            img_2.setDisable(true);
+            img_3.setDisable(true);
+            img_4.setDisable(true);
+            img_5.setDisable(true);
+            img_6.setDisable(true);
+            img_7.setDisable(true);
+            img_8.setDisable(true);
+            textField.setDisable(true);
+        }
 
     }
 //

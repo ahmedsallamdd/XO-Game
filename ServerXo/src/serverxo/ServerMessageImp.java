@@ -133,12 +133,12 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             //pass CleintInterFace
             clients.get(myUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
             clients.get(oppesiteUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
-            
-            joinChatRoom(myUserName,oppesiteUserName);
+
+            joinChatRoom(myUserName, oppesiteUserName);
 
             //start game gui 
-            clients.get(myUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName));
-            clients.get(oppesiteUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName));
+            clients.get(myUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName), "player");
+            clients.get(oppesiteUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName), "player");
             updateList();
 
         } catch (RemoteException ex) {
@@ -218,7 +218,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                 }
             });
             //this parameters are deprecated and useless 
-            clients.get(myUserName).startGame(myUserName, clients.get(myUserName));
+            clients.get(myUserName).startGame(myUserName, clients.get(myUserName), "spectator");
             updateList();
         }
     }
