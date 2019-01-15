@@ -49,10 +49,6 @@ public class MyGui extends Application {
         }
     }
 
-    public void displayMessage(String myMessage) {
-//        txtArea.append(myMessage + "\n");
-    }
-
     public static void onImgViewClicked(MouseEvent mouseEvent) {
         System.out.println(mouseEvent.getPickResult().getIntersectedNode().getId());
         myController.getSelectedImgView(mouseEvent.getPickResult().getIntersectedNode().getId());
@@ -175,5 +171,19 @@ public class MyGui extends Application {
         this.multiPlayerScreen = multiplayerScreen;
         scene.setRoot(multiplayerScreen);
         stage.setScene(scene);
+    }
+
+//    public void displayMessage(String myMessage) {
+//        multiPlayerScreen.displayMessage(myMessage);
+//    }
+//    public void sendMessage(String myUserName, String message) throws RemoteException {
+//        myController.sendMessage(myUserName,message);
+//    }
+    public void displayMessage(String myMessage) {
+        multiPlayerScreen.displayMessage(myMessage);
+    }
+
+    public void sendMessage(String text) {
+        myController.sendMessage(text);
     }
 }

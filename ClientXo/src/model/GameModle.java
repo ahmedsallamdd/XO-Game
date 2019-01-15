@@ -1,4 +1,3 @@
-
 package model;
 
 import controller.GameController;
@@ -78,8 +77,8 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     @Override
     public void play(String player, int position) throws RemoteException {
         //get the playerSymbol from the playerUserName.
-        
-            myController.modifyPositionsArray(player, position);
+
+        myController.modifyPositionsArray(player, position);
     }
 
     @Override
@@ -106,32 +105,41 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
         }
     }
 
+//    @Override 
+//    public void receiveMessage(String senderUserName, String message) throws RemoteException {
+//        if (chatRooms.get(senderUserName) != null) {
+//             chatRooms.get(senderUserName).setChat(chatRooms.get(senderUserName).getChat()+senderUserName+": "+message+"\n");
+//               myController.displayMessage(chatRooms.get(senderUserName).getChat());
+//        }
+//    }
+//
+//    @Override // deprecated
+//    public void sendMessage(String myUserName, String message) throws RemoteException {
+//        try {
+//            receiveMessage(myUserName, message);
+//        } catch (RemoteException ex) {
+//            Logger.getLogger(GameModle.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        ChatRoom myChatRoom = chatRooms.get(myUserName);
+//
+//        ClientCallBack others = myChatRoom.getOtherClients();
+//        try {
+//            others.receiveMessage(myUserName, message);
+//        } catch (RemoteException ex) {
+//            Logger.getLogger(GameModle.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//    }
     @Override
     public void receiveMessage(String senderUserName, String message) throws RemoteException {
         if (chatRooms.get(senderUserName) != null) {
-            ChatRoom myChatRoom = chatRooms.get(senderUserName);
-            //   myController.displayMessage(myChatRoom.getChat());
             myController.displayMessage(senderUserName + " : " + message);
-
         }
     }
 
     @Override
-    public void sendMessage(String myUserName, String message) throws RemoteException {
-        try {
-            receiveMessage(myUserName, message);
-        } catch (RemoteException ex) {
-            Logger.getLogger(GameModle.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        ChatRoom myChatRoom = chatRooms.get(myUserName);
-
-        ClientCallBack others = myChatRoom.getOtherClients();
-        try {
-            others.receiveMessage(myUserName, message);
-        } catch (RemoteException ex) {
-            Logger.getLogger(GameModle.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+    public void sendMessage(String oppositeUserName, String message) throws RemoteException {
+        receiveMessage(oppositeUserName, message);
     }
 
     @Override
@@ -171,6 +179,10 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
         //start game gui
         setArrayPosition(player.getArrayPosition());
         myController.startGameRoom();
+    }
+
+    public void clearServer() {
+        server = null;
     }
 
 }

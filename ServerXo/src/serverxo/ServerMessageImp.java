@@ -133,6 +133,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             //pass CleintInterFace
             clients.get(myUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
             clients.get(oppesiteUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
+            
+            joinChatRoom(myUserName,oppesiteUserName);
 
             //start game gui 
             clients.get(myUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName));
