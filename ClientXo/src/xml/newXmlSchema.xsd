@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<xs:schema version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+    <xs:complexType name="GameComplexType">
+        <xs:sequence>
+            <xs:element name="step"  type="StepComplexType" maxOccurs="unbounded"></xs:element>
+            <xs:element name="result" type="xs:string"></xs:element>  
+        </xs:sequence>
+        
+    </xs:complexType>
+    <xs:complexType name="StepComplexType">
+        <xs:sequence>
+            <xs:element name="player" type="xs:integer"></xs:element>
+            <xs:element name="position" type="xs:int"></xs:element>
+        </xs:sequence>
+        
+    </xs:complexType>
+    <xs:element name="Game" type="GameComplexType"></xs:element>
+</xs:schema>

@@ -327,4 +327,9 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
         }
     }
 
+    @Override
+    public void refuseGameRequest(String myUserName, String oppesiteUserName) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

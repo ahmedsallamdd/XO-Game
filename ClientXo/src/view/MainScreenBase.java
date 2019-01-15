@@ -157,15 +157,14 @@ public class MainScreenBase extends AnchorPane {
             a.setHeaderText(oppesiteUserName + " wants to play with you");
             if (a.showAndWait().get() == yes) {
                 try {
-
                     myGui.myController.myModle.acceptGameRequest(oppesiteUserName);
                 } catch (RemoteException ex) {
                     Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-            } else if (a.showAndWait().get() == no) {
+            } else {
                 try {
-                    myGui.myController.myModle.refuseGameRequest(oppesiteUserName);
+                    myGui.myController.myModle.getServerInstance()
+                            .refuseGameRequest(myGui.myController.myModle.me.getPlayerUserName(),oppesiteUserName);
                 } catch (RemoteException ex) {
                     Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -182,6 +181,8 @@ public class MainScreenBase extends AnchorPane {
                     ok);
             a.setTitle("Request Refuse");
             a.setHeaderText(playerUserName + " don't want to play with you");
+            if (a.showAndWait().get() == ok) {
+            }
         });
     }
 

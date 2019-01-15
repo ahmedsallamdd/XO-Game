@@ -145,11 +145,13 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
 
     @Override
     public boolean notifiyGameResult(String roomName, String winnerUserName) throws RemoteException {
-        PlayersInformation.forEach(player -> {
-            if (player.getPlayerUserName().equals(winnerUserName)) {
-                player.setPlayerScore(player.getPlayerScore() + 10);
-            }
-        });
+        if (winnerUserName != null) {
+            PlayersInformation.forEach(player -> {
+                if (player.getPlayerUserName().equals(winnerUserName)) {
+                    player.setPlayerScore(player.getPlayerScore() + 10);
+                }
+            });
+        }
         if (gameRooms.containsKey(roomName)) {
             gameRooms.get(roomName).getPlayers().forEach((e, client) -> {
                 try {
@@ -194,7 +196,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public void spectateGame(String myUserName, String roomName) throws RemoteException {
         if (gameRooms.containsKey(roomName)) {
-            ArrayList<String> usersNames = new ArrayList<> (gameRooms.get(roomName).getPlayers().keySet());
+            ArrayList<String> usersNames = new ArrayList<>(gameRooms.get(roomName).getPlayers().keySet());
             clients.get(myUserName).joinGameRoom(roomName, gameRooms.get(roomName).getPlayers().get(usersNames.get(0)));
             //to start game from last played step
             clients.get(myUserName).setArrayPosition(
@@ -214,6 +216,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                             .getName()).log(Level.SEVERE, null, ex);
                 }
             });
+            //this parameters are deprecated and useless 
             clients.get(myUserName).startGame(myUserName, clients.get(myUserName));
             updateList();
         }
@@ -222,6 +225,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public void leaveServer(String myUserName) throws RemoteException {
         if (clients.containsKey(myUserName)) {
+            //TODO leave gameroom if exist
             clients.forEach((e, client) -> {
                 try {
                     client.leftChatRoom(myUserName);
@@ -277,7 +281,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     public void signOut(Player player) throws RemoteException {
         for (Player p : PlayersInformation) {
             if (p.getPlayerUserName().equals(player)) {
-                p.setPlayerState("offline");
+//                p.setPlayerState("offline");      //deprecated , called alrady at leaveServer
                 leaveServer(player.getPlayerUserName());
                 break;
             }
@@ -298,6 +302,11 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     public void removeClient(String userName) throws RemoteException {
         if (clients.containsKey(userName)) {
             clients.remove(userName);
+            for (Player p : PlayersInformation) {
+                if (p.getPlayerUserName().equals(userName) && p.getPlayerPassword().equals(userName)) {
+                    p.setPlayerState("offline");
+                }
+            }
             updateList();
         }
     }
@@ -316,4 +325,21 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
         }
     }
 
+    @Override
+    public void refuseGameRequest(String myUserName, String oppesiteUserName) throws RemoteException {
+        if (clients.containsKey(oppesiteUserName)) {
+            clients.get(oppesiteUserName).refuseGameRequest(myUserName);
+        }
+    }
+
+    void updateScore(String userName, int newScore) {
+        try {
+            Statement stmt = connection.createStatement();
+            String query = "UPDATE user SET UserScore =" + newScore + " WHERE UserName ='" + userName + "'";
+            stmt.executeQuery(query);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

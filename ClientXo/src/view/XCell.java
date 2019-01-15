@@ -46,7 +46,17 @@ class XCell extends ListCell<PlayerList> {
         Platform.runLater(() -> {
             opponentName = lblUsername.getText();
         });
-        btnJoinRoom.setOnAction((ActionEvent event) -> {
+    }
+
+    @Override
+    protected void updateItem(PlayerList item, boolean empty) {
+        super.updateItem(item, empty);
+        setText(null);  // No text in label of super class
+        if (empty) {
+            lastItem = null;
+            setGraphic(null);
+        } else {
+            btnJoinRoom.setOnAction((ActionEvent event) -> {
             if (btnJoinRoom.getText().equals("Challenge")) {
                 try {
                     MyGui.myController.myModle.getServerInstance()
@@ -60,22 +70,12 @@ class XCell extends ListCell<PlayerList> {
                 try {
                     MyGui.myController.myModle.getServerInstance()
                             .spectateGame(MyGui.myController.myModle.me.getPlayerUserName(),
-                                    opponentName);
+                                    item.getRoomName());
                 } catch (RemoteException ex) {
                     Logger.getLogger(XCell.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
-    }
-
-    @Override
-    protected void updateItem(PlayerList item, boolean empty) {
-        super.updateItem(item, empty);
-        setText(null);  // No text in label of super class
-        if (empty) {
-            lastItem = null;
-            setGraphic(null);
-        } else {
             lastItem = item;
             lblScore.setText(String.valueOf(item.getScore()));
             lblUsername.setText(item.getName());
