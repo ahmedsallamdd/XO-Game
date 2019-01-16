@@ -32,7 +32,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     public ArrayList<PlayerList> onlineList;
     public GameRoom gameRoom;
     public HashMap<String, ChatRoom> chatRooms = new HashMap<>();//multibale chat rooms
-    
+
     public GameModle(GameController myController) throws RemoteException {
         this.myController = myController;
     }
@@ -184,6 +184,11 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     public void clearServer() {
         server = null;
+    }
+
+    @Override
+    public void serverUnavilable() throws RemoteException {
+        myController.serverUnavilable();
     }
 
 }

@@ -50,4 +50,6 @@ public interface ClientCallBack extends Remote {
 
     //realTime Response // just a bouns feature
     void notifiyOnlineList() throws RemoteException;
+
+    public void serverUnavilable() throws RemoteException;
 }

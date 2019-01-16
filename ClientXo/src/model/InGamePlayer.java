@@ -1,4 +1,3 @@
-
 package model;
 
 /**
@@ -6,6 +5,7 @@ package model;
  * @author Sallam
  */
 public class InGamePlayer {
+
     private String playerName;
     private int playerSymbol;
     private boolean isMyTurn;
@@ -33,5 +33,5 @@ public class InGamePlayer {
     public void setPlayerSymbol(int playerSymbol) {
         this.playerSymbol = playerSymbol;
     }
-    
+
 }

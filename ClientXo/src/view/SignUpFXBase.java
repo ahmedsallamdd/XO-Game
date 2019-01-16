@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
@@ -19,12 +20,14 @@ public class SignUpFXBase extends AnchorPane {
 
     protected final VBox vBox;
     protected final ImageView xoGameImg;
+    protected final ImageView back;
     protected final Lighting lighting;
     protected final TextField userNameField;
     protected final TextField fullNameField;
     protected final TextField emailField;
-    protected final TextField passwordField;
+    protected final PasswordField  passwordField;
     protected final Button signUpBtn;
+    
 
 //    GameController controller = new GameController();
     MyGui myGui;
@@ -34,11 +37,12 @@ public class SignUpFXBase extends AnchorPane {
         myGui = g;
         vBox = new VBox();
         xoGameImg = new ImageView();
+        back = new ImageView();
         lighting = new Lighting();
         userNameField = new TextField();
         fullNameField = new TextField();
         emailField = new TextField();
-        passwordField = new TextField();
+        passwordField = new PasswordField();
         signUpBtn = new Button();
 
         setMaxHeight(USE_PREF_SIZE);
@@ -136,6 +140,16 @@ public class SignUpFXBase extends AnchorPane {
                 }
             }
         }));
+        back.setFitHeight(41.0);
+        back.setFitWidth(37.0);
+        back.setLayoutX(10.0);
+        back.setLayoutY(10.0);
+        back.setPickOnBounds(true);
+        back.setPreserveRatio(true);
+        back.setImage(new Image(getClass().getResource("../images/backward.png").toExternalForm()));
+        back.setOnMousePressed(e -> {
+            myGui.createLoginScreen();
+        });
 
         vBox.getChildren().add(xoGameImg);
         vBox.getChildren().add(userNameField);
@@ -143,6 +157,7 @@ public class SignUpFXBase extends AnchorPane {
         vBox.getChildren().add(emailField);
         vBox.getChildren().add(passwordField);
         vBox.getChildren().add(signUpBtn);
+        getChildren().add(back);
         getChildren().add(vBox);
 
     }

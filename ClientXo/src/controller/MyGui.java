@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -19,7 +21,6 @@ import view.ShowRecordList;
 import javafx.stage.WindowEvent;
 import view.SinglePlayerGui;
 import view.gameRoomFXMLBase;
-import view.showRecordListFXMLBase;
 
 public class MyGui extends Application {
 
@@ -36,7 +37,7 @@ public class MyGui extends Application {
     gameRoomFXMLBase multiPlayerScreen;
     ShowRecordList replayScreen;
 
-    int width = 700;
+    int width = 600;
     int height = 650;
 
     public MyGui() {
@@ -136,18 +137,18 @@ public class MyGui extends Application {
         launch(args);
         myController.myModle.getServerInstance();
 
-        try {
-            myController.myModle.getServerInstance().sendGameRequest("Abdo", "Sallam");
-        } catch (RemoteException ex) {
-            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+////            myController.myModle.getServerInstance().sendGameRequest("Abdo", "Sallam");
+//        } catch (RemoteException ex) {
+//            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 //        Application.launch(myGame.myGUI.getClass(), args);
     }
 
     public void signOut() {
         try {
             myController.signOut();
-            createLoginScreen();     
+            createLoginScreen();
 
         } catch (RemoteException ex) {
             Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
@@ -159,13 +160,13 @@ public class MyGui extends Application {
         scene.setRoot(singlePlayerScreen);
         stage.setScene(scene);
     }
-    
+
     public void createReplayScreen() {
         replayScreen = new ShowRecordList(this);
         scene.setRoot(replayScreen);
         stage.setScene(scene);
     }
-    
+
     void showRequestNotification(String oppesiteUserName) {
         mainScreen.showRequestNotification(oppesiteUserName);
     }
@@ -182,6 +183,7 @@ public class MyGui extends Application {
 
     public void createMultiPlayerGui(gameRoomFXMLBase multiplayerScreen) {
         this.multiPlayerScreen = multiplayerScreen;
+        scene = new Scene(multiPlayerScreen, 1000, 700);
         scene.setRoot(multiplayerScreen);
         stage.setScene(scene);
     }
@@ -198,5 +200,28 @@ public class MyGui extends Application {
 
     public void sendMessage(String text) {
         myController.sendMessage(text);
+    }
+
+    public void createWelcomeScreen() {
+        welcome = new WelcomeFXMLBase(this);
+        scene.setRoot(welcome);
+        stage.setScene(scene);
+    }
+
+    void serverUnavilable() {
+        ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION,
+                    ".",
+                    ok);
+            a.setTitle("Oflline");
+            a.setHeaderText("Server is Down, try again later.");
+            if (a.showAndWait().get() == ok) {
+                createLoginScreen();
+            }
+//            signOut();
+        }
+        );
     }
 }

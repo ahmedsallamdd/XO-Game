@@ -28,6 +28,7 @@ public class SinglePlayerGui extends AnchorPane {
     protected final ImageView img_6;
     protected final ImageView img_7;
     protected final ImageView img_8;
+    protected final ImageView back;
     protected int activePlayer = 0;
     protected int movesCounter = 0;
     protected int[] positions;
@@ -55,6 +56,7 @@ public class SinglePlayerGui extends AnchorPane {
         img_6 = new ImageView();
         img_7 = new ImageView();
         img_8 = new ImageView();
+        back = new ImageView();
 
         myGui = g;
 
@@ -92,6 +94,7 @@ public class SinglePlayerGui extends AnchorPane {
         rowConstraints1.setMinHeight(10.0);
         rowConstraints1.setPrefHeight(30.0);
         rowConstraints1.setVgrow(javafx.scene.layout.Priority.SOMETIMES);
+        setStyle("-fx-background-color: linear-gradient( #173551 0%,#62828f 50% ,#173551 100%);");
 
         img_0.setFitHeight(120.0);
         img_0.setFitWidth(180.0);
@@ -184,6 +187,17 @@ public class SinglePlayerGui extends AnchorPane {
         img_8.setOnMousePressed(this::changeImg);
         img_8.setPickOnBounds(true);
         img_8.setPreserveRatio(true);
+        
+        back.setFitHeight(41.0);
+        back.setFitWidth(37.0);
+        back.setLayoutX(10.0);
+        back.setLayoutY(400.0);
+        back.setPickOnBounds(true);
+        back.setPreserveRatio(true);
+        back.setImage(new Image(getClass().getResource("../images/backward.png").toExternalForm()));
+        back.setOnMousePressed(e -> {
+            myGui.createWelcomeScreen();
+        });
 
         gridPane.getColumnConstraints().add(columnConstraints);
         gridPane.getColumnConstraints().add(columnConstraints0);
@@ -200,6 +214,7 @@ public class SinglePlayerGui extends AnchorPane {
         gridPane.getChildren().add(img_6);
         gridPane.getChildren().add(img_7);
         gridPane.getChildren().add(img_8);
+        getChildren().add(back);
         getChildren().add(gridPane);
 
         positions = new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2};
@@ -224,6 +239,7 @@ public class SinglePlayerGui extends AnchorPane {
             }
         }
     }
+
 
     protected void modifyPositionsArray(String id, int player) {
         String[] _id = id.split("_");

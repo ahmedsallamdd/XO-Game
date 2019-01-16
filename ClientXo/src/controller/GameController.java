@@ -30,6 +30,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import view.gameRoomFXMLBase;
@@ -58,6 +59,8 @@ public class GameController {
 
     public GameComplexType gameRecord;
     public ArrayList<StepComplexType> stepList;
+    private String result;
+    String header;
 
     public GameController(MyGui g) {
         myGUI = g;
@@ -169,7 +172,7 @@ public class GameController {
 
     }
 
-    private String constructImgeViewId(int pos) {
+    public String constructImgeViewId(int pos) {
         return "img_" + String.valueOf(pos);
     }
 
@@ -187,7 +190,8 @@ public class GameController {
                                 .notifiyGameResult(roomName, inGamePlayer0.getPlayerName());
                         gameRecord = new GameComplexType(stepList, names.get(0) + " is a winner");
                         myModle.me.setPlayerScore(myModle.me.getPlayerScore() + 10);
-                        winDialog(inGamePlayer0.getPlayerName());
+                        result = inGamePlayer0.getPlayerName();
+                        winDialog(result);
                     } catch (RemoteException ex) {
                         Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -199,7 +203,8 @@ public class GameController {
                         myModle.getServerInstance()
                                 .notifiyGameResult(roomName, inGamePlayer1.getPlayerName());
                         gameRecord = new GameComplexType(stepList, names.get(1) + " is a winner");
-                        winDialog(inGamePlayer1.getPlayerName());
+                        result = inGamePlayer1.getPlayerName();
+                        winDialog(result);
                     } catch (RemoteException ex) {
                         Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -208,14 +213,15 @@ public class GameController {
             } else if (movesCounter == 9) {
                 System.out.println("It's a draw!");
                 try {
-                    myModle.getServerInstance().notifiyGameResult(myModle.gameRoom.getRoomName(), "DRAW");
+                    myModle.getServerInstance().notifiyGameResult(roomName, "DRAW");
                     gameRecord = new GameComplexType(stepList, "DRAW");
-                    saveGameRecordToXml();
+                    winDialog("DRAW");
+                    isFinished = true;
+                    return;
 
                 } catch (RemoteException ex) {
                     Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                isFinished = true;
             }
         }
     }
@@ -223,6 +229,11 @@ public class GameController {
     public void winDialog(String winner) {
         ButtonType yes = new ButtonType("yes", ButtonBar.ButtonData.OK_DONE);
         ButtonType no = new ButtonType("no", ButtonBar.ButtonData.CANCEL_CLOSE);
+        if (!winner.equals("DRAW")) {
+            header = winner + " has won!" + "\n" + "Do you want record this game";
+        } else {
+            header = "DRAW";
+        }
 
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION,
@@ -230,7 +241,7 @@ public class GameController {
                     yes,
                     no);
             a.setTitle("Result");
-            a.setHeaderText(winner + " has won!" + "\n" + "Do you want record this game");
+            a.setHeaderText(header);
             if (a.showAndWait().get() == yes) {
                 saveGameRecordToXml();
                 myGUI.createMainScreen();
@@ -240,6 +251,7 @@ public class GameController {
             }
         }
         );
+        positions = new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2};
     }
 
     public void saveGameRecordToXml() {
@@ -248,7 +260,9 @@ public class GameController {
             Marshaller marshel = context.createMarshaller();
             Random rand = new Random();
             int pos = rand.nextInt(100);
-            marshel.marshal(gameRecord, new File(names.get(0) + "VS" + names.get(1) + pos + ".xml"));
+            marshel.marshal(gameRecord,
+                    new File("D:\\java game\\Xo-Java-Project-master (2)\\Xo-Java-Project-master\\ClientXo\\records\\"
+                            + names.get(0) + "VS" + names.get(1) + pos + ".xml"));
             System.out.println("Record is done");
             marshel.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
@@ -257,16 +271,18 @@ public class GameController {
         }
     }
 
-    public ArrayList<StepComplexType> readFromXML() {
+    public GameComplexType readFromXML(File file) {
         ArrayList<StepComplexType> steps = new ArrayList<>();
+        GameComplexType gameRecord = new GameComplexType();
 
         try {
-            File file = new File("me7oVSsallam73.xml");
+//            Ffile = new File("me7oVSsallam73.xml");
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(file);
 
             NodeList list = document.getElementsByTagName("step");
+            String result = document.getElementsByTagName("result").item(0).getTextContent();
             int playerSymbol, posPlayed;
 
             for (int i = 0; i < list.getLength(); i++) {
@@ -275,13 +291,14 @@ public class GameController {
                 steps.add(new StepComplexType(playerSymbol, posPlayed));
             }
 
+            gameRecord.setResult(result);
+            gameRecord.setStep(steps);
+
         } catch (ParserConfigurationException | SAXException | IOException ex) {
             Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return steps;
+        return gameRecord;
     }
-
-    
 
     public void leaveServer() throws RemoteException {
         if (myModle.gameRoom != null) {
@@ -420,6 +437,9 @@ public class GameController {
         } catch (RemoteException ex) {
             Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
 
+    public void serverUnavilable() {
+        myGUI.serverUnavilable();
     }
 }

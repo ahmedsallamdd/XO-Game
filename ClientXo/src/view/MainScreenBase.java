@@ -28,12 +28,13 @@ public class MainScreenBase extends AnchorPane {
     protected final Label lblUserName;
     protected final Label label1;
     protected final Label lblScore;
-    protected final Button btnPrevoiusGames;
+    protected final Button refresh;
     protected final ImageView imageView;
-    protected final Button btnRefresh;
+    protected final Button btnPreviousGames;
+    protected final ImageView back;
 
     MyGui myGui;
-    
+
     public MainScreenBase(MyGui g) {
 
         myGui = g;
@@ -43,9 +44,10 @@ public class MainScreenBase extends AnchorPane {
         lblUserName = new Label();
         label1 = new Label();
         lblScore = new Label();
-        btnPrevoiusGames = new Button();
+        refresh = new Button();
+        back = new ImageView();
         imageView = new ImageView();
-        btnRefresh = new Button();
+        btnPreviousGames = new Button();
 
         setId("AnchorPane");
         setPrefHeight(450.0);
@@ -108,17 +110,21 @@ public class MainScreenBase extends AnchorPane {
             }
         });
 
-        btnPrevoiusGames.setLayoutX(14.0);
-        btnPrevoiusGames.setLayoutY(411.0);
-        btnPrevoiusGames.setMnemonicParsing(false);
-        btnPrevoiusGames.setPrefHeight(30.0);
-        btnPrevoiusGames.setPrefWidth(274.0);
-        btnPrevoiusGames.setStyle("-fx-background-color: #d76767; -fx-border-radius: 10;");
-        btnPrevoiusGames.setText("Refresh");
-        btnPrevoiusGames.setTextFill(javafx.scene.paint.Color.WHITE);
-        btnPrevoiusGames.setFont(new Font("System Bold", 15.0));
-        btnPrevoiusGames.setOnAction((e->{
-            myGui.createReplayScreen();
+        refresh.setLayoutX(14.0);
+        refresh.setLayoutY(411.0);
+        refresh.setMnemonicParsing(false);
+        refresh.setPrefHeight(30.0);
+        refresh.setPrefWidth(274.0);
+        refresh.setStyle("-fx-background-color: #d76767; -fx-border-radius: 10;");
+        refresh.setText("Refresh");
+        refresh.setTextFill(javafx.scene.paint.Color.WHITE);
+        refresh.setFont(new Font("System Bold", 15.0));
+        refresh.setOnAction((e -> {
+            try {
+                myGui.getPlayerListData();
+            } catch (RemoteException ex) {
+                Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }));
 
         imageView.setFitHeight(41.0);
@@ -132,23 +138,17 @@ public class MainScreenBase extends AnchorPane {
             myGui.signOut();
         });
 
-        btnRefresh.setLayoutX(368.0);
-        btnRefresh.setLayoutY(258.0);
-        btnRefresh.setMnemonicParsing(false);
-        btnRefresh.setPrefHeight(99.0);
-        btnRefresh.setPrefWidth(218.0);
-        btnRefresh.setStyle("-fx-background-color: #d76767; -fx-background-radius: 10;");
-        btnRefresh.setText("Previous Games");
-        btnRefresh.setTextFill(javafx.scene.paint.Color.WHITE);
-        btnRefresh.setFont(new Font("System Bold", 22.0));
-        btnRefresh.setOnAction(event -> {
-
-            try {
-                myGui.getPlayerListData();
-            } catch (RemoteException ex) {
-                Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
+        btnPreviousGames.setLayoutX(368.0);
+        btnPreviousGames.setLayoutY(258.0);
+        btnPreviousGames.setMnemonicParsing(false);
+        btnPreviousGames.setPrefHeight(99.0);
+        btnPreviousGames.setPrefWidth(218.0);
+        btnPreviousGames.setStyle("-fx-background-color: #d76767; -fx-background-radius: 10;");
+        btnPreviousGames.setText("Previous Games");
+        btnPreviousGames.setTextFill(javafx.scene.paint.Color.WHITE);
+        btnPreviousGames.setFont(new Font("System Bold", 22.0));
+        btnPreviousGames.setOnAction(event -> {
+            myGui.createReplayScreen();
         });
 
         getChildren().add(btnPlayWithComputer);
@@ -157,12 +157,12 @@ public class MainScreenBase extends AnchorPane {
         getChildren().add(lblUserName);
         getChildren().add(label1);
         getChildren().add(lblScore);
-        getChildren().add(btnPrevoiusGames);
+        getChildren().add(refresh);
         getChildren().add(imageView);
-        getChildren().add(btnRefresh);
+        getChildren().add(btnPreviousGames);
 
     }
-    
+
     public void populateListView(ArrayList<PlayerList> playerList) {
         ObservableList<PlayerList> list = FXCollections.observableArrayList(playerList);
         listView.setItems(list);
@@ -189,7 +189,7 @@ public class MainScreenBase extends AnchorPane {
             } else {
                 try {
                     myGui.myController.myModle.getServerInstance()
-                            .refuseGameRequest(myGui.myController.myModle.me.getPlayerUserName(),oppesiteUserName);
+                            .refuseGameRequest(myGui.myController.myModle.me.getPlayerUserName(), oppesiteUserName);
                 } catch (RemoteException ex) {
                     Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
                 }

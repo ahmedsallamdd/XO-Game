@@ -297,7 +297,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public Player signIn(String userName, String PlayerPassword) throws RemoteException {
         for (Player p : PlayersInformation) {
-            if (p.getPlayerUserName().equals(userName)) {
+            if (p.getPlayerUserName().equals(userName) && p.getPlayerPassword().equals(PlayerPassword)) {
                 p.setPlayerState("online");
                 return p;
             }

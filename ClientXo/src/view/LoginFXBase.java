@@ -1,13 +1,11 @@
 package view;
 
 import controller.MyGui;
-import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
@@ -20,9 +18,10 @@ public class LoginFXBase extends AnchorPane {
 
     protected final VBox containerOfFields;
     protected final ImageView xoGameImg;
+    protected final ImageView back;
     protected final Lighting lighting;
     protected final TextField userNameField;
-    protected final TextField passwordField;
+    protected final PasswordField passwordField;
     protected final Button signInBtn;
     protected final Button signUpBtn;
 
@@ -33,9 +32,10 @@ public class LoginFXBase extends AnchorPane {
 
         containerOfFields = new VBox();
         xoGameImg = new ImageView();
+        back = new ImageView();
         lighting = new Lighting();
         userNameField = new TextField();
-        passwordField = new TextField();
+        passwordField = new PasswordField();
         signInBtn = new Button();
         signUpBtn = new Button();
 
@@ -132,12 +132,23 @@ public class LoginFXBase extends AnchorPane {
         signUpBtn.setOnAction((event) -> {
             myGui.createSignUpScreen();
         });
+        back.setFitHeight(41.0);
+        back.setFitWidth(37.0);
+        back.setLayoutX(10.0);
+        back.setLayoutY(10.0);
+        back.setPickOnBounds(true);
+        back.setPreserveRatio(true);
+        back.setImage(new Image(getClass().getResource("../images/backward.png").toExternalForm()));
+        back.setOnMousePressed(e -> {
+            myGui.createWelcomeScreen();
+        });
         containerOfFields.getChildren().add(xoGameImg);
         containerOfFields.getChildren().add(userNameField);
         containerOfFields.getChildren().add(passwordField);
         containerOfFields.getChildren().add(signInBtn);
         containerOfFields.getChildren().add(signUpBtn);
         getChildren().add(containerOfFields);
+        getChildren().add(back);
 
     }
 }

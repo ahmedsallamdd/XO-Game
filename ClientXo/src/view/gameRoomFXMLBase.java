@@ -1,7 +1,13 @@
 package view;
 
 import controller.MyGui;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -58,11 +64,15 @@ public class gameRoomFXMLBase extends AnchorPane {
     protected final ImageView img_6;
     protected final ImageView img_7;
     protected final ImageView img_8;
+    public static Timer timer;
 
     MyGui myGui;
 
     public gameRoomFXMLBase(MyGui g) {
 
+        if (timer != null) {
+            timer.cancel();
+        }
         myGui = g;
         borderPane = new BorderPane();
         anchorPane = new AnchorPane();
@@ -410,6 +420,8 @@ public class gameRoomFXMLBase extends AnchorPane {
             myGui.sendMessage(textField.getText());
             textField.setText("");
         });
+        label1.setText(MyGui.myController.names.get(0));
+        label3.setText(MyGui.myController.names.get(1));
 
         if (mode.equals("spectator")) {
             img_0.setDisable(true);
@@ -422,7 +434,11 @@ public class gameRoomFXMLBase extends AnchorPane {
             img_7.setDisable(true);
             img_8.setDisable(true);
             textField.setDisable(true);
+            textArea.setVisible(false);
+            textField.setVisible(false);
         }
+        timerWithdraw();
+
 
     }
 //
@@ -440,5 +456,29 @@ public class gameRoomFXMLBase extends AnchorPane {
             String text = MyGui.myController.myModle.chatRooms.get(oppesiteUserName).getChat();
             textArea.setText(text);
         }
+    }
+
+    private void timerWithdraw() {
+        this.timer = new Timer();
+        timer.schedule(new TimerTask() {
+            int secondsLeft = 60;
+
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    secondsLeft--;
+                    label5.setText("00:" + (secondsLeft < 10 ? "0" + secondsLeft : secondsLeft + ""));
+                    if (secondsLeft == 0) {
+                        timer.cancel();
+                        try {
+                            myGui.myController.withdraw();
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(gameRoomFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+            }
+        }, 0, 1000);
+
     }
 }
