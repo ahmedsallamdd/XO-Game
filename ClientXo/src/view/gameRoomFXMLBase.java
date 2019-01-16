@@ -1,7 +1,13 @@
 package view;
 
 import controller.MyGui;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,7 +27,7 @@ import javafx.scene.text.Font;
 public class gameRoomFXMLBase extends AnchorPane {
 
     public static String mode;
-
+    public static Timer timer;
     protected final BorderPane borderPane;
     protected final AnchorPane anchorPane;
     protected final Label label;
@@ -62,7 +68,9 @@ public class gameRoomFXMLBase extends AnchorPane {
     MyGui myGui;
 
     public gameRoomFXMLBase(MyGui g) {
-
+        if (timer != null) {
+            timer.cancel();
+        }
         myGui = g;
         borderPane = new BorderPane();
         anchorPane = new AnchorPane();
@@ -209,7 +217,7 @@ public class gameRoomFXMLBase extends AnchorPane {
         label0.setFont(new Font(20.0));
 
         label1.setAlignment(javafx.geometry.Pos.CENTER);
-        label1.setText("999");
+        label1.setText(MyGui.myController.names.get(0));
         label1.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         label1.setTextFill(javafx.scene.paint.Color.valueOf("#6681c5"));
         label1.setFont(new Font("System Italic", 64.0));
@@ -234,7 +242,7 @@ public class gameRoomFXMLBase extends AnchorPane {
         label2.setFont(new Font(20.0));
 
         label3.setAlignment(javafx.geometry.Pos.CENTER);
-        label3.setText("999");
+        label3.setText(MyGui.myController.names.get(1));
         label3.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         label3.setTextFill(javafx.scene.paint.Color.valueOf("#6681c5"));
         label3.setFont(new Font("System Italic", 64.0));
@@ -421,9 +429,11 @@ public class gameRoomFXMLBase extends AnchorPane {
             img_6.setDisable(true);
             img_7.setDisable(true);
             img_8.setDisable(true);
-            textField.setDisable(true);
+//            textField.setDisable(true);
+            textArea.setVisible(false);
+            textField.setVisible(false);
         }
-
+        timerWithdraw();
     }
 //
 //    public void displayMessage(String myMessage) {
@@ -440,5 +450,29 @@ public class gameRoomFXMLBase extends AnchorPane {
             String text = MyGui.myController.myModle.chatRooms.get(oppesiteUserName).getChat();
             textArea.setText(text);
         }
+    }
+
+    private void timerWithdraw() {
+        this.timer = new Timer();
+        timer.schedule(new TimerTask() {
+            int secondsLeft = 60;
+
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    secondsLeft--;
+                    label5.setText("00:" + (secondsLeft < 10 ? "0" + secondsLeft : secondsLeft + ""));
+                    if (secondsLeft == 0) {
+                        timer.cancel();
+                        try {
+                            myGui.myController.withdraw();
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(gameRoomFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+            }
+        }, 0, 1000);
+
     }
 }

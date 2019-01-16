@@ -142,7 +142,7 @@ public class ServerAppFxmlBase extends AnchorPane {
 
     }
 
-    private void closeServer(String Service) throws NoSuchObjectException {
+    public void closeServer(String Service) throws NoSuchObjectException {
         
         try {
             //clients foreach . leave server
@@ -151,6 +151,7 @@ public class ServerAppFxmlBase extends AnchorPane {
             }
             
             for (Map.Entry<String, ClientCallBack> entry : obj.clients.entrySet()) {
+                entry.getValue().serverUnavilable();
                obj.leaveServer(entry.getKey());
            }
             

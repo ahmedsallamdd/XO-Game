@@ -40,7 +40,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     public ServerCallBack getServerInstance() {
         if (server == null) {
             try {
-                Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
+                Registry reg = LocateRegistry.getRegistry("10.0.1.182", 1099);
                 server = (ServerCallBack) reg.lookup("GameService");
 
             } catch (RemoteException | NotBoundException e) {
@@ -184,6 +184,11 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     public void clearServer() {
         server = null;
+    }
+
+    @Override
+    public void serverUnavilable() throws RemoteException {
+        myController.serverUnavilable();
     }
 
 }

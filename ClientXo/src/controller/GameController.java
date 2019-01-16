@@ -208,7 +208,7 @@ public class GameController {
             } else if (movesCounter == 9) {
                 System.out.println("It's a draw!");
                 try {
-                    myModle.getServerInstance().notifiyGameResult(myModle.gameRoom.getRoomName(), "DRAW");
+                    myModle.getServerInstance().notifiyGameResult(roomName, "DRAW");
                     gameRecord = new GameComplexType(stepList, "DRAW");
                     saveGameRecordToXml();
 
@@ -238,6 +238,7 @@ public class GameController {
                 myGUI.createMainScreen();
                 myModle.me.setPlayerState("online");
             }
+            positions = new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2};
         }
         );
     }
@@ -309,6 +310,7 @@ public class GameController {
         } else {
             temp.remove(myModle.me.getPlayerUserName());
             myModle.getServerInstance().notifiyGameResult(myModle.gameRoom.getRoomName(), temp.get(0));
+            winDialog(temp.get(0));
         }
     }
 
@@ -421,5 +423,9 @@ public class GameController {
             Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    public void serverUnavilable() {
+        myGUI.serverUnavilable();
     }
 }

@@ -30,7 +30,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     static String dbName = "gamexo";
     static String url = "jdbc:mysql://localhost:3306/" + dbName;
     static String username = "root";
-    static String password = "0105583448";
+    static String password = "AbdoAmin01";
     static ArrayList<Player> PlayersInformation;
 
     HashMap<String, ClientCallBack> clients = new HashMap<>();

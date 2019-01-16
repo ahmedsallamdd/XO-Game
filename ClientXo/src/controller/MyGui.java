@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -78,6 +80,7 @@ public class MyGui extends Application {
             if (alert.showAndWait().get() == ButtonType.OK) {
                 try {
                     MyGui.myController.leaveServer();
+                      Platform.exit();
                 } catch (RemoteException ex) {
                     Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -198,5 +201,21 @@ public class MyGui extends Application {
 
     public void sendMessage(String text) {
         myController.sendMessage(text);
+    }
+
+    void serverUnavilable() {
+         ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION,
+                    ".",
+                    ok);
+            a.setTitle("Oflline");
+            a.setHeaderText("Server is Down, try again later.");
+            if (a.showAndWait().get() == ok) {
+                signOut();
+            }
+        }
+        );
     }
 }
