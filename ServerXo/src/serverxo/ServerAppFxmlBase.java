@@ -30,7 +30,7 @@ public class ServerAppFxmlBase extends AnchorPane {
     protected final Button btnRefresh;
     ServerMessageImp obj;
     static Registry reg;
-    ArrayList<String> playersInListView;
+    ArrayList<String> playersInListView=new ArrayList<>();
 
     final static String Service = "GameService";
 

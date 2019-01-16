@@ -1,6 +1,7 @@
 package view;
 
 import controller.MyGui;
+import java.util.ArrayList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,6 +19,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 public class gameRoomFXMLBase extends AnchorPane {
+
+    public static String mode;
 
     protected final BorderPane borderPane;
     protected final AnchorPane anchorPane;
@@ -57,6 +60,7 @@ public class gameRoomFXMLBase extends AnchorPane {
     protected final ImageView img_8;
 
     MyGui myGui;
+
     public gameRoomFXMLBase(MyGui g) {
 
         myGui = g;
@@ -145,6 +149,14 @@ public class gameRoomFXMLBase extends AnchorPane {
         textField.setPrefHeight(35.0);
         textField.setPrefWidth(245.0);
         textField.setStyle("-fx-background-radius: 10;");
+//        textField.setOnAction(e -> {
+//            try {
+//                myGui.sendMessage(myGui.myController.myModle.me.getPlayerUserName(), textField.getText());
+//                textField.setText("");
+//            } catch (RemoteException ex) {
+//                Logger.getLogger(gameRoomFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        });
 
         button.setLayoutX(275.0);
         button.setLayoutY(544.0);
@@ -158,6 +170,14 @@ public class gameRoomFXMLBase extends AnchorPane {
         BorderPane.setMargin(anchorPane, new Insets(0.0));
         borderPane.setRight(anchorPane);
 
+//        button.setOnAction(e -> {
+//            try {
+//                myGui.sendMessage(myGui.myController.myModle.me.getPlayerUserName(), textField.getText());
+//                textField.setText("");
+//            } catch (RemoteException ex) {
+//                Logger.getLogger(gameRoomFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        });
         BorderPane.setAlignment(anchorPane0, javafx.geometry.Pos.CENTER);
         anchorPane0.setPrefHeight(546.0);
         anchorPane0.setPrefWidth(203.0);
@@ -377,6 +397,48 @@ public class gameRoomFXMLBase extends AnchorPane {
         gridPane.getChildren().add(img_7);
         gridPane.getChildren().add(img_8);
         getChildren().add(borderPane);
+        updateChat();
 
+        button.setOnAction(e -> {
+
+            myGui.sendMessage(textField.getText());
+            textField.setText("");
+
+        });
+        textField.setOnAction(e -> {
+
+            myGui.sendMessage(textField.getText());
+            textField.setText("");
+        });
+
+        if (mode.equals("spectator")) {
+            img_0.setDisable(true);
+            img_1.setDisable(true);
+            img_2.setDisable(true);
+            img_3.setDisable(true);
+            img_4.setDisable(true);
+            img_5.setDisable(true);
+            img_6.setDisable(true);
+            img_7.setDisable(true);
+            img_8.setDisable(true);
+            textField.setDisable(true);
+        }
+
+    }
+//
+//    public void displayMessage(String myMessage) {
+//        textArea.setText(myMessage);
+//    }
+
+    public void displayMessage(String myMessage) {
+        textArea.setText(myMessage);
+    }
+
+    private void updateChat() {
+        if (MyGui.myController.myModle.chatRooms.size() > 0) {
+            String oppesiteUserName = new ArrayList<>(MyGui.myController.myModle.chatRooms.keySet()).get(0);
+            String text = MyGui.myController.myModle.chatRooms.get(oppesiteUserName).getChat();
+            textArea.setText(text);
+        }
     }
 }

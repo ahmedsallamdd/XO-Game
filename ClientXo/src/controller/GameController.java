@@ -7,7 +7,6 @@ package controller;
 
 import model.InGamePlayer;
 import model.GameModle;
-import view.Gui;
 import commontxo.ClientCallBack;
 import commontxo.Player;
 import commontxo.PlayerList;
@@ -86,19 +85,13 @@ public class GameController {
         inGamePlayer1.setPlayerName(names.get(1));
         inGamePlayer1.setPlayerSymbol(1);
         inGamePlayer0.setIsMyTurn(false);
-        
+
         roomName = myModle.gameRoom.getRoomName();
 
         isYourTurn = myModle.me.getPlayerUserName().equals(names.get(0));
         System.out.println(isYourTurn);
 
-        Platform.runLater(() -> {
-            myGUI.createMultiPlayerGui();
-        });
-    }
-
-    public void displayMessage(String myMessage) {
-        myGUI.displayMessage(myMessage);
+        reDrawGameBoard();
     }
 
     void getSelectedImgView(String id) {
@@ -286,26 +279,35 @@ public class GameController {
             Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return steps;
+    }
 
+    
+
+    public void leaveServer() throws RemoteException {
+        if (myModle.gameRoom != null) {
+            withdraw();
+        } else if (myModle.me != null) {
+            myModle.getServerInstance().leaveServer(myModle.me.getPlayerUserName());
+        }
     }
 
     //current player surrender or leave spectate.
-    public void withdraw(String myUserName) throws RemoteException {
+    public void withdraw() throws RemoteException {
         //remove Mysilfe ...
         ArrayList<String> temp = new ArrayList<>(myModle.gameRoom.getPlayers().keySet());
-        if (temp.indexOf(myUserName) > 1) {
+        if (temp.indexOf(myModle.me.getPlayerUserName()) > 1) {
             myModle.gameRoom.getPlayers().forEach((e, client) -> {
                 try {
-                    client.leftGameRoom(myUserName);
+                    client.leftGameRoom(myModle.me.getPlayerUserName());
                 } catch (RemoteException ex) {
                     Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
             myModle.leaveGameRoom();
-            myModle.getServerInstance().removeClientMapGameRoom(myUserName);
-            myModle.getServerInstance().removePlayerFromGameRoom(myUserName, myModle.gameRoom.getRoomName());
+            myModle.getServerInstance().removeClientMapGameRoom(myModle.me.getPlayerUserName());
+            myModle.getServerInstance().removePlayerFromGameRoom(myModle.me.getPlayerUserName(), myModle.gameRoom.getRoomName());
         } else {
-            temp.remove(myUserName);
+            temp.remove(myModle.me.getPlayerUserName());
             myModle.getServerInstance().notifiyGameResult(myModle.gameRoom.getRoomName(), temp.get(0));
         }
     }
@@ -364,6 +366,8 @@ public class GameController {
 
     void signOut() throws RemoteException {
         myModle.getServerInstance().signOut(myModle.me);
+        myModle.me = null;
+        myModle.clearServer();
     }
 
     public void setArrayPosition(int[] positions) {
@@ -382,11 +386,40 @@ public class GameController {
         myGUI.refuseGameRequest(oppesiteUserName);
     }
 
-    public void sendGameRequest() {
-
-    }
-
     public void acceptGameRequest(String oppesiteUserName) throws RemoteException {
         myModle.getServerInstance().startGameRoom(myModle.me.getPlayerUserName(), oppesiteUserName);
+    }
+
+//    public void displayMessage(String myMessage) {
+//        myGUI.displayMessage(myMessage);
+//    }
+//
+//    void sendMessage(String myUserName, String message) throws RemoteException {
+//        if (myModle.chatRooms.size() > 0) {
+//            String oppesiteUserName = new ArrayList<>(myModle.chatRooms.keySet()).get(0);
+//            myModle.chatRooms.get(oppesiteUserName).getOtherClients()
+//                    .receiveMessage(myUserName, message);
+//
+//            //send for my self
+//            if (myModle.chatRooms.get(oppesiteUserName) != null) {
+//                myModle.chatRooms.get(oppesiteUserName).setChat(myModle.chatRooms.get(oppesiteUserName).getChat() + myUserName + ": " + message + "\n");
+//                myModle.myController.displayMessage(myModle.chatRooms.get(oppesiteUserName).getChat());
+//            }
+//        }
+//    }
+    public void displayMessage(String myMessage) {
+        myModle.chatRooms.get(new ArrayList<>(myModle.chatRooms.keySet()).get(0)).setChat(myModle.chatRooms.get(new ArrayList<>(myModle.chatRooms.keySet()).get(0)).getChat() + "\n" + myMessage);
+        myGUI.displayMessage(myModle.chatRooms.get(new ArrayList<>(myModle.chatRooms.keySet()).get(0)).getChat());
+    }
+
+    public void sendMessage(String message) {
+        try {
+            displayMessage(myModle.me.getPlayerUserName() + ":" + message);
+
+            myModle.chatRooms.get(new ArrayList<>(myModle.chatRooms.keySet()).get(0)).getOtherClients().sendMessage(myModle.me.getPlayerUserName(), message);
+        } catch (RemoteException ex) {
+            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 }

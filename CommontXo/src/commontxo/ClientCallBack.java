@@ -29,7 +29,7 @@ public interface ClientCallBack extends Remote {
 
     public int[] getArrayPosition() throws RemoteException;
 
-    public void startGame(String playerUserName, ClientCallBack player) throws RemoteException;
+    public void startGame(String playerUserName, ClientCallBack player, String mode) throws RemoteException;
 
     public void leaveGameRoom() throws RemoteException;
 

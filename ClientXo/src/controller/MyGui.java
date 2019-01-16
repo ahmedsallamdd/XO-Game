@@ -11,9 +11,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import view.ShowRecordList;
+import javafx.stage.WindowEvent;
 import view.SinglePlayerGui;
 import view.gameRoomFXMLBase;
 import view.showRecordListFXMLBase;
@@ -32,7 +35,7 @@ public class MyGui extends Application {
     SinglePlayerGui singlePlayerScreen;
     gameRoomFXMLBase multiPlayerScreen;
     ShowRecordList replayScreen;
-    
+
     int width = 700;
     int height = 650;
 
@@ -47,10 +50,6 @@ public class MyGui extends Application {
         } catch (Exception ex) {
             Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void displayMessage(String myMessage) {
-//        txtArea.append(myMessage + "\n");
     }
 
     public static void onImgViewClicked(MouseEvent mouseEvent) {
@@ -72,6 +71,20 @@ public class MyGui extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
+        primaryStage.setOnCloseRequest((WindowEvent event) -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Close");
+            alert.setContentText("Are you sure to exit?");
+            if (alert.showAndWait().get() == ButtonType.OK) {
+                try {
+                    MyGui.myController.leaveServer();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                event.consume();
+            }
+        });
     }
 
     public void createLoginScreen() {
@@ -87,6 +100,7 @@ public class MyGui extends Application {
         stage.setScene(scene);
 
     }
+
     public boolean checkIfUserExists(String username, String password) {
         return myController.signIn(username, password);
     }
@@ -121,7 +135,7 @@ public class MyGui extends Application {
     public static void main(String args[]) {
         launch(args);
         myController.myModle.getServerInstance();
-        
+
         try {
             myController.myModle.getServerInstance().sendGameRequest("Abdo", "Sallam");
         } catch (RemoteException ex) {
@@ -134,6 +148,7 @@ public class MyGui extends Application {
         try {
             myController.signOut();
             createLoginScreen();     
+
         } catch (RemoteException ex) {
             Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -144,6 +159,7 @@ public class MyGui extends Application {
         scene.setRoot(singlePlayerScreen);
         stage.setScene(scene);
     }
+    
     public void createReplayScreen() {
         replayScreen = new ShowRecordList(this);
         scene.setRoot(replayScreen);
@@ -163,9 +179,24 @@ public class MyGui extends Application {
         scene.setRoot(multiPlayerScreen);
         stage.setScene(scene);
     }
+
     public void createMultiPlayerGui(gameRoomFXMLBase multiplayerScreen) {
         this.multiPlayerScreen = multiplayerScreen;
         scene.setRoot(multiplayerScreen);
         stage.setScene(scene);
+    }
+
+//    public void displayMessage(String myMessage) {
+//        multiPlayerScreen.displayMessage(myMessage);
+//    }
+//    public void sendMessage(String myUserName, String message) throws RemoteException {
+//        myController.sendMessage(myUserName,message);
+//    }
+    public void displayMessage(String myMessage) {
+        multiPlayerScreen.displayMessage(myMessage);
+    }
+
+    public void sendMessage(String text) {
+        myController.sendMessage(text);
     }
 }
