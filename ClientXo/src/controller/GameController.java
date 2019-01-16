@@ -11,15 +11,31 @@ import view.Gui;
 import commontxo.ClientCallBack;
 import commontxo.Player;
 import commontxo.PlayerList;
+import java.io.File;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import view.gameRoomFXMLBase;
+import xml.GameComplexType;
+import xml.StepComplexType;
 
 public class GameController {
 
@@ -38,10 +54,17 @@ public class GameController {
     public ArrayList<String> names;
     InGamePlayer inGamePlayer0;
     InGamePlayer inGamePlayer1;
+    String roomName;
     boolean isYourTurn;
+
+    public GameComplexType gameRecord;
+    public ArrayList<StepComplexType> stepList;
 
     public GameController(MyGui g) {
         myGUI = g;
+        stepList = new ArrayList<>();
+//        readFromXML();
+
         try {
             myModle = new GameModle(this);
             inGamePlayer0 = new InGamePlayer();
@@ -63,6 +86,8 @@ public class GameController {
         inGamePlayer1.setPlayerName(names.get(1));
         inGamePlayer1.setPlayerSymbol(1);
         inGamePlayer0.setIsMyTurn(false);
+        
+        roomName = myModle.gameRoom.getRoomName();
 
         isYourTurn = myModle.me.getPlayerUserName().equals(names.get(0));
         System.out.println(isYourTurn);
@@ -78,7 +103,7 @@ public class GameController {
 
     void getSelectedImgView(String id) {
         ImageView imgView = (ImageView) myGUI.multiPlayerScreen.gridPane.lookup("#" + id);
-        if (isFinished==false) {
+        if (isFinished == false) {
             if (isYourTurn == true && imgView.getImage() == null) {
                 getPositionFromId(id);
             }
@@ -86,14 +111,17 @@ public class GameController {
     }
 
     public void modifyPositionsArray(String player, int posPlayed) {
-        int symbol;
-        if (inGamePlayer0.getPlayerName().equals(myModle.gameRoom.getPlayers().get(player))) {
-            symbol = inGamePlayer0.getPlayerSymbol();
-        } else {
-            symbol = inGamePlayer1.getPlayerSymbol();
-        }
+//        int symbol;
+//        if (inGamePlayer0.getPlayerName().equals(myModle.gameRoom.getPlayers().get(player))) {
+//            symbol = inGamePlayer0.getPlayerSymbol();
+//        } else {
+//            symbol = inGamePlayer1.getPlayerSymbol();
+//        }
         positions[posPlayed] = activePlayer;
-        System.out.println("[" + posPlayed + "]" + " = " + symbol);
+        stepList.add(new StepComplexType(activePlayer, posPlayed));
+        movesCounter++;
+
+//        System.out.println("[" + posPlayed + "]" + " = " + symbol);
         reDrawGameBoard();
         checkGameResult();
         switchTurns();
@@ -161,17 +189,104 @@ public class GameController {
                 if (positions[winningPosition[0]] == 0) {
                     System.out.println("X has won!");
                     isFinished = true;
+                    try {
+                        myModle.getServerInstance()
+                                .notifiyGameResult(roomName, inGamePlayer0.getPlayerName());
+                        gameRecord = new GameComplexType(stepList, names.get(0) + " is a winner");
+                        myModle.me.setPlayerScore(myModle.me.getPlayerScore() + 10);
+                        winDialog(inGamePlayer0.getPlayerName());
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     return;
                 } else {
                     System.out.println("O has won!");
                     isFinished = true;
+                    try {
+                        myModle.getServerInstance()
+                                .notifiyGameResult(roomName, inGamePlayer1.getPlayerName());
+                        gameRecord = new GameComplexType(stepList, names.get(1) + " is a winner");
+                        winDialog(inGamePlayer1.getPlayerName());
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     return;
                 }
             } else if (movesCounter == 9) {
                 System.out.println("It's a draw!");
+                try {
+                    myModle.getServerInstance().notifiyGameResult(myModle.gameRoom.getRoomName(), "DRAW");
+                    gameRecord = new GameComplexType(stepList, "DRAW");
+                    saveGameRecordToXml();
+
+                } catch (RemoteException ex) {
+                    Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 isFinished = true;
             }
         }
+    }
+
+    public void winDialog(String winner) {
+        ButtonType yes = new ButtonType("yes", ButtonBar.ButtonData.OK_DONE);
+        ButtonType no = new ButtonType("no", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION,
+                    ".",
+                    yes,
+                    no);
+            a.setTitle("Result");
+            a.setHeaderText(winner + " has won!" + "\n" + "Do you want record this game");
+            if (a.showAndWait().get() == yes) {
+                saveGameRecordToXml();
+                myGUI.createMainScreen();
+            } else {
+                myGUI.createMainScreen();
+                myModle.me.setPlayerState("online");
+            }
+        }
+        );
+    }
+
+    public void saveGameRecordToXml() {
+        try {
+            JAXBContext context = JAXBContext.newInstance(GameComplexType.class);
+            Marshaller marshel = context.createMarshaller();
+            Random rand = new Random();
+            int pos = rand.nextInt(100);
+            marshel.marshal(gameRecord, new File(names.get(0) + "VS" + names.get(1) + pos + ".xml"));
+            System.out.println("Record is done");
+            marshel.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        } catch (JAXBException ex) {
+            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public ArrayList<StepComplexType> readFromXML() {
+        ArrayList<StepComplexType> steps = new ArrayList<>();
+
+        try {
+            File file = new File("me7oVSsallam73.xml");
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(file);
+
+            NodeList list = document.getElementsByTagName("step");
+            int playerSymbol, posPlayed;
+
+            for (int i = 0; i < list.getLength(); i++) {
+                playerSymbol = Integer.valueOf(list.item(i).getFirstChild().getTextContent());
+                posPlayed = Integer.valueOf(list.item(i).getLastChild().getTextContent());
+                steps.add(new StepComplexType(playerSymbol, posPlayed));
+            }
+
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
+            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return steps;
+
     }
 
     //current player surrender or leave spectate.

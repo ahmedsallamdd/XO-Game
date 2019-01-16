@@ -34,7 +34,7 @@ public class SinglePlayerGui extends AnchorPane {
     protected int[][] winningPositions;
     protected boolean isFinished = false;
     ImageView imgView;
-    
+
     MyGui myGui;
 
     public SinglePlayerGui(MyGui g) {
@@ -55,7 +55,7 @@ public class SinglePlayerGui extends AnchorPane {
         img_6 = new ImageView();
         img_7 = new ImageView();
         img_8 = new ImageView();
-        
+
         myGui = g;
 
         setId("AnchorPane");
@@ -259,9 +259,7 @@ public class SinglePlayerGui extends AnchorPane {
     }
 
     public void computerTurn() {
-        if (isFinished) {
-            return;
-        } else {
+        if (!isFinished) {
             movesCounter++;
             int pos = pickRandomImageView();
             String imgViewId = constructImgeViewId(pos);

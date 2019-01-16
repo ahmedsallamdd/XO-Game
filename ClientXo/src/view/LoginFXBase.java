@@ -108,11 +108,7 @@ public class LoginFXBase extends AnchorPane {
                     alerForSignIn.show();
 
                 } else {
-                    try {
-                        myGui.createMainScreen();
-                    } catch (RemoteException ex) {
-                        Logger.getLogger(LoginFXBase.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    myGui.createMainScreen();
                 }
 
             } else {

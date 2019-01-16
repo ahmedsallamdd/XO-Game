@@ -1,4 +1,3 @@
-
 package model;
 
 import controller.GameController;
@@ -32,7 +31,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     public ArrayList<PlayerList> onlineList;
     public GameRoom gameRoom;
     public HashMap<String, ChatRoom> chatRooms = new HashMap<>();//multibale chat rooms
-
+    
     public GameModle(GameController myController) throws RemoteException {
         this.myController = myController;
     }
@@ -61,7 +60,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
             {
                 put(roomName, creatorClient);
             }
-            
+
         });
     }
 
@@ -79,8 +78,8 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     @Override
     public void play(String player, int position) throws RemoteException {
         //get the playerSymbol from the playerUserName.
+        myController.modifyPositionsArray(player, position);
         
-            myController.modifyPositionsArray(player, position);
     }
 
     @Override

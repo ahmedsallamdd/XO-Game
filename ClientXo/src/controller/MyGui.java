@@ -13,8 +13,10 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import view.ShowRecordList;
 import view.SinglePlayerGui;
 import view.gameRoomFXMLBase;
+import view.showRecordListFXMLBase;
 
 public class MyGui extends Application {
 
@@ -29,6 +31,7 @@ public class MyGui extends Application {
     MainScreenBase mainScreen;
     SinglePlayerGui singlePlayerScreen;
     gameRoomFXMLBase multiPlayerScreen;
+    ShowRecordList replayScreen;
     
     int width = 700;
     int height = 650;
@@ -88,9 +91,13 @@ public class MyGui extends Application {
         return myController.signIn(username, password);
     }
 
-    public void createMainScreen() throws RemoteException {
+    public void createMainScreen() {
         mainScreen = new MainScreenBase(this);
-        getPlayerListData();
+        try {
+            getPlayerListData();
+        } catch (RemoteException ex) {
+            Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
         scene.setRoot(mainScreen);
         stage.setScene(scene);
     }
@@ -126,8 +133,7 @@ public class MyGui extends Application {
     public void signOut() {
         try {
             myController.signOut();
-            createLoginScreen();
-            
+            createLoginScreen();     
         } catch (RemoteException ex) {
             Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -138,6 +144,12 @@ public class MyGui extends Application {
         scene.setRoot(singlePlayerScreen);
         stage.setScene(scene);
     }
+    public void createReplayScreen() {
+        replayScreen = new ShowRecordList(this);
+        scene.setRoot(replayScreen);
+        stage.setScene(scene);
+    }
+    
     void showRequestNotification(String oppesiteUserName) {
         mainScreen.showRequestNotification(oppesiteUserName);
     }

@@ -1,7 +1,7 @@
 package view;
 
-import controller.MyGui;
 import commontxo.PlayerList;
+import controller.MyGui;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -10,7 +10,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -19,106 +18,130 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
 
 public class MainScreenBase extends AnchorPane {
 
     protected final Button btnPlayWithComputer;
     public final ListView<PlayerList> listView;
     protected final Label label;
-    protected final Label label0;
+    protected final Label lblUserName;
     protected final Label label1;
-    protected final Label label2;
-    protected final Button button0;
+    protected final Label lblScore;
+    protected final Button btnPrevoiusGames;
     protected final ImageView imageView;
+    protected final Button btnRefresh;
 
     MyGui myGui;
-
+    
     public MainScreenBase(MyGui g) {
 
         myGui = g;
         btnPlayWithComputer = new Button();
         listView = new ListView<>();
         label = new Label();
-        label0 = new Label();
+        lblUserName = new Label();
         label1 = new Label();
-        label2 = new Label();
-        button0 = new Button();
+        lblScore = new Label();
+        btnPrevoiusGames = new Button();
         imageView = new ImageView();
+        btnRefresh = new Button();
 
         setId("AnchorPane");
-        setPrefHeight(400.0);
-        setPrefWidth(600.0);
+        setPrefHeight(450.0);
+        setPrefWidth(650.0);
+        setStyle("-fx-background-color: linear-gradient(#173551 0%,#62828F 50%,#173551 100%);");
 
-        btnPlayWithComputer.setLayoutX(318.0);
-        btnPlayWithComputer.setLayoutY(165.0);
+        btnPlayWithComputer.setLayoutX(365.0);
+        btnPlayWithComputer.setLayoutY(126.0);
         btnPlayWithComputer.setMnemonicParsing(false);
-        btnPlayWithComputer.setPrefHeight(66.0);
-        btnPlayWithComputer.setPrefWidth(147.0);
+        btnPlayWithComputer.setPrefHeight(99.0);
+        btnPlayWithComputer.setPrefWidth(218.0);
+        btnPlayWithComputer.setStyle("-fx-background-color: #d76767; -fx-background-radius: 10;");
         btnPlayWithComputer.setText("Single Player");
-
+        btnPlayWithComputer.setTextFill(javafx.scene.paint.Color.WHITE);
+        btnPlayWithComputer.setFont(new Font("System Bold", 22.0));
         btnPlayWithComputer.setOnAction((e -> {
             myGui.createSinglePlayerScreen();
             //controller.playWithComputer();
-
-            // TODO: clean the matherfuken code from the singlePlayerGui to the controller
+            // TODO: remember to clean the matherfuken code from the singlePlayerGui to the controller
         }));
 
         listView.setLayoutX(14.0);
-        listView.setLayoutY(14.0);
-        listView.setPrefHeight(335.0);
-        listView.setPrefWidth(200.0);
+        listView.setLayoutY(12.0);
+        listView.setPrefHeight(390.0);
+        listView.setPrefWidth(274.0);
 
-        label.setLayoutX(267.0);
-        label.setLayoutY(18.0);
+        label.setLayoutX(340.0);
+        label.setLayoutY(16.0);
         label.setText("Player :");
+        label.setTextFill(javafx.scene.paint.Color.valueOf("#ebe2e2"));
+        label.setFont(new Font("System Bold", 14.0));
 
-        label0.setLayoutX(317.0);
-        label0.setLayoutY(18.0);
-        label0.setText("Sallam");
+        lblUserName.setLayoutX(395.0);
+        lblUserName.setLayoutY(16.0);
+        lblUserName.setText("Sallam");
+        lblUserName.setTextFill(javafx.scene.paint.Color.WHITE);
+        lblUserName.setFont(new Font("System Bold", 14.0));
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                lblUserName.setText(String.valueOf(myGui.myController.myModle.me.getPlayerUserName()));
+            }
+        });
 
-        label1.setLayoutX(405.0);
-        label1.setLayoutY(18.0);
+        label1.setLayoutX(477.0);
+        label1.setLayoutY(16.0);
         label1.setText("Score :");
+        label1.setTextFill(javafx.scene.paint.Color.WHITE);
+        label1.setFont(new Font("System Bold", 14.0));
 
-        label2.setLayoutX(459.0);
-        label2.setLayoutY(18.0);
-        label2.setText("1523");
+        lblScore.setLayoutX(530.0);
+        lblScore.setLayoutY(16.0);
+        lblScore.setText("123");
+        lblScore.setTextFill(javafx.scene.paint.Color.WHITE);
+        lblScore.setFont(new Font("System Bold", 14.0));
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                lblScore.setText(String.valueOf(myGui.myController.myModle.me.getPlayerScore()));
+            }
+        });
 
-        button0.setLayoutX(14.0);
-        button0.setLayoutY(361.0);
-        button0.setMnemonicParsing(false);
-        button0.setPrefHeight(25.0);
-        button0.setPrefWidth(169.0);
-        button0.setText("Refresh");
+        btnPrevoiusGames.setLayoutX(14.0);
+        btnPrevoiusGames.setLayoutY(411.0);
+        btnPrevoiusGames.setMnemonicParsing(false);
+        btnPrevoiusGames.setPrefHeight(30.0);
+        btnPrevoiusGames.setPrefWidth(274.0);
+        btnPrevoiusGames.setStyle("-fx-background-color: #d76767; -fx-border-radius: 10;");
+        btnPrevoiusGames.setText("Refresh");
+        btnPrevoiusGames.setTextFill(javafx.scene.paint.Color.WHITE);
+        btnPrevoiusGames.setFont(new Font("System Bold", 15.0));
+        btnPrevoiusGames.setOnAction((e->{
+            myGui.createReplayScreen();
+        }));
 
-        imageView.setFitHeight(17.0);
-        imageView.setFitWidth(20.0);
-        imageView.setLayoutX(561.0);
-        imageView.setLayoutY(22.0);
+        imageView.setFitHeight(41.0);
+        imageView.setFitWidth(37.0);
+        imageView.setLayoutX(606.0);
+        imageView.setLayoutY(7.0);
         imageView.setPickOnBounds(true);
         imageView.setPreserveRatio(true);
-        imageView.setImage(new Image(getClass().getResource("../images/Logout.png").toExternalForm()));
+        imageView.setImage(new Image(getClass().getResource("../images/signout.png").toExternalForm()));
         imageView.setOnMousePressed(e -> {
             myGui.signOut();
         });
 
-        label0.setLayoutY(18.0);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                label0.setText(String.valueOf(myGui.myController.myModle.me.getPlayerUserName()));
-            }
-        });
-
-        label2.setLayoutY(18.0);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                label2.setText(String.valueOf(myGui.myController.myModle.me.getPlayerScore()));
-            }
-        });
-
-        button0.setOnAction(event -> {
+        btnRefresh.setLayoutX(368.0);
+        btnRefresh.setLayoutY(258.0);
+        btnRefresh.setMnemonicParsing(false);
+        btnRefresh.setPrefHeight(99.0);
+        btnRefresh.setPrefWidth(218.0);
+        btnRefresh.setStyle("-fx-background-color: #d76767; -fx-background-radius: 10;");
+        btnRefresh.setText("Previous Games");
+        btnRefresh.setTextFill(javafx.scene.paint.Color.WHITE);
+        btnRefresh.setFont(new Font("System Bold", 22.0));
+        btnRefresh.setOnAction(event -> {
 
             try {
                 myGui.getPlayerListData();
@@ -131,17 +154,19 @@ public class MainScreenBase extends AnchorPane {
         getChildren().add(btnPlayWithComputer);
         getChildren().add(listView);
         getChildren().add(label);
-        getChildren().add(label0);
+        getChildren().add(lblUserName);
         getChildren().add(label1);
-        getChildren().add(label2);
-        getChildren().add(button0);
+        getChildren().add(lblScore);
+        getChildren().add(btnPrevoiusGames);
         getChildren().add(imageView);
-    }
+        getChildren().add(btnRefresh);
 
+    }
+    
     public void populateListView(ArrayList<PlayerList> playerList) {
         ObservableList<PlayerList> list = FXCollections.observableArrayList(playerList);
         listView.setItems(list);
-        listView.setCellFactory((ListView<PlayerList> param) -> new XCell(this));
+        listView.setCellFactory((ListView<PlayerList> param) -> new ListItem(this));
     }
 
     public void showRequestNotification(String oppesiteUserName) {
@@ -149,7 +174,7 @@ public class MainScreenBase extends AnchorPane {
         ButtonType no = new ButtonType("no", ButtonBar.ButtonData.CANCEL_CLOSE);
 
         Platform.runLater(() -> {
-            Alert a = new Alert(AlertType.WARNING,
+            Alert a = new Alert(Alert.AlertType.WARNING,
                     ".",
                     yes,
                     no);
@@ -176,7 +201,7 @@ public class MainScreenBase extends AnchorPane {
         ButtonType ok = new ButtonType("ok", ButtonBar.ButtonData.CANCEL_CLOSE);
 
         Platform.runLater(() -> {
-            Alert a = new Alert(AlertType.WARNING,
+            Alert a = new Alert(Alert.AlertType.WARNING,
                     ".",
                     ok);
             a.setTitle("Request Refuse");
