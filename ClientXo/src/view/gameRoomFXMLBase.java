@@ -27,6 +27,7 @@ import javafx.scene.text.Font;
 public class gameRoomFXMLBase extends AnchorPane {
 
     public static String mode;
+    public static int timerNumber = 0;
     public static Timer timer;
     protected final BorderPane borderPane;
     protected final AnchorPane anchorPane;
@@ -68,6 +69,7 @@ public class gameRoomFXMLBase extends AnchorPane {
     MyGui myGui;
 
     public gameRoomFXMLBase(MyGui g) {
+        timerNumber++;
         if (timer != null) {
             timer.cancel();
         }
@@ -418,6 +420,8 @@ public class gameRoomFXMLBase extends AnchorPane {
             myGui.sendMessage(textField.getText());
             textField.setText("");
         });
+        label1.setText(MyGui.myController.names.get(0));
+        label3.setText(MyGui.myController.names.get(1));
 
         if (mode.equals("spectator")) {
             img_0.setDisable(true);
@@ -454,25 +458,27 @@ public class gameRoomFXMLBase extends AnchorPane {
 
     private void timerWithdraw() {
         this.timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask() {
             int secondsLeft = 60;
 
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     secondsLeft--;
+                    System.out.println("Timer:" + timerNumber + ", now:" + secondsLeft + ".");
                     label5.setText("00:" + (secondsLeft < 10 ? "0" + secondsLeft : secondsLeft + ""));
-                    if (secondsLeft == 0) {
+                    if (secondsLeft == -1) {
+
                         timer.cancel();
                         try {
-                            myGui.myController.withdraw();
+                            MyGui.myController.withdraw();
                         } catch (RemoteException ex) {
                             Logger.getLogger(gameRoomFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 });
             }
-        }, 0, 1000);
+        }, 1000, 1000);
 
     }
 }

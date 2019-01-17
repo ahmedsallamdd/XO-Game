@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
+import model.Pair;
 
 /**
  *
@@ -38,6 +39,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     HashMap<String, String> clientMapGameRoom = new HashMap<>();
 
     HashMap<String, GameRoom> gameRooms = new HashMap<>();//for fast acces
+    //TODO Handle Send Request
+    ArrayList<Pair<String>> notifications = new ArrayList<>();//for fast acces
 
     public void IntializePlayersList() {
         Player p;
@@ -109,7 +112,12 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public void sendGameRequest(String myUserName, String oppesiteUserName) throws RemoteException {
         if (clients.containsKey(oppesiteUserName) && clients.containsKey(myUserName)) {
-            clients.get(oppesiteUserName).sendGameNotification(myUserName);
+            Pair request = new Pair(myUserName, oppesiteUserName);
+            if (!notifications.contains(request)) {
+                notifications.add(request);
+                clients.get(oppesiteUserName).sendGameNotification(myUserName);
+            }
+            clients.get(myUserName).showAlert("Game Request", "Waiting", "waiting for " + oppesiteUserName + " accept");
         }
     }
 
@@ -139,6 +147,16 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             //start game gui 
             clients.get(myUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName), "player");
             clients.get(oppesiteUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName), "player");
+            
+            //end any request
+            clients.get(myUserName).closeAllAlert();
+            clients.get(oppesiteUserName).closeAllAlert();
+            
+            
+            Pair request = new Pair(myUserName, oppesiteUserName);
+            if (notifications.contains(request)) {
+                notifications.remove(request);
+            }
             updateList();
 
         } catch (RemoteException ex) {
@@ -158,7 +176,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
         if (gameRooms.containsKey(roomName)) {
             gameRooms.get(roomName).getPlayers().forEach((e, client) -> {
                 try {
-                    client.leaveGameRoom();
+                    client.leaveGameRoom(winnerUserName);
 
                 } catch (RemoteException ex) {
                     Logger.getLogger(ServerMessageImp.class
@@ -227,7 +245,10 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public void leaveServer(String myUserName) throws RemoteException {
         if (clients.containsKey(myUserName)) {
-            //TODO leave gameroom if exist
+            if (clientMapGameRoom.containsKey(myUserName)) {
+                removePlayerFromGameRoom(myUserName, clientMapGameRoom.get(myUserName));
+                removeClientMapGameRoom(myUserName);
+            }
             clients.forEach((e, client) -> {
                 try {
                     client.leftChatRoom(myUserName);
@@ -287,7 +308,6 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     public void signOut(Player player) throws RemoteException {
         for (Player p : PlayersInformation) {
             if (p.getPlayerUserName().equals(player.getPlayerUserName())) {
-//                p.setPlayerState("offline");      //deprecated , called alrady at leaveServer
                 leaveServer(player.getPlayerUserName());
                 break;
             }
@@ -297,7 +317,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public Player signIn(String userName, String PlayerPassword) throws RemoteException {
         for (Player p : PlayersInformation) {
-            if (p.getPlayerUserName().equals(userName)) {
+            if (p.getPlayerUserName().equals(userName) && p.getPlayerPassword().equals(PlayerPassword)) {
                 p.setPlayerState("online");
                 return p;
             }
@@ -332,9 +352,15 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     }
 
     @Override
-    public void refuseGameRequest(String myUserName, String oppesiteUserName) throws RemoteException {
-        if (clients.containsKey(oppesiteUserName)) {
-            clients.get(oppesiteUserName).refuseGameRequest(myUserName);
+    public void refuseGameRequest(String reciver, String sender) throws RemoteException {
+        if (clients.containsKey(sender)) {
+            //deprecated "" ايوه بنعمل فانكشن و نخليها  دبركيتيك... احنا مش اقل من اللي اخترعو  جافا
+//            clients.get(sender).refuseGameRequest(reciver);  
+            clients.get(sender).showAlert("Game Refused", "Refused", reciver + " refuse to play with you.");
+            Pair request = new Pair(reciver, sender);
+            if (notifications.contains(request)) {
+                notifications.remove(request);
+            }
         }
     }
 

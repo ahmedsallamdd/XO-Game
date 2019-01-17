@@ -30,12 +30,12 @@ public class ServerAppFxmlBase extends AnchorPane {
     protected final Button btnRefresh;
     ServerMessageImp obj;
     static Registry reg;
-    ArrayList<String> playersInListView=new ArrayList<>();
+    ArrayList<String> playersInListView = new ArrayList<>();
 
     final static String Service = "GameService";
 
     public ServerAppFxmlBase() throws RemoteException, ClassNotFoundException, SQLException {
-        
+
         listView = new ListView();
         btnOpen = new Button();
         btnClose = new Button();
@@ -112,10 +112,11 @@ public class ServerAppFxmlBase extends AnchorPane {
     }
 
     private void showList(ArrayList<Player> k) {
-        if(k.size()!=0)
-        playersInListView.add("Score" + "\t\t\t\t\t" + "UserName" + "\t \t \t \t \t" + "state");
+        if (k.size() != 0) {
+            playersInListView.add("Score" + "\t\t\t\t\t" + "UserName" + "\t \t \t \t \t" + "state");
+        }
         for (Player player : k) {
-            playersInListView.add(player.getPlayerScore() + "\t \t \t \t \t    \t" + player.getPlayerUserName()+ "\t \t \t \t \t   " + player.getPlayerState());
+            playersInListView.add(player.getPlayerScore() + "\t \t \t \t \t    \t" + player.getPlayerUserName() + "\t \t \t \t \t   " + player.getPlayerState());
 
         }
         ListProperty<String> listProperty = new SimpleListProperty<>();
@@ -125,10 +126,10 @@ public class ServerAppFxmlBase extends AnchorPane {
     }
 
     private void openServer(String Service, int port) throws ClassNotFoundException, SQLException {
-              
+
         try {
             obj = new ServerMessageImp();
-            
+
             showList(obj.PlayersInformation);
             if (reg == null) {
                 reg = LocateRegistry.createRegistry(port);
@@ -143,24 +144,25 @@ public class ServerAppFxmlBase extends AnchorPane {
     }
 
     public void closeServer(String Service) throws NoSuchObjectException {
-        
+
         try {
             //clients foreach . leave server
-             for (Player player : obj.PlayersInformation) {
+            for (Player player : obj.PlayersInformation) {
                 obj.updateScore(player.getPlayerUserName(), player.getPlayerScore());
+//                obj.clients.get(player.getPlayerUserName()).serverUnavilable();
             }
-            
+
             for (Map.Entry<String, ClientCallBack> entry : obj.clients.entrySet()) {
                 entry.getValue().serverUnavilable();
-               obj.leaveServer(entry.getKey());
-           }
-            
+//               obj.leaveServer(entry.getKey());
+            }
+
             reg.unbind(Service);
             UnicastRemoteObject.unexportObject(obj, true);
             playersInListView.clear();
             obj.PlayersInformation.clear();
             showList(obj.PlayersInformation);
-            obj=null;
+            obj = null;
             btnClose.setDisable(true);
             btnOpen.setDisable(false);
         } catch (RemoteException ex) {

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import view.gameRoomFXMLBase;
 
 /**
@@ -26,13 +27,15 @@ import view.gameRoomFXMLBase;
 public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     public GameController myController;
-    private ServerCallBack server;
-    public Player me;
+    private ServerCallBack server = null;
+    public Player me = null;
 
     public ArrayList<PlayerList> onlineList;
     public GameRoom gameRoom;
     public HashMap<String, ChatRoom> chatRooms = new HashMap<>();//multibale chat rooms
-    
+
+    public ArrayList<Alert> currentShowenAlerts = new ArrayList<>();
+
     public GameModle(GameController myController) throws RemoteException {
         this.myController = myController;
     }
@@ -40,7 +43,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     public ServerCallBack getServerInstance() {
         if (server == null) {
             try {
-                Registry reg = LocateRegistry.getRegistry("10.0.1.182", 1099);
+                Registry reg = LocateRegistry.getRegistry(/*"10.0.1.182",*/1099);
                 server = (ServerCallBack) reg.lookup("GameService");
 
             } catch (RemoteException | NotBoundException e) {
@@ -70,8 +73,8 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     }
 
     @Override
-    public void leaveGameRoom() throws RemoteException {
-
+    public void leaveGameRoom(String winner) throws RemoteException {
+        myController.winDialog(winner);
         gameRoom = null;
     }
 
@@ -149,8 +152,6 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
                 gameRoom.removePlayer(userNameWhoLeft);
 
             }
-        } else {
-            System.out.println("Room equals null..!");
         }
     }
 
@@ -164,11 +165,11 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
         return myController.getArrayPosition();
     }
 
-    @Override
-    public void refuseGameRequest(String oppesiteUserName) throws RemoteException {
-        myController.refuseGameRequest(oppesiteUserName);
-    }
-
+    //deprecated
+//    @Override
+//    public void refuseGameRequest(String oppesiteUserName) throws RemoteException {
+//        myController.refuseGameRequest(oppesiteUserName);
+//    }
     @Override
     public void acceptGameRequest(String oppesiteUserName) throws RemoteException {
         myController.acceptGameRequest(oppesiteUserName);
@@ -176,7 +177,6 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     @Override
     public void startGame(String playerUserName, ClientCallBack player, String mode) throws RemoteException {
-        //start game gui
         setArrayPosition(player.getArrayPosition());
         gameRoomFXMLBase.mode = mode;
         myController.startGameRoom();
@@ -188,7 +188,23 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     @Override
     public void serverUnavilable() throws RemoteException {
+        myController.signOut();
         myController.serverUnavilable();
+    }
+
+    @Override
+    public void showAlert(String title, String headerText, String message) throws RemoteException {
+        myController.showAlert(title, headerText, message);
+    }
+
+    @Override
+    public void closeAllAlert() throws RemoteException {
+        Platform.runLater(() -> {
+            currentShowenAlerts.forEach(alert -> {
+                alert.close();
+            });
+            currentShowenAlerts.clear();
+        });
     }
 
 }

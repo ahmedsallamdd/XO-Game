@@ -29,7 +29,7 @@ public class ServerXo extends Application {
 
         ServerAppFxmlBase root = new ServerAppFxmlBase();
 
-        Scene scene = new Scene(root, 700, 560);
+        Scene scene = new Scene(root, 1000, 700);
 
         primaryStage.setTitle("Server");
         primaryStage.setScene(scene);
@@ -44,7 +44,7 @@ public class ServerXo extends Application {
                 } catch (NoSuchObjectException ex) {
                     Logger.getLogger(ServerXo.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                      Platform.exit();
+                Platform.exit();
             } else {
                 event.consume();
             }

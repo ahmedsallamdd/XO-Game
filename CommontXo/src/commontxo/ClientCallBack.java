@@ -19,8 +19,7 @@ public interface ClientCallBack extends Remote {
 
     public void acceptGameRequest(String oppesiteUserName) throws RemoteException;
 
-    public void refuseGameRequest(String oppesiteUserName) throws RemoteException;
-
+//    public void refuseGameRequest(String oppesiteUserName) throws RemoteException;
     public void joinGameRoom(String roomName, ClientCallBack creatorClient) throws RemoteException;
 
     public void addPlayerToGameRoom(String playerUserName, ClientCallBack player) throws RemoteException;
@@ -31,7 +30,7 @@ public interface ClientCallBack extends Remote {
 
     public void startGame(String playerUserName, ClientCallBack player, String mode) throws RemoteException;
 
-    public void leaveGameRoom() throws RemoteException;
+    public void leaveGameRoom(String winner) throws RemoteException;
 
     //chat
     public void joinChatRoom(String targetUserName, ClientCallBack targetClient) throws RemoteException;
@@ -50,8 +49,12 @@ public interface ClientCallBack extends Remote {
 
     //realTime Response // just a bouns feature
     void notifiyOnlineList() throws RemoteException;
-    
+
+    public void showAlert(String title, String headerText, String message) throws RemoteException;
+
+    public void closeAllAlert() throws RemoteException;
+
     //server
-    public void serverUnavilable()throws RemoteException;
-       
+    public void serverUnavilable() throws RemoteException;
+
 }

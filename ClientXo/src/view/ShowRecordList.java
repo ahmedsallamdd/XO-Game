@@ -1,7 +1,23 @@
 package view;
 
+import commontxo.PlayerList;
 import controller.MyGui;
+import java.io.File;
+import java.util.ArrayList;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,6 +26,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.util.Duration;
+import xml.GameComplexType;
+import xml.StepComplexType;
 
 public class ShowRecordList extends AnchorPane {
 
@@ -31,10 +50,12 @@ public class ShowRecordList extends AnchorPane {
     protected final ImageView imageView5;
     protected final ImageView imageView6;
     protected final ImageView imageView7;
-    protected final ImageView playButton;
-    protected final ImageView imageView9;
+    protected final ImageView exit;
+    protected final ImageView play;
+    String selectedImg;
 
     MyGui myGui;
+
     public ShowRecordList(MyGui g) {
 
         myGui = g;
@@ -56,8 +77,8 @@ public class ShowRecordList extends AnchorPane {
         imageView5 = new ImageView();
         imageView6 = new ImageView();
         imageView7 = new ImageView();
-        playButton = new ImageView();
-        imageView9 = new ImageView();
+        exit = new ImageView();
+        play = new ImageView();
 
         setId("AnchorPane");
         setPrefHeight(400.0);
@@ -171,26 +192,67 @@ public class ShowRecordList extends AnchorPane {
         imageView7.setPreserveRatio(true);
         borderPane.setCenter(gridPane);
 
-        BorderPane.setAlignment(playButton, javafx.geometry.Pos.TOP_LEFT);
-        playButton.setFitHeight(41.0);
-        playButton.setFitWidth(35.0);
-        playButton.setPickOnBounds(true);
-        playButton.setPreserveRatio(true);
-        BorderPane.setMargin(playButton, new Insets(5.0, 0.0, 2.0, 5.0));
-        playButton.setImage(new Image(getClass().getResource("../images/backward.png").toExternalForm()));
-        playButton.setOnMousePressed((e->{
-            
+        BorderPane.setAlignment(exit, javafx.geometry.Pos.TOP_LEFT);
+        exit.setFitHeight(41.0);
+        exit.setFitWidth(35.0);
+        exit.setPickOnBounds(true);
+        exit.setPreserveRatio(true);
+        BorderPane.setMargin(exit, new Insets(5.0, 0.0, 2.0, 5.0));
+        exit.setImage(new Image(getClass().getResource("../images/backward.png").toExternalForm()));
+        exit.setOnMouseClicked((e -> {
+            myGui.createMainScreen();
         }));
-        borderPane.setTop(playButton);
+        borderPane.setTop(exit);
 
-        BorderPane.setAlignment(imageView9, javafx.geometry.Pos.CENTER);
-        imageView9.setFitHeight(33.0);
-        imageView9.setFitWidth(38.0);
-        imageView9.setPickOnBounds(true);
-        imageView9.setPreserveRatio(true);
-        imageView9.setImage(new Image(getClass().getResource("../images/play.png").toExternalForm()));
-        BorderPane.setMargin(imageView9, new Insets(0.0, 0.0, 5.0, 0.0));
-        borderPane.setBottom(imageView9);
+        BorderPane.setAlignment(play, javafx.geometry.Pos.CENTER);
+        play.setFitHeight(33.0);
+        play.setFitWidth(38.0);
+        play.setPickOnBounds(true);
+        play.setPreserveRatio(true);
+        play.setImage(new Image(getClass().getResource("../images/play.png").toExternalForm()));
+        BorderPane.setMargin(play, new Insets(0.0, 0.0, 5.0, 0.0));
+
+        play.setOnMouseClicked((e -> {
+            String selectedImg = listView.getSelectionModel().getSelectedItem().toString();
+
+            if (selectedImg != null) {
+                File file
+                        = new File("D:\\java game\\Xo-Java-Project-master (2)\\Xo-Java-Project-master\\ClientXo\\records\\"
+                                + selectedImg);
+                GameComplexType game = myGui.myController.readFromXML(file);
+                ArrayList<StepComplexType> stepList = game.getStep();
+
+                int pos;
+                String imgId;
+                for (int i = 0; i < stepList.size(); i++) {
+                    pos = stepList.get(i).getPostion();
+                    imgId = myGui.myController.constructImgeViewId(pos);
+                    ImageView imgView = (ImageView) gridPane.lookup("#" + imgId);
+                    if (stepList.get(i).getPlayer() == 0) {
+                        imgView.setImage(new Image("/images/X_image.png"));
+                    } else {
+                        imgView.setImage(new Image("/images/O_image.png"));
+                    }
+                }
+                ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+
+                Platform.runLater(() -> {
+                    Alert a = new Alert(Alert.AlertType.INFORMATION,
+                            ".",
+                            ok);
+                    a.setTitle("Result");
+                    a.setHeaderText(game.getResult());
+                    myGui.myController.myModle.currentShowenAlerts.add(a);
+                    if (a.showAndWait().get() == ok) {
+                        myGui.myController.myModle.currentShowenAlerts.remove(a);
+                        a.close();
+                        myGui.createReplayScreen();
+                    }
+                });
+            }
+        }));
+
+        borderPane.setBottom(play);
 
         gridPane.getColumnConstraints().add(columnConstraints);
         gridPane.getColumnConstraints().add(columnConstraints0);
@@ -208,6 +270,28 @@ public class ShowRecordList extends AnchorPane {
         gridPane.getChildren().add(imageView6);
         gridPane.getChildren().add(imageView7);
         getChildren().add(borderPane);
+
+        populateListView();
     }
-    
+
+    public void populateListView() {
+//        ObservableList<GameComplexType> list = FXCollections.observableArrayList(playerList);
+//        listView.setItems(list);
+//        listView.setCellFactory((ListView<PlayerList> param) -> new ListItem(this));
+
+        File folder = new File("D:\\java game\\Xo-Java-Project-master (2)\\Xo-Java-Project-master\\ClientXo\\records\\");
+        File[] listOfFiles = folder.listFiles();
+        ArrayList<String> list = new ArrayList<>();
+//        list.add("Record");
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            list.add(listOfFiles[i].getName());
+            System.out.println(list.get(i));
+        }
+        ListProperty<String> listProperty = new SimpleListProperty<>();
+        listProperty.set(FXCollections.observableArrayList(list));
+        listView.itemsProperty().bind(listProperty);
+
+    }
+
 }
