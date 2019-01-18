@@ -5,6 +5,7 @@ import commontxo.ChatRoom;
 import commontxo.ServerCallBack;
 import commontxo.ClientCallBack;
 import commontxo.GameRoom;
+import commontxo.GameState;
 import commontxo.Player;
 import commontxo.PlayerList;
 import java.rmi.NotBoundException;
@@ -79,9 +80,9 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     }
 
     @Override
-    public void play(String player, int position) throws RemoteException {
+    public void play(int position) throws RemoteException {
         //get the playerSymbol from the playerUserName.
-        myController.modifyPositionsArray(player, position);
+        myController.modifyPositionsArray(position);
     }
 
     @Override
@@ -156,13 +157,13 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     }
 
     @Override
-    public void setArrayPosition(int[] positions) throws RemoteException {
-        myController.setArrayPosition(positions);
+    public void setGameState(GameState gameState) throws RemoteException {
+        myController.setGameState(gameState);
     }
 
     @Override
-    public int[] getArrayPosition() throws RemoteException {
-        return myController.getArrayPosition();
+    public GameState getGameState() throws RemoteException {
+        return myController.getGameState();
     }
 
     //deprecated
@@ -176,8 +177,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     }
 
     @Override
-    public void startGame(String playerUserName, ClientCallBack player, String mode) throws RemoteException {
-        setArrayPosition(player.getArrayPosition());
+    public void startGame(String mode) throws RemoteException {
         gameRoomFXMLBase.mode = mode;
         myController.startGameRoom();
     }

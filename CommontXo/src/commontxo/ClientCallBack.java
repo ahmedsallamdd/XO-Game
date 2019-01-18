@@ -24,11 +24,11 @@ public interface ClientCallBack extends Remote {
 
     public void addPlayerToGameRoom(String playerUserName, ClientCallBack player) throws RemoteException;
 
-    public void setArrayPosition(int[] positions) throws RemoteException;
+    public void setGameState(GameState gameState) throws RemoteException;
 
-    public int[] getArrayPosition() throws RemoteException;
+    public GameState getGameState() throws RemoteException;
 
-    public void startGame(String playerUserName, ClientCallBack player, String mode) throws RemoteException;
+    public void startGame(String mode) throws RemoteException;
 
     public void leaveGameRoom(String winner) throws RemoteException;
 
@@ -40,7 +40,7 @@ public interface ClientCallBack extends Remote {
     public void leftGameRoom(String userNameWhoLeft) throws RemoteException;
 
     //control game
-    public void play(String/*<-Player*/ player, int position) throws RemoteException;
+    public void play(int position) throws RemoteException;
 
     //control chat
     public void receiveMessage(String senderUserName, String message) throws RemoteException;//filter yourseelf and send to yourself as friend room

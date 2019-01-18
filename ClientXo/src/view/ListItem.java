@@ -1,4 +1,3 @@
-
 package view;
 
 import commontxo.PlayerList;
@@ -6,8 +5,6 @@ import controller.MyGui;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -29,22 +26,22 @@ class ListItem extends ListCell<PlayerList> {
     ImageView imgViewState = new ImageView();
     PlayerList lastItem;
     MainScreenBase myMainScreenBase;
-    String opponentName;
+//    String opponentName;
 
     public ListItem(MainScreenBase m) {
         super();
         btnJoinRoom.setStyle("-fx-background-color: #d76767; -fx-border-radius: 10;");
         btnJoinRoom.setTextFill(javafx.scene.paint.Color.WHITE);
-        
+
         hbox.getChildren().addAll(lblUsername, pane, lblScore, pane1, imgViewState, pane2, btnJoinRoom);
         HBox.setHgrow(pane, Priority.ALWAYS);
         HBox.setHgrow(pane1, Priority.ALWAYS);
         HBox.setHgrow(pane2, Priority.ALWAYS);
 
         myMainScreenBase = m;
-        Platform.runLater(() -> {
-            opponentName = lblUsername.getText();
-        });
+//        Platform.runLater(() -> {
+//            opponentName = lblUsername.getText();
+//        });
     }
 
     @Override
@@ -55,31 +52,32 @@ class ListItem extends ListCell<PlayerList> {
             lastItem = null;
             setGraphic(null);
         } else {
-            btnJoinRoom.setOnAction((ActionEvent event) -> {
-            if (btnJoinRoom.getText().equals("Challenge")) {
-                try {
-                    MyGui.myController.myModle.getServerInstance()
-                            .sendGameRequest(
-                                    MyGui.myController.myModle.me.getPlayerUserName(),
-                                    opponentName);
-                } catch (RemoteException ex) {
-                    Logger.getLogger(ListItem.class.getName()).log(Level.SEVERE, null, ex);
+            btnJoinRoom.setOnAction((e) -> {
+                if (btnJoinRoom.getText().equals("Challenge")) {
+                    try {
+                        MyGui.myController.myModle.getServerInstance()
+                                .sendGameRequest(
+                                        MyGui.myController.myModle.me.getPlayerUserName(),
+                                        item.getName());
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(ListItem.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    try {
+                        MyGui.myController.myModle.getServerInstance()
+                                .spectateGame(MyGui.myController.myModle.me.getPlayerUserName(),
+                                        item.getRoomName());
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(ListItem.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-            }else{
-                try {
-                    MyGui.myController.myModle.getServerInstance()
-                            .spectateGame(MyGui.myController.myModle.me.getPlayerUserName(),
-                                    item.getRoomName());
-                } catch (RemoteException ex) {
-                    Logger.getLogger(ListItem.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
+            });
             lastItem = item;
             lblScore.setText(String.valueOf(item.getScore()));
             lblUsername.setText(item.getName());
-            if(item.getRoomName() !=null)
+            if (item.getRoomName() != null) {
                 btnJoinRoom.setText("Spectate");
+            }
             imgViewState.setImage(item.getRoomName() == null
                     ? new Image("/images/available.png") : new Image("/images/busy.png"));
 

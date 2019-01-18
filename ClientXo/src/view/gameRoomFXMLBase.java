@@ -264,7 +264,7 @@ public class gameRoomFXMLBase extends AnchorPane {
 
         label5.setLayoutX(405.0);
         label5.setLayoutY(26.0);
-        label5.setText("00:00:00");
+        label5.setText("00:00");
         label5.setTextFill(javafx.scene.paint.Color.valueOf("#fffefe"));
         label5.setFont(new Font(25.0));
         BorderPane.setMargin(anchorPane3, new Insets(0.0, 50.0, 0.0, 0.0));
@@ -436,6 +436,7 @@ public class gameRoomFXMLBase extends AnchorPane {
 //            textField.setDisable(true);
             textArea.setVisible(false);
             textField.setVisible(false);
+            anchorPane.setVisible(false);
         }
         timerWithdraw();
     }
@@ -459,14 +460,16 @@ public class gameRoomFXMLBase extends AnchorPane {
     private void timerWithdraw() {
         this.timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
-            int secondsLeft = 60;
+            int secondsLeft = 90;
 
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     secondsLeft--;
                     System.out.println("Timer:" + timerNumber + ", now:" + secondsLeft + ".");
-                    label5.setText("00:" + (secondsLeft < 10 ? "0" + secondsLeft : secondsLeft + ""));
+                    label5.setText((secondsLeft/60 < 10 ? "0" + secondsLeft/60 : secondsLeft/60 + "")
+                            + ":"
+                            + (secondsLeft%60 < 10 ? "0" + secondsLeft%60 : secondsLeft%60 + ""));
                     if (secondsLeft == -1) {
 
                         timer.cancel();

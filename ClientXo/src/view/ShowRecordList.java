@@ -1,19 +1,12 @@
 package view;
 
-import commontxo.PlayerList;
 import controller.MyGui;
 import java.io.File;
 import java.util.ArrayList;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
@@ -26,7 +19,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.util.Duration;
 import xml.GameComplexType;
 import xml.StepComplexType;
 
@@ -279,7 +271,7 @@ public class ShowRecordList extends AnchorPane {
 //        listView.setItems(list);
 //        listView.setCellFactory((ListView<PlayerList> param) -> new ListItem(this));
 
-        File folder = new File("D:\\java game\\Xo-Java-Project-master (2)\\Xo-Java-Project-master\\ClientXo\\records\\");
+        File folder = new File(".\\records");
         File[] listOfFiles = folder.listFiles();
         ArrayList<String> list = new ArrayList<>();
 //        list.add("Record");
