@@ -96,19 +96,26 @@ public class LoginFXBase extends AnchorPane {
         VBox.setMargin(signInBtn, new Insets(0.0, 100.0, 20.0, 100.0));
 
         signInBtn.setOnAction((ActionEvent event) -> {
-            boolean isFound;
+            String isFound;
             if (!(userNameField.getText().equals("") || passwordField.getText().equals(""))) {
                 isFound = myGui.checkIfUserExists(userNameField.getText(), passwordField.getText());
 
-                if (!isFound) {
+                if (isFound.equals("Wrong username or password!")) {
                     Alert alerForSignIn = new Alert(Alert.AlertType.ERROR);
                     alerForSignIn.setHeight(10);
                     alerForSignIn.setHeaderText(null);
-                    alerForSignIn.setContentText("Wrong username or password!");
+                    alerForSignIn.setContentText(isFound);
                     alerForSignIn.show();
 
-                } else {
+                } else if(isFound.equals("hello")){
                     myGui.createMainScreen();
+                }
+                else if(isFound.equals("Already logged in")){
+                    Alert alerForSignIn = new Alert(Alert.AlertType.ERROR);
+                    alerForSignIn.setHeight(10);
+                    alerForSignIn.setHeaderText(null);
+                    alerForSignIn.setContentText(isFound);
+                    alerForSignIn.show();
                 }
 
             } else {

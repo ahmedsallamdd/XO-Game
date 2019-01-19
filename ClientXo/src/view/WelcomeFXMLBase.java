@@ -87,7 +87,7 @@ public class WelcomeFXMLBase extends AnchorPane {
         singleBtn.setOnAction((e -> {
 //            primaryStage.setScene(new Scene(new SinglePlayerGui()));
 //            controller.playWithComputer();
-            myGUI.createSinglePlayerScreen();
+            myGUI.createSinglePlayerScreen("welcome");
         }));
 
         BorderPane.setAlignment(onlineBtn, javafx.geometry.Pos.CENTER);

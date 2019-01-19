@@ -31,7 +31,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     static String dbName = "gamexo";
     static String url = "jdbc:mysql://localhost:3306/" + dbName;
     static String username = "root";
-    static String password = "AbdoAmin01";
+    static String password = "0105583448";
     static ArrayList<Player> PlayersInformation;
 
     HashMap<String, ClientCallBack> clients = new HashMap<>();
@@ -147,12 +147,11 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             //start game gui 
             clients.get(myUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName), "player");
             clients.get(oppesiteUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName), "player");
-            
+
             //end any request
             clients.get(myUserName).closeAllAlert();
             clients.get(oppesiteUserName).closeAllAlert();
-            
-            
+
             Pair request = new Pair(myUserName, oppesiteUserName);
             if (notifications.contains(request)) {
                 notifications.remove(request);
@@ -317,9 +316,18 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public Player signIn(String userName, String PlayerPassword) throws RemoteException {
         for (Player p : PlayersInformation) {
-            if (p.getPlayerUserName().equals(userName) && p.getPlayerPassword().equals(PlayerPassword)) {
-                p.setPlayerState("online");
-                return p;
+            if (p.getPlayerUserName().equals(userName)
+                    && p.getPlayerPassword().equals(PlayerPassword)) {
+                if (p.getPlayerState().equals("offline")) {
+                    p.setPlayerState("online");
+                    return p;
+                } else {
+//                    clients.get(p.getPlayerUserName()).showAlert("Logging in error",
+//                            "This account is already logged in!", ".");
+                    Player nullPlayer = new Player();
+                    nullPlayer.setPlayerState("Already logged in");
+                    return nullPlayer;
+                }
             }
         }
         return null;

@@ -13,7 +13,10 @@ import commontxo.PlayerList;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 import java.util.logging.Level;
@@ -108,12 +111,7 @@ public class GameController {
     }
 
     public void modifyPositionsArray(String player, int posPlayed) {
-//        int symbol;
-//        if (inGamePlayer0.getPlayerName().equals(myModle.gameRoom.getPlayers().get(player))) {
-//            symbol = inGamePlayer0.getPlayerSymbol();
-//        } else {
-//            symbol = inGamePlayer1.getPlayerSymbol();
-//        }
+
         positions[posPlayed] = activePlayer;
         stepList.add(new StepComplexType(activePlayer, posPlayed));
         movesCounter++;
@@ -277,11 +275,15 @@ public class GameController {
         try {
             JAXBContext context = JAXBContext.newInstance(GameComplexType.class);
             Marshaller marshel = context.createMarshaller();
-            Random rand = new Random();
-            int pos = rand.nextInt(100);
+//            Random rand = new Random();
+            Date date = new Date();
+            String strDateFormat = "hh-mm-ss-a";
+            DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+            String formattedDate = dateFormat.format(date);
+            
             marshel.marshal(gameRecord,
-                    new File("D:\\java game\\Xo-Java-Project-master (2)\\Xo-Java-Project-master\\ClientXo\\records\\"
-                            + names.get(0) + "VS" + names.get(1) + pos + ".xml"));
+                    new File(".\\records\\"
+                            + names.get(0) + "VS" + names.get(1) + " " + formattedDate + ".xml"));
             System.out.println("Record is done");
             marshel.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
@@ -358,21 +360,24 @@ public class GameController {
         return false;
     }
 
-    public boolean signIn(String userName, String password) {
+    public String signIn(String userName, String password) {
 
         try {
             Player p = myModle.getServerInstance().signIn(userName, password);
 //            System.out.println(myModle.me.getPlayerName());
-            if (p != null) {
+            if (p != null && !p.getPlayerState().equals("Already logged in")) {
                 myModle.me = p;
                 myModle.getServerInstance().register(myModle, userName);
-                return true;
+                return "hello";//means a successfull login process.
+            } else if (p != null && p.getPlayerState().equals("Already logged in")) {
+                return p.getPlayerState();
             }
+
         } catch (RemoteException ex) {
             serverUnavilable();
         }
 
-        return false;
+        return "Wrong username or password!";
     }
 
     public boolean checkUserName(String userName) {

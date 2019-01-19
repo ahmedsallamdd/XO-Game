@@ -43,7 +43,7 @@
                   <ImageView id="img_6" fitHeight="94.0" fitWidth="118.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" />
                   <ImageView id="img_7" fitHeight="94.0" fitWidth="118.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <ImageView id="img_8" fitHeight="94.0" fitWidth="118.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                  <ImageView id="img_3" fitHeight="94.0" fitWidth="118.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" />
+                  <ImageView id="img_2" fitHeight="94.0" fitWidth="118.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" />
                   <ImageView id="img_1" fitHeight="94.0" fitWidth="118.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
                </children>
             </GridPane>

@@ -37,7 +37,7 @@ public class MyGui extends Application {
     gameRoomFXMLBase multiPlayerScreen;
     ShowRecordList replayScreen;
 
-    int width = 600;
+    int width = 650;
     int height = 650;
 
     public MyGui() {
@@ -105,7 +105,7 @@ public class MyGui extends Application {
 
     }
 
-    public boolean checkIfUserExists(String username, String password) {
+    public String checkIfUserExists(String username, String password) {
         return myController.signIn(username, password);
     }
 
@@ -158,8 +158,8 @@ public class MyGui extends Application {
         }
     }
 
-    public void createSinglePlayerScreen() {
-        singlePlayerScreen = new SinglePlayerGui(this);
+    public void createSinglePlayerScreen(String parentScreen) {
+        singlePlayerScreen = new SinglePlayerGui(this, parentScreen);
         scene.setRoot(singlePlayerScreen);
         stage.setScene(scene);
     }
@@ -218,7 +218,7 @@ public class MyGui extends Application {
             Alert a = new Alert(Alert.AlertType.INFORMATION,
                     ".",
                     ok);
-            a.setTitle("Oflline");
+            a.setTitle("Offline");
             a.setHeaderText("Server is Down, try again later.");
             myController.myModle.currentShowenAlerts.add(a);
             if (a.showAndWait().get() == ok) {
