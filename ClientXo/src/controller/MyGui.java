@@ -81,9 +81,10 @@ public class MyGui extends Application {
                 try {
                     MyGui.myController.leaveServer();
                     myController.myModle.currentShowenAlerts.remove(alert);
-                    Platform.exit();
                 } catch (RemoteException ex) {
                     Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
+                }finally {
+                    Platform.exit();
                 }
             } else {
                 event.consume();

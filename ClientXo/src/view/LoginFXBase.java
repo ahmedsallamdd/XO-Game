@@ -129,7 +129,7 @@ public class LoginFXBase extends AnchorPane {
         VBox.setMargin(signUpBtn, new Insets(20.0, 0.0, 0.0, 0.0));
         signUpBtn.setFont(new Font("Arial", 23.0));
         setOpaqueInsets(new Insets(0.0));
-        signUpBtn.setOnAction((event) -> {
+        signUpBtn.setOnAction((e) -> {
             myGui.createSignUpScreen();
         });
         back.setFitHeight(41.0);
@@ -149,6 +149,10 @@ public class LoginFXBase extends AnchorPane {
         containerOfFields.getChildren().add(signUpBtn);
         getChildren().add(containerOfFields);
         getChildren().add(back);
+
+        passwordField.setOnAction(e -> {
+            signInBtn.fire();
+        });
 
     }
 }

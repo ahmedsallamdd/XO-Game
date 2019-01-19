@@ -11,7 +11,8 @@ import java.io.Serializable;
  *
  * @author Abdo Amin
  */
-public class PlayerList implements Serializable{
+public class PlayerList implements Serializable {
+
     private String name;
     private int score;
     private String roomName;
@@ -22,6 +23,9 @@ public class PlayerList implements Serializable{
         this.roomName = roomName;
     }
 
+    public PlayerList(String name) {
+        this.name = name;
+    }
 
     public int getScore() {
         return score;
@@ -46,5 +50,9 @@ public class PlayerList implements Serializable{
     public void setRoomName(String roomName) {
         this.roomName = roomName;
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        return name.equals(((PlayerList) obj).name);
+    }
 }

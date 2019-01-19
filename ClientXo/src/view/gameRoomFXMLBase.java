@@ -1,5 +1,6 @@
 package view;
 
+import commontxo.PlayerList;
 import controller.MyGui;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -214,12 +215,19 @@ public class gameRoomFXMLBase extends AnchorPane {
         vBox.setLayoutY(132.0);
         vBox.setSpacing(10.0);
 
-        label0.setText("userName1");
+        label0.setText(MyGui.myController.names.get(0));
         label0.setTextFill(javafx.scene.paint.Color.valueOf("#026d94"));
         label0.setFont(new Font(20.0));
 
         label1.setAlignment(javafx.geometry.Pos.CENTER);
-        label1.setText(MyGui.myController.names.get(0));
+
+        label1.setText(MyGui.myController.names.get(0).equals(MyGui.myController.myModle.me.getPlayerUserName())
+                ? MyGui.myController.myModle.me.getPlayerScore() + ""
+                : MyGui.myController.myModle.onlineList.get(
+                        MyGui.myController.myModle.onlineList
+                                .indexOf(
+                                        new PlayerList(MyGui.myController.names.get(0)))).getScore() + "");
+
         label1.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         label1.setTextFill(javafx.scene.paint.Color.valueOf("#6681c5"));
         label1.setFont(new Font("System Italic", 64.0));
@@ -239,12 +247,18 @@ public class gameRoomFXMLBase extends AnchorPane {
         vBox0.setPrefWidth(199.0);
         vBox0.setSpacing(10.0);
 
-        label2.setText("UserName2");
+        label2.setText(MyGui.myController.names.get(1));
         label2.setTextFill(javafx.scene.paint.Color.valueOf("#026d94"));
         label2.setFont(new Font(20.0));
 
         label3.setAlignment(javafx.geometry.Pos.CENTER);
-        label3.setText(MyGui.myController.names.get(1));
+        label3.setText(MyGui.myController.names.get(1).equals(MyGui.myController.myModle.me.getPlayerUserName())
+                ? MyGui.myController.myModle.me.getPlayerScore() + ""
+                : MyGui.myController.myModle.onlineList.get(
+                        MyGui.myController.myModle.onlineList
+                                .indexOf(
+                                        new PlayerList(MyGui.myController.names.get(1)))).getScore() + "");
+
         label3.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         label3.setTextFill(javafx.scene.paint.Color.valueOf("#6681c5"));
         label3.setFont(new Font("System Italic", 64.0));
@@ -264,7 +278,7 @@ public class gameRoomFXMLBase extends AnchorPane {
 
         label5.setLayoutX(405.0);
         label5.setLayoutY(26.0);
-        label5.setText("00:00");
+        label5.setText("01:30");
         label5.setTextFill(javafx.scene.paint.Color.valueOf("#fffefe"));
         label5.setFont(new Font(25.0));
         BorderPane.setMargin(anchorPane3, new Insets(0.0, 50.0, 0.0, 0.0));
@@ -420,9 +434,6 @@ public class gameRoomFXMLBase extends AnchorPane {
             myGui.sendMessage(textField.getText());
             textField.setText("");
         });
-        label1.setText(MyGui.myController.names.get(0));
-        label3.setText(MyGui.myController.names.get(1));
-
         if (mode.equals("spectator")) {
             img_0.setDisable(true);
             img_1.setDisable(true);
@@ -433,11 +444,9 @@ public class gameRoomFXMLBase extends AnchorPane {
             img_6.setDisable(true);
             img_7.setDisable(true);
             img_8.setDisable(true);
-//            textField.setDisable(true);
-            textArea.setVisible(false);
-            textField.setVisible(false);
             anchorPane.setVisible(false);
         }
+        textArea.setEditable(false);
         timerWithdraw();
     }
 //
@@ -467,9 +476,9 @@ public class gameRoomFXMLBase extends AnchorPane {
                 Platform.runLater(() -> {
                     secondsLeft--;
                     System.out.println("Timer:" + timerNumber + ", now:" + secondsLeft + ".");
-                    label5.setText((secondsLeft/60 < 10 ? "0" + secondsLeft/60 : secondsLeft/60 + "")
+                    label5.setText((secondsLeft / 60 < 10 ? "0" + secondsLeft / 60 : secondsLeft / 60 + "")
                             + ":"
-                            + (secondsLeft%60 < 10 ? "0" + secondsLeft%60 : secondsLeft%60 + ""));
+                            + (secondsLeft % 60 < 10 ? "0" + secondsLeft % 60 : secondsLeft % 60 + ""));
                     if (secondsLeft == -1) {
 
                         timer.cancel();

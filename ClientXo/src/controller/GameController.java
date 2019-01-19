@@ -48,7 +48,6 @@ public class GameController {
         {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
         {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
 
-    //TODO Send Game Variable to all spectator
     private int movesCounter = 0;
     private boolean isFinished = false;
     public int activePlayer = 0;
@@ -205,7 +204,6 @@ public class GameController {
                         gameRecord = new GameComplexType(stepList, names.get(0) + " is a winner");
 
                         result = inGamePlayer0.getPlayerName();
-//                        winDialog(result);
                     } catch (RemoteException ex) {
                         Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -223,7 +221,6 @@ public class GameController {
                         }
                         gameRecord = new GameComplexType(stepList, names.get(1) + " is a winner");
                         result = inGamePlayer1.getPlayerName();
-//                        winDialog(result);
                     } catch (RemoteException ex) {
                         Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -236,7 +233,6 @@ public class GameController {
                         myModle.getServerInstance().notifiyGameResult(roomName, "DRAW");
                     }
                     gameRecord = new GameComplexType(stepList, "DRAW");
-//                    winDialog("DRAW");
                     isFinished = true;
                     return;
 
@@ -261,7 +257,7 @@ public class GameController {
 
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION,
-                    ".",
+                    "",
                     yes,
                     no);
             a.setTitle("Result");
@@ -399,16 +395,15 @@ public class GameController {
 
     public void showPlayerList() throws RemoteException {
         try {
-            ArrayList<PlayerList> list = myModle.getServerInstance().initOnlineList();
+            myModle.onlineList = myModle.getServerInstance().initOnlineList();
 
-            for (PlayerList pl : list) {
+            for (PlayerList pl : myModle.onlineList) {
                 if (pl.getName().equals(myModle.me.getPlayerUserName())) {
-                    list.remove(pl);
+                    myModle.onlineList.remove(pl);
                     break;
                 }
-
             }
-            myGUI.getPlayerListData(list);
+            myGUI.getPlayerListData(myModle.onlineList);
         } catch (java.rmi.ConnectException e) {
             serverUnavilable();
         }

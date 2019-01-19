@@ -39,8 +39,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     HashMap<String, String> clientMapGameRoom = new HashMap<>();
 
     HashMap<String, GameRoom> gameRooms = new HashMap<>();//for fast acces
-    //TODO Handle Send Request
-    ArrayList<Pair<String>> notifications = new ArrayList<>();//for fast acces
+
+    ArrayList<Pair<String>> notifications = new ArrayList<>();
 
     public void IntializePlayersList() {
         Player p;
@@ -220,7 +220,12 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             //to start game from last played step
             clients.get(myUserName).setGameState(
                     gameRooms.get(roomName).getPlayers().get(usersNames.get(0)).getGameState());
-            for (int i = 1; i < gameRooms.get(roomName).getPlayers().size(); i++) {
+
+            clients.get(myUserName).addPlayerToGameRoom(usersNames.get(1),
+                    gameRooms.get(roomName).getPlayers().get(usersNames.get(1)));
+            //this parameters are deprecated and useless 
+            clients.get(myUserName).startGame(/*myUserName, clients.get(myUserName), */"spectator");
+            for (int i = 2; i < gameRooms.get(roomName).getPlayers().size(); i++) {
                 clients.get(myUserName).addPlayerToGameRoom(usersNames.get(i),
                         gameRooms.get(roomName).getPlayers().get(usersNames.get(i)));
             }
@@ -235,8 +240,6 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                             .getName()).log(Level.SEVERE, null, ex);
                 }
             });
-            //this parameters are deprecated and useless 
-            clients.get(myUserName).startGame(/*myUserName, clients.get(myUserName), */"spectator");
             updateList();
         }
     }
