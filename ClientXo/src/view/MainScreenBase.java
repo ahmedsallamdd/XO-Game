@@ -64,7 +64,7 @@ public class MainScreenBase extends AnchorPane {
         btnPlayWithComputer.setTextFill(javafx.scene.paint.Color.WHITE);
         btnPlayWithComputer.setFont(new Font("System Bold", 22.0));
         btnPlayWithComputer.setOnAction((e -> {
-            myGui.createSinglePlayerScreen();
+            myGui.createSinglePlayerScreen("main");
             //controller.playWithComputer();
             // TODO: remember to clean the matherfuken code from the singlePlayerGui to the controller
         }));
