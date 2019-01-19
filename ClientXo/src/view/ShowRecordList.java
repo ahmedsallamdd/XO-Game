@@ -5,8 +5,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -322,7 +320,7 @@ public class ShowRecordList extends AnchorPane {
 //        listView.setItems(list);
 //        listView.setCellFactory((ListView<PlayerList> param) -> new ListItem(this));
 
-        File folder = new File("D:\\java game\\Xo-Java-Project-master (2)\\Xo-Java-Project-master\\ClientXo\\records\\");
+        File folder = new File(".\\records");
         File[] listOfFiles = folder.listFiles();
         ArrayList<String> list = new ArrayList<>();
 //        list.add("Record");

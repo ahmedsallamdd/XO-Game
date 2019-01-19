@@ -145,8 +145,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             joinChatRoom(myUserName, oppesiteUserName);
 
             //start game gui 
-            clients.get(myUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName), "player");
-            clients.get(oppesiteUserName).startGame(oppesiteUserName, clients.get(oppesiteUserName), "player");
+            clients.get(myUserName).startGame("player");
+            clients.get(oppesiteUserName).startGame("player");
 
             //end any request
             clients.get(myUserName).closeAllAlert();
@@ -218,8 +218,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             ArrayList<String> usersNames = new ArrayList<>(gameRooms.get(roomName).getPlayers().keySet());
             clients.get(myUserName).joinGameRoom(roomName, gameRooms.get(roomName).getPlayers().get(usersNames.get(0)));
             //to start game from last played step
-            clients.get(myUserName).setArrayPosition(
-                    gameRooms.get(roomName).getPlayers().get(usersNames.get(0)).getArrayPosition());
+            clients.get(myUserName).setGameState(
+                    gameRooms.get(roomName).getPlayers().get(usersNames.get(0)).getGameState());
             for (int i = 1; i < gameRooms.get(roomName).getPlayers().size(); i++) {
                 clients.get(myUserName).addPlayerToGameRoom(usersNames.get(i),
                         gameRooms.get(roomName).getPlayers().get(usersNames.get(i)));
@@ -236,7 +236,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                 }
             });
             //this parameters are deprecated and useless 
-            clients.get(myUserName).startGame(myUserName, clients.get(myUserName), "spectator");
+            clients.get(myUserName).startGame(/*myUserName, clients.get(myUserName), */"spectator");
             updateList();
         }
     }
