@@ -186,7 +186,7 @@ public class MainScreenBase extends AnchorPane {
                     myGui.myController.myModle.currentShowenAlerts.remove(a);
                     myGui.myController.myModle.acceptGameRequest(oppesiteUserName);
                 } catch (RemoteException ex) {
-                    Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
+                   MyGui.myController.showAlert("Error", "No Connection", "This Client Not responde");
                 }
             } else {
                 try {
@@ -194,7 +194,7 @@ public class MainScreenBase extends AnchorPane {
                     myGui.myController.myModle.getServerInstance()
                             .refuseGameRequest(myGui.myController.myModle.me.getPlayerUserName(), oppesiteUserName);
                 } catch (RemoteException ex) {
-                    Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
+                    MyGui.myController.serverUnavilable();
                 }
             }
         });
@@ -210,9 +210,9 @@ public class MainScreenBase extends AnchorPane {
             a.setTitle("Request Refuse");
             a.setHeaderText(playerUserName + " don't want to play with you");
             myGui.myController.myModle.currentShowenAlerts.add(a);
-            if (a.showAndWait().get() == ok) {
-                myGui.myController.myModle.currentShowenAlerts.remove(a);
-            }
+            a.showAndWait();
+            myGui.myController.myModle.currentShowenAlerts.remove(a);
+
         });
     }
 //

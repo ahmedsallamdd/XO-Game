@@ -83,7 +83,7 @@ public class MyGui extends Application {
                     myController.myModle.currentShowenAlerts.remove(alert);
                 } catch (RemoteException ex) {
                     Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
-                }finally {
+                } finally {
                     Platform.exit();
                 }
             } else {
@@ -222,13 +222,10 @@ public class MyGui extends Application {
             a.setTitle("Offline");
             a.setHeaderText("Server is Down, try again later.");
             myController.myModle.currentShowenAlerts.add(a);
-            if (a.showAndWait().get() == ok) {
-                createLoginScreen();
-                myController.myModle.currentShowenAlerts.remove(a);
-            }
-        }
-        //            signOut();
-        );
+            a.showAndWait();
+            createLoginScreen();
+            myController.myModle.currentShowenAlerts.remove(a);
+        });
     }
 
     void showAlert(String title, String headerText, String message) {
@@ -241,10 +238,10 @@ public class MyGui extends Application {
             a.setTitle(title);
             a.setHeaderText(headerText);
             myController.myModle.currentShowenAlerts.add(a);
-            if (a.showAndWait().get() == ok) {
+            a.showAndWait();
+            if (myController.myModle.currentShowenAlerts.contains(a)) {
                 myController.myModle.currentShowenAlerts.remove(a);
             }
-        }
-        );
+        });
     }
 }

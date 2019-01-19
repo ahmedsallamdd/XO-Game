@@ -215,18 +215,18 @@ public class gameRoomFXMLBase extends AnchorPane {
         vBox.setLayoutY(132.0);
         vBox.setSpacing(10.0);
 
-        label0.setText(MyGui.myController.names.get(0));
+        label0.setText(MyGui.myController.inGamePlayer0.getPlayerName());
         label0.setTextFill(javafx.scene.paint.Color.valueOf("#026d94"));
         label0.setFont(new Font(20.0));
 
         label1.setAlignment(javafx.geometry.Pos.CENTER);
 
-        label1.setText(MyGui.myController.names.get(0).equals(MyGui.myController.myModle.me.getPlayerUserName())
+        label1.setText(MyGui.myController.inGamePlayer0.getPlayerName().equals(MyGui.myController.myModle.me.getPlayerUserName())
                 ? MyGui.myController.myModle.me.getPlayerScore() + ""
                 : MyGui.myController.myModle.onlineList.get(
                         MyGui.myController.myModle.onlineList
                                 .indexOf(
-                                        new PlayerList(MyGui.myController.names.get(0)))).getScore() + "");
+                                        new PlayerList(MyGui.myController.inGamePlayer0.getPlayerName()))).getScore() + "");
 
         label1.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         label1.setTextFill(javafx.scene.paint.Color.valueOf("#6681c5"));
@@ -247,17 +247,17 @@ public class gameRoomFXMLBase extends AnchorPane {
         vBox0.setPrefWidth(199.0);
         vBox0.setSpacing(10.0);
 
-        label2.setText(MyGui.myController.names.get(1));
+        label2.setText(MyGui.myController.inGamePlayer1.getPlayerName());
         label2.setTextFill(javafx.scene.paint.Color.valueOf("#026d94"));
         label2.setFont(new Font(20.0));
 
         label3.setAlignment(javafx.geometry.Pos.CENTER);
-        label3.setText(MyGui.myController.names.get(1).equals(MyGui.myController.myModle.me.getPlayerUserName())
+        label3.setText(MyGui.myController.inGamePlayer1.getPlayerName().equals(MyGui.myController.myModle.me.getPlayerUserName())
                 ? MyGui.myController.myModle.me.getPlayerScore() + ""
                 : MyGui.myController.myModle.onlineList.get(
                         MyGui.myController.myModle.onlineList
                                 .indexOf(
-                                        new PlayerList(MyGui.myController.names.get(1)))).getScore() + "");
+                                        new PlayerList(MyGui.myController.inGamePlayer1.getPlayerName()))).getScore() + "");
 
         label3.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         label3.setTextFill(javafx.scene.paint.Color.valueOf("#6681c5"));
@@ -473,6 +473,9 @@ public class gameRoomFXMLBase extends AnchorPane {
 
             @Override
             public void run() {
+                if (MyGui.myController.isFinished) {
+                    timer.cancel();
+                }
                 Platform.runLater(() -> {
                     secondsLeft--;
                     System.out.println("Timer:" + timerNumber + ", now:" + secondsLeft + ".");

@@ -2,6 +2,7 @@ package serverxo;
 
 import commontxo.ClientCallBack;
 import commontxo.GameRoom;
+import commontxo.GameState;
 import commontxo.Player;
 import commontxo.PlayerList;
 import commontxo.ServerCallBack;
@@ -144,6 +145,10 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
 
             joinChatRoom(myUserName, oppesiteUserName);
 
+            GameState gameState = new GameState(myUserName, oppesiteUserName, new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2}, 0);
+            clients.get(myUserName).setGameState(gameState);
+            clients.get(oppesiteUserName).setGameState(gameState);
+
             //start game gui 
             clients.get(myUserName).startGame("player");
             clients.get(oppesiteUserName).startGame("player");
@@ -221,11 +226,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             clients.get(myUserName).setGameState(
                     gameRooms.get(roomName).getPlayers().get(usersNames.get(0)).getGameState());
 
-            clients.get(myUserName).addPlayerToGameRoom(usersNames.get(1),
-                    gameRooms.get(roomName).getPlayers().get(usersNames.get(1)));
-            //this parameters are deprecated and useless 
-            clients.get(myUserName).startGame(/*myUserName, clients.get(myUserName), */"spectator");
-            for (int i = 2; i < gameRooms.get(roomName).getPlayers().size(); i++) {
+            for (int i = 1; i < gameRooms.get(roomName).getPlayers().size(); i++) {
                 clients.get(myUserName).addPlayerToGameRoom(usersNames.get(i),
                         gameRooms.get(roomName).getPlayers().get(usersNames.get(i)));
             }
@@ -240,6 +241,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                             .getName()).log(Level.SEVERE, null, ex);
                 }
             });
+            //this parameters are deprecated and useless 
+            clients.get(myUserName).startGame(/*myUserName, clients.get(myUserName), */"spectator");
             updateList();
         }
     }
