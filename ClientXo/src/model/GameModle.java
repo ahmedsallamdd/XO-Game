@@ -91,7 +91,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
             try {
                 myController.showPlayerList();
             } catch (RemoteException ex) {
-                Logger.getLogger(GameModle.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Server Error");
             }
         });
     }
@@ -151,7 +151,6 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
         if (gameRoom != null) {
             if (gameRoom.getPlayers().containsKey(userNameWhoLeft)) {
                 gameRoom.removePlayer(userNameWhoLeft);
-
             }
         }
     }

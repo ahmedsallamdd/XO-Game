@@ -59,7 +59,7 @@ public class GameController {
     public InGamePlayer inGamePlayer0;
     public InGamePlayer inGamePlayer1;
     String roomName;
-    boolean isYourTurn;
+    public boolean isYourTurn;
 
     public GameComplexType gameRecord;
     public ArrayList<StepComplexType> stepList;

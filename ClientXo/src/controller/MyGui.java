@@ -37,8 +37,8 @@ public class MyGui extends Application {
     gameRoomFXMLBase multiPlayerScreen;
     ShowRecordList replayScreen;
 
-    int width = 650;
-    int height = 650;
+    int width = 1000;
+    int height = 600;
 
     public MyGui() {
         myController = new GameController(this);
@@ -179,15 +179,18 @@ public class MyGui extends Application {
         mainScreen.refuseGameRequest(oppesiteUserName);
     }
 
-    public void createMultiPlayerGui() {
+     public void createMultiPlayerGui() {
         multiPlayerScreen = new gameRoomFXMLBase(this);
+        scene = new Scene(multiPlayerScreen, 
+                this.multiPlayerScreen.getPrefWidth(), multiPlayerScreen.getPrefHeight());
         scene.setRoot(multiPlayerScreen);
         stage.setScene(scene);
     }
 
     public void createMultiPlayerGui(gameRoomFXMLBase multiplayerScreen) {
         this.multiPlayerScreen = multiplayerScreen;
-        scene = new Scene(multiPlayerScreen, 1000, 700);
+        scene = new Scene(multiPlayerScreen, 
+                this.multiPlayerScreen.getPrefWidth(), multiPlayerScreen.getPrefHeight());
         scene.setRoot(multiplayerScreen);
         stage.setScene(scene);
     }

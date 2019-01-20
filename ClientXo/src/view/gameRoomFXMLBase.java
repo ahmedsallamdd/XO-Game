@@ -113,18 +113,20 @@ public class gameRoomFXMLBase extends AnchorPane {
         img_8 = new ImageView();
 
         setId("AnchorPane");
-        setPrefHeight(500.0);
+        setPrefHeight(680.0);
         setPrefWidth(1000.0);
         setStyle("-fx-background-color: linear-gradient( #173551 0%,#62828f 50% ,#173551 100%);");
 
-        borderPane.setLayoutY(-2.0);
-        borderPane.setPrefHeight(600.0);
+        borderPane.setLayoutY(0.0);
+        borderPane.setPrefHeight(670.0);
         borderPane.setPrefWidth(1000.0);
 
-        BorderPane.setAlignment(anchorPane, javafx.geometry.Pos.CENTER);
-        anchorPane.setPrefHeight(502.0);
-        anchorPane.setPrefWidth(350.0);
-        anchorPane.setStyle("-fx-background-color: #fff; -fx-border-color: #000;");
+        if (!mode.equals("spectator")) {
+            BorderPane.setAlignment(anchorPane, javafx.geometry.Pos.CENTER_RIGHT);
+            anchorPane.setPrefHeight(502.0);
+            anchorPane.setPrefWidth(350.0);
+            anchorPane.setStyle("-fx-background-color: #fff; -fx-border-color: #000;");
+        }
 
         AnchorPane.setBottomAnchor(label, 568.0);
         AnchorPane.setRightAnchor(label, 16.0);
@@ -160,14 +162,6 @@ public class gameRoomFXMLBase extends AnchorPane {
         textField.setPrefHeight(35.0);
         textField.setPrefWidth(245.0);
         textField.setStyle("-fx-background-radius: 10;");
-//        textField.setOnAction(e -> {
-//            try {
-//                myGui.sendMessage(myGui.myController.myModle.me.getPlayerUserName(), textField.getText());
-//                textField.setText("");
-//            } catch (RemoteException ex) {
-//                Logger.getLogger(gameRoomFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        });
 
         button.setLayoutX(275.0);
         button.setLayoutY(544.0);
@@ -178,8 +172,10 @@ public class gameRoomFXMLBase extends AnchorPane {
         button.setText("Send");
         button.setTextFill(javafx.scene.paint.Color.valueOf("#f5f5f5"));
         button.setFont(new Font(15.0));
-        BorderPane.setMargin(anchorPane, new Insets(0.0));
-        borderPane.setRight(anchorPane);
+        if (!mode.equals("spectator")) {
+            BorderPane.setMargin(anchorPane, new Insets(0.0));
+            borderPane.setRight(anchorPane);
+        }
 
 //        button.setOnAction(e -> {
 //            try {
@@ -284,10 +280,10 @@ public class gameRoomFXMLBase extends AnchorPane {
         BorderPane.setMargin(anchorPane3, new Insets(0.0, 50.0, 0.0, 0.0));
         borderPane.setTop(anchorPane3);
 
-        BorderPane.setAlignment(gridPane, javafx.geometry.Pos.CENTER);
+        BorderPane.setAlignment(gridPane, javafx.geometry.Pos.CENTER_LEFT);
         gridPane.setGridLinesVisible(true);
         gridPane.setPrefHeight(587.0);
-        gridPane.setPrefWidth(409.0);
+        gridPane.setPrefWidth(445.0);
 
         columnConstraints.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
         columnConstraints.setMinWidth(10.0);
@@ -444,7 +440,10 @@ public class gameRoomFXMLBase extends AnchorPane {
             img_6.setDisable(true);
             img_7.setDisable(true);
             img_8.setDisable(true);
-            anchorPane.setVisible(false);
+//            anchorPane.setVisible(false);
+            setPrefWidth(670.0);
+            borderPane.setPrefWidth(670.0);
+
         }
         textArea.setEditable(false);
         timerWithdraw();
@@ -486,7 +485,9 @@ public class gameRoomFXMLBase extends AnchorPane {
 
                         timer.cancel();
                         try {
-                            MyGui.myController.withdraw();
+                            if (MyGui.myController.isYourTurn && !mode.equals("spectator")) {
+                                MyGui.myController.withdraw();
+                            }
                         } catch (RemoteException ex) {
                             Logger.getLogger(gameRoomFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
                         }
