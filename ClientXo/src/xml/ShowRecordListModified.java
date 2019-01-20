@@ -1,4 +1,4 @@
-package view;
+package xml;
 
 import controller.MyGui;
 import java.io.File;
@@ -15,10 +15,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import xml.GameComplexType;
-import xml.StepComplexType;
 
-public class ShowRecordList extends AnchorPane {
+public abstract class ShowRecordListModified extends AnchorPane {
 
     protected final ImageView play;
     protected final GridPane gridPane;
@@ -45,7 +43,7 @@ public class ShowRecordList extends AnchorPane {
     Timer timer;
     private boolean isTimerRunning = false;
 
-    public ShowRecordList(MyGui g) {
+    public ShowRecordListModified(MyGui g) {
         myGui = g;
         play = new ImageView();
         gridPane = new GridPane();

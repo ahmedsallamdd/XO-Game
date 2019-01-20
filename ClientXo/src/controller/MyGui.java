@@ -7,6 +7,7 @@ import view.WelcomeFXMLBase;
 import commontxo.PlayerList;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -66,7 +67,7 @@ public class MyGui extends Application {
         welcome = new WelcomeFXMLBase(this);
 
         stage = primaryStage;
-        scene = new Scene(welcome, width, height);
+        scene = new Scene(welcome, welcome.getPrefWidth(), welcome.getPrefHeight());
 
         primaryStage.setTitle("Tic Tac Toe");
         primaryStage.setScene(scene);
@@ -94,6 +95,7 @@ public class MyGui extends Application {
 
     public void createLoginScreen() {
         login = new LoginFXBase(this);
+        scene = new Scene(login, login.getPrefWidth(), login.getPrefHeight());
         scene.setRoot(login);
         stage.setScene(scene);
 
@@ -101,6 +103,7 @@ public class MyGui extends Application {
 
     public void createSignUpScreen() {
         signUp = new SignUpFXBase(this);
+        scene = new Scene(signUp, signUp.getPrefWidth(), signUp.getPrefHeight());
         scene.setRoot(signUp);
         stage.setScene(scene);
 
@@ -117,6 +120,7 @@ public class MyGui extends Application {
         } catch (RemoteException ex) {
             Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
         }
+        scene = new Scene(mainScreen, mainScreen.getPrefWidth(), mainScreen.getPrefHeight());
         scene.setRoot(mainScreen);
         stage.setScene(scene);
     }
@@ -140,13 +144,6 @@ public class MyGui extends Application {
     public static void main(String args[]) {
         launch(args);
         myController.myModle.getServerInstance();
-
-//        try {
-////            myController.myModle.getServerInstance().sendGameRequest("Abdo", "Sallam");
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        Application.launch(myGame.myGUI.getClass(), args);
     }
 
     public void signOut() {
@@ -161,12 +158,14 @@ public class MyGui extends Application {
 
     public void createSinglePlayerScreen(String parentScreen) {
         singlePlayerScreen = new SinglePlayerGui(this, parentScreen);
+        scene = new Scene(singlePlayerScreen, singlePlayerScreen.getPrefWidth(), singlePlayerScreen.getPrefHeight());
         scene.setRoot(singlePlayerScreen);
         stage.setScene(scene);
     }
 
     public void createReplayScreen() {
         replayScreen = new ShowRecordList(this);
+        scene = new Scene(replayScreen, replayScreen.getPrefWidth(), replayScreen.getPrefHeight());
         scene.setRoot(replayScreen);
         stage.setScene(scene);
     }
@@ -211,6 +210,7 @@ public class MyGui extends Application {
 
     public void createWelcomeScreen() {
         welcome = new WelcomeFXMLBase(this);
+        scene = new Scene(welcome, welcome.getPrefWidth(), welcome.getPrefHeight());
         scene.setRoot(welcome);
         stage.setScene(scene);
     }
@@ -241,6 +241,22 @@ public class MyGui extends Application {
             a.setTitle(title);
             a.setHeaderText(headerText);
             myController.myModle.currentShowenAlerts.add(a);
+//<<<<<<< HEAD
+//
+//            a.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+//                if (myController.myModle.currentShowenAlerts.contains(a)) {
+//                    myController.myModle.currentShowenAlerts.remove(a);
+//                }
+//            });
+//            Optional<ButtonType> result = a.showAndWait();
+//            result.ifPresent(res -> {
+//                if (res.equals(ok)) {
+//                    if (myController.myModle.currentShowenAlerts.contains(a)) {
+//                        myController.myModle.currentShowenAlerts.remove(a);
+//                    }
+//                }
+//            });
+//=======
             a.showAndWait();
             if (myController.myModle.currentShowenAlerts.contains(a)) {
                 myController.myModle.currentShowenAlerts.remove(a);

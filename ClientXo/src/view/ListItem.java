@@ -26,12 +26,13 @@ class ListItem extends ListCell<PlayerList> {
     ImageView imgViewState = new ImageView();
     PlayerList lastItem;
     MainScreenBase myMainScreenBase;
-//    String opponentName;
 
     public ListItem(MainScreenBase m) {
         super();
-        btnJoinRoom.setStyle("-fx-background-color: #d76767; -fx-border-radius: 10;");
-        btnJoinRoom.setTextFill(javafx.scene.paint.Color.WHITE);
+        btnJoinRoom.setStyle("-fx-background-color: #0b3c49; -fx-border-radius: 10;");
+        btnJoinRoom.setTextFill(javafx.scene.paint.Color.valueOf("#f3ffbd"));
+        hbox.setStyle("-fx-background-radius: 10;");
+        hbox.setStyle("-fx-border-radius: 10;");
 
         hbox.getChildren().addAll(lblUsername, pane, lblScore, pane1, imgViewState, pane2, btnJoinRoom);
         HBox.setHgrow(pane, Priority.ALWAYS);
@@ -39,9 +40,6 @@ class ListItem extends ListCell<PlayerList> {
         HBox.setHgrow(pane2, Priority.ALWAYS);
 
         myMainScreenBase = m;
-//        Platform.runLater(() -> {
-//            opponentName = lblUsername.getText();
-//        });
     }
 
     @Override

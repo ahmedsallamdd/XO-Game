@@ -24,8 +24,6 @@ public class LoginFXBase extends AnchorPane {
     protected final PasswordField passwordField;
     protected final Button signInBtn;
     protected final Button signUpBtn;
-
-//    GameController controller;
     MyGui myGui;
 
     public LoginFXBase(MyGui g) {
@@ -40,14 +38,13 @@ public class LoginFXBase extends AnchorPane {
         signUpBtn = new Button();
 
         myGui = g;
-//        controller = new GameController();
 
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
         setMinWidth(USE_PREF_SIZE);
         setNodeOrientation(javafx.geometry.NodeOrientation.LEFT_TO_RIGHT);
-        setPrefHeight(700.0);
+        setPrefHeight(650.0);
         setPrefWidth(600.0);
         setStyle("-fx-background-color: linear-gradient( #173551 0%,#62828f 50% ,#173551 100%);");
         getStyleClass().add(".border");
@@ -116,8 +113,9 @@ public class LoginFXBase extends AnchorPane {
                     alerForSignIn.setHeaderText(null);
                     alerForSignIn.setContentText(isFound);
                     alerForSignIn.show();
+                }else{
+                    myGui.myController.showAlert("Login error", "", isFound);
                 }
-
             } else {
                 Alert alerForSignIn = new Alert(Alert.AlertType.WARNING);
                 // alerForSignIn.setTitle("Error");

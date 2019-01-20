@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package controller;
 
 import model.InGamePlayer;
@@ -208,7 +204,7 @@ public class GameController {
                     }
                     return;
                 }
-            } else if (movesCounter == 9) {
+            } else if (movesCounter == 9 && isFinished != true) {
                 System.out.println("It's a draw!");
                 try {
                     if (myModle.me.getPlayerUserName().equals(inGamePlayer0.getPlayerName())) {
@@ -345,14 +341,17 @@ public class GameController {
     public String signIn(String userName, String password) {
 
         try {
-            Player p = myModle.getServerInstance().signIn(userName, password);
-            if (p != null && !p.getPlayerState().equals("Already logged in")) {
-                myModle.me = p;
-                myModle.getServerInstance().register(myModle, userName);
-                return "hello";//means a successfull login process.
-            } else if (p != null && p.getPlayerState().equals("Already logged in")) {
-                return p.getPlayerState();
-            }
+            if (myModle.getServerInstance() != null) {
+                Player p = myModle.getServerInstance().signIn(userName, password);
+                if (p != null && !p.getPlayerState().equals("Already logged in")) {
+                    myModle.me = p;
+                    myModle.getServerInstance().register(myModle, userName);
+                    return "hello";//means a successfull login process.
+                } else if (p != null && p.getPlayerState().equals("Already logged in")) {
+                    return p.getPlayerState();
+                }
+            }else
+                return "Server is down now." + "\n" + "Try again later.";
 
         } catch (RemoteException ex) {
             serverUnavilable();

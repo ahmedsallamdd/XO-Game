@@ -115,7 +115,8 @@ public class gameRoomFXMLBase extends AnchorPane {
         setId("AnchorPane");
         setPrefHeight(680.0);
         setPrefWidth(1000.0);
-        setStyle("-fx-background-color: linear-gradient( #173551 0%,#62828f 50% ,#173551 100%);");
+        setStyle("-fx-background-color: linear-gradient( #247ba0 0%,#70c1b3 50% ,#247ba0 100%)"
+                + ";");
 
         borderPane.setLayoutY(0.0);
         borderPane.setPrefHeight(670.0);
@@ -222,7 +223,7 @@ public class gameRoomFXMLBase extends AnchorPane {
                 : MyGui.myController.myModle.onlineList.get(
                         MyGui.myController.myModle.onlineList
                                 .indexOf(
-                                        new PlayerList(MyGui.myController.inGamePlayer0.getPlayerName()))).getScore() + "");
+                        new PlayerList(MyGui.myController.inGamePlayer0.getPlayerName()))).getScore() + "");
 
         label1.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         label1.setTextFill(javafx.scene.paint.Color.valueOf("#6681c5"));
