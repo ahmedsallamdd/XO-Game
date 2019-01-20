@@ -3,47 +3,88 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="450.0" prefWidth="650.0" style="-fx-background-color: linear-gradient(#173551 0%,#62828F 50%,#173551 100%);" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="650.0" style="-fx-background-color: linear-gradient( #247ba0 0%,#70c1b3 50% ,#247ba0 100%);" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button layoutX="365.0" layoutY="126.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="218.0" style="-fx-background-color: #d76767; -fx-background-radius: 10;" text="Single Player" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="22.0" />
-         </font></Button>
-      <ListView layoutX="14.0" layoutY="12.0" prefHeight="390.0" prefWidth="274.0" />
-      <Label layoutX="340.0" layoutY="16.0" text="Player :" textFill="#ebe2e2">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font></Label>
-      <Label layoutX="395.0" layoutY="16.0" text="Sallam" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font></Label>
-      <Label layoutX="477.0" layoutY="16.0" text="Score :" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font></Label>
-      <Label layoutX="530.0" layoutY="16.0" text="123" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font></Label>
-      <Button layoutX="14.0" layoutY="411.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="274.0" style="-fx-background-color: #d76767; -fx-border-radius: 10;" text="Refresh" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font></Button>
-      <ImageView fitHeight="41.0" fitWidth="37.0" layoutX="606.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+      <VBox layoutX="389.0" layoutY="178.0" spacing="20.0" AnchorPane.bottomAnchor="130.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="190.0">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="150.0" prefWidth="283.0" style="-fx-background-color: #0b3c49; -fx-background-radius: 10;" text="Single Player" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="22.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" prefHeight="150.0" prefWidth="283.0" style="-fx-background-color: #0b3c49; -fx-background-radius: 10;" text="My Records" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="22.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+      <ImageView fitHeight="31.0" fitWidth="35.0" layoutX="610.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="13.0">
          <image>
             <Image url="@../images/signout.png" />
          </image>
       </ImageView>
-      <Button layoutX="368.0" layoutY="258.0" mnemonicParsing="false" prefHeight="99.0" prefWidth="218.0" style="-fx-background-color: #d76767; -fx-background-radius: 10;" text="Previous Games" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="22.0" />
-         </font>
-      </Button>
+      <VBox layoutX="14.0" layoutY="12.0" prefWidth="247.0" spacing="7.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="25.0">
+         <children>
+            <VBox>
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="15.0" prefWidth="247.0" spacing="14.0">
+                     <children>
+                        <Label text="Player :" textAlignment="CENTER" textFill="#03c2ff">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                        </Label>
+                        <Label text="Sallam" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefWidth="247.0" spacing="14.0">
+                     <children>
+                        <Label alignment="CENTER" text="Score :" textAlignment="CENTER" textFill="#03c2ff">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                        </Label>
+                        <Label text="123" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <ListView prefHeight="440.0" prefWidth="247.0" style="-fx-background-radius: 10;" />
+            <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="247.0" style="-fx-background-color: #0b3c49; -fx-background-radius: 10;" text="Refresh List" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

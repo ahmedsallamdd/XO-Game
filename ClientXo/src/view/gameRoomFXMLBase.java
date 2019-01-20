@@ -114,7 +114,8 @@ public class gameRoomFXMLBase extends AnchorPane {
         setId("AnchorPane");
         setPrefHeight(500.0);
         setPrefWidth(1000.0);
-        setStyle("-fx-background-color: linear-gradient( #173551 0%,#62828f 50% ,#173551 100%);");
+        setStyle("-fx-background-color: linear-gradient( #247ba0 0%,#70c1b3 50% ,#247ba0 100%)"
+                + ";");
 
         borderPane.setLayoutY(-2.0);
         borderPane.setPrefHeight(600.0);
