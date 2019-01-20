@@ -2,6 +2,7 @@ package serverxo;
 
 import commontxo.ClientCallBack;
 import commontxo.GameRoom;
+import commontxo.GameState;
 import commontxo.Player;
 import commontxo.PlayerList;
 import commontxo.ServerCallBack;
@@ -39,8 +40,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     HashMap<String, String> clientMapGameRoom = new HashMap<>();
 
     HashMap<String, GameRoom> gameRooms = new HashMap<>();//for fast acces
-    //TODO Handle Send Request
-    ArrayList<Pair<String>> notifications = new ArrayList<>();//for fast acces
+
+    ArrayList<Pair<String>> notifications = new ArrayList<>();
 
     public void IntializePlayersList() {
         Player p;
@@ -144,6 +145,10 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
 
             joinChatRoom(myUserName, oppesiteUserName);
 
+            GameState gameState = new GameState(myUserName, oppesiteUserName, new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2}, 0);
+            clients.get(myUserName).setGameState(gameState);
+            clients.get(oppesiteUserName).setGameState(gameState);
+
             //start game gui 
             clients.get(myUserName).startGame("player");
             clients.get(oppesiteUserName).startGame("player");
@@ -220,6 +225,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             //to start game from last played step
             clients.get(myUserName).setGameState(
                     gameRooms.get(roomName).getPlayers().get(usersNames.get(0)).getGameState());
+
             for (int i = 1; i < gameRooms.get(roomName).getPlayers().size(); i++) {
                 clients.get(myUserName).addPlayerToGameRoom(usersNames.get(i),
                         gameRooms.get(roomName).getPlayers().get(usersNames.get(i)));

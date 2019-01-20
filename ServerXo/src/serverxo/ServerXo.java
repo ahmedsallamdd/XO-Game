@@ -43,8 +43,9 @@ public class ServerXo extends Application {
                     root.closeServer(root.Service);
                 } catch (NoSuchObjectException ex) {
                     Logger.getLogger(ServerXo.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    Platform.exit();
                 }
-                Platform.exit();
             } else {
                 event.consume();
             }

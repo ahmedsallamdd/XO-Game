@@ -82,9 +82,10 @@ public class MyGui extends Application {
                 try {
                     MyGui.myController.leaveServer();
                     myController.myModle.currentShowenAlerts.remove(alert);
-                    Platform.exit();
                 } catch (RemoteException ex) {
                     Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    Platform.exit();
                 }
             } else {
                 event.consume();
@@ -224,13 +225,10 @@ public class MyGui extends Application {
             a.setTitle("Offline");
             a.setHeaderText("Server is Down, try again later.");
             myController.myModle.currentShowenAlerts.add(a);
-            if (a.showAndWait().get() == ok) {
-                createLoginScreen();
-                myController.myModle.currentShowenAlerts.remove(a);
-            }
-        }
-        //            signOut();
-        );
+            a.showAndWait();
+            createLoginScreen();
+            myController.myModle.currentShowenAlerts.remove(a);
+        });
     }
 
     void showAlert(String title, String headerText, String message) {
@@ -243,20 +241,26 @@ public class MyGui extends Application {
             a.setTitle(title);
             a.setHeaderText(headerText);
             myController.myModle.currentShowenAlerts.add(a);
-
-            a.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
-                if (myController.myModle.currentShowenAlerts.contains(a)) {
-                    myController.myModle.currentShowenAlerts.remove(a);
-                }
-            });
-            Optional<ButtonType> result = a.showAndWait();
-            result.ifPresent(res -> {
-                if (res.equals(ok)) {
-                    if (myController.myModle.currentShowenAlerts.contains(a)) {
-                        myController.myModle.currentShowenAlerts.remove(a);
-                    }
-                }
-            });
+//<<<<<<< HEAD
+//
+//            a.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+//                if (myController.myModle.currentShowenAlerts.contains(a)) {
+//                    myController.myModle.currentShowenAlerts.remove(a);
+//                }
+//            });
+//            Optional<ButtonType> result = a.showAndWait();
+//            result.ifPresent(res -> {
+//                if (res.equals(ok)) {
+//                    if (myController.myModle.currentShowenAlerts.contains(a)) {
+//                        myController.myModle.currentShowenAlerts.remove(a);
+//                    }
+//                }
+//            });
+//=======
+            a.showAndWait();
+            if (myController.myModle.currentShowenAlerts.contains(a)) {
+                myController.myModle.currentShowenAlerts.remove(a);
+            }
         });
     }
 }

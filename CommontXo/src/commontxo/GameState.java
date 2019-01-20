@@ -11,12 +11,42 @@ import java.io.Serializable;
  *
  * @author Abdo Amin
  */
-public class GameState implements Serializable{
-    int[] positions ;
-     int activePlayer ;
+public class GameState implements Serializable {
+
+    String inGamePlayer0;
+    String inGamePlayer1;
+    int[] positions;
+    int activePlayer;
+
+    public GameState(String inGamePlayer0, String inGamePlayer1, int[] positions, int activePlayer) {
+        this.inGamePlayer0 = inGamePlayer0;
+        this.inGamePlayer1 = inGamePlayer1;
+        this.positions = positions;
+        this.activePlayer = activePlayer;
+    }
+
+    public String getInGamePlayer0() {
+        return inGamePlayer0;
+    }
+
+    public String getInGamePlayer1() {
+        return inGamePlayer1;
+    }
 
     public int[] getPositions() {
         return positions;
+    }
+
+    public int getActivePlayer() {
+        return activePlayer;
+    }
+
+    public void setInGamePlayer0(String inGamePlayer0) {
+        this.inGamePlayer0 = inGamePlayer0;
+    }
+
+    public void setInGamePlayer1(String inGamePlayer1) {
+        this.inGamePlayer1 = inGamePlayer1;
     }
 
     public void setPositions(int[] positions) {
@@ -27,13 +57,4 @@ public class GameState implements Serializable{
         this.activePlayer = activePlayer;
     }
 
-    public int getActivePlayer() {
-        return activePlayer;
-    }
-
-    public GameState(int[] positions, int activePlayer) {
-        this.positions = positions;
-        this.activePlayer = activePlayer;
-    }
-    
 }

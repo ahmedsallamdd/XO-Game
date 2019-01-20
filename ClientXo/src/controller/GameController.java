@@ -47,14 +47,13 @@ public class GameController {
         {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
         {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
 
-    //TODO Send Game Variable to all spectator
     private int movesCounter = 0;
-    private boolean isFinished = false;
+    public boolean isFinished = false;
     public int activePlayer = 0;
 
     public ArrayList<String> names;
-    InGamePlayer inGamePlayer0;
-    InGamePlayer inGamePlayer1;
+    public InGamePlayer inGamePlayer0;
+    public InGamePlayer inGamePlayer1;
     String roomName;
     boolean isYourTurn;
 
@@ -79,20 +78,15 @@ public class GameController {
     }
 
     public void startGameRoom() {
-        //Note to myself: don't worry..the two players have the same tarteeb.
-        names = new ArrayList<>(myModle.gameRoom.getPlayers().keySet());
-//        reDrawGameBoard();
-        inGamePlayer0.setPlayerName(names.get(0));
         inGamePlayer0.setPlayerSymbol(0);
         inGamePlayer0.setIsMyTurn(true);
 
-        inGamePlayer1.setPlayerName(names.get(1));
         inGamePlayer1.setPlayerSymbol(1);
         inGamePlayer1.setIsMyTurn(false);
 
         roomName = myModle.gameRoom.getRoomName();
 
-        isYourTurn = myModle.me.getPlayerUserName().equals(names.get(0));
+        isYourTurn = myModle.me.getPlayerUserName().equals(inGamePlayer0.getPlayerName());
         System.out.println(isYourTurn);
 
         reDrawGameBoard();
@@ -112,7 +106,6 @@ public class GameController {
         stepList.add(new StepComplexType(activePlayer, posPlayed));
         movesCounter++;
 
-//        System.out.println("[" + posPlayed + "]" + " = " + symbol);
         reDrawGameBoard();
         checkGameResult();
         switchTurns();
@@ -123,15 +116,6 @@ public class GameController {
         int posPlayed = Integer.valueOf(components[1]);
         System.out.println(myModle.gameRoom.getPlayers().size());
         try {
-//            for (ClientCallBack client : myModle.gameRoom.getPlayers().values()) {
-//                if (isYourTurn == true) {
-//                    client.play(inGamePlayer0.getPlayerName(), posPlayed);
-////                    isYourTurn = false;
-//                }
-////                else {//deprecated
-////                    client.play(inGamePlayer1.getPlayerName(), posPlayed);
-////                }
-//            }
             ArrayList<ClientCallBack> playerClientlist = new ArrayList(myModle.gameRoom.getPlayers().values());
             for (int i = 1; i < playerClientlist.size(); i++) {
                 playerClientlist.get(i).play(posPlayed);
@@ -195,10 +179,9 @@ public class GameController {
                                     .notifiyGameResult(roomName, inGamePlayer0.getPlayerName());
                             myModle.me.setPlayerScore(myModle.me.getPlayerScore() + 10);
                         }
-                        gameRecord = new GameComplexType(stepList, names.get(0) + " is a winner");
+                        gameRecord = new GameComplexType(stepList, inGamePlayer0.getPlayerName() + " is a winner");
 
                         result = inGamePlayer0.getPlayerName();
-//                        winDialog(result);
                     } catch (RemoteException ex) {
                         Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -214,9 +197,8 @@ public class GameController {
                         if (myModle.me.getPlayerUserName().equals(inGamePlayer1.getPlayerName())) {
                             myModle.me.setPlayerScore(myModle.me.getPlayerScore() + 10);
                         }
-                        gameRecord = new GameComplexType(stepList, names.get(1) + " is a winner");
+                        gameRecord = new GameComplexType(stepList, inGamePlayer1.getPlayerName() + " is a winner");
                         result = inGamePlayer1.getPlayerName();
-//                        winDialog(result);
                     } catch (RemoteException ex) {
                         Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -229,7 +211,6 @@ public class GameController {
                         myModle.getServerInstance().notifiyGameResult(roomName, "DRAW");
                     }
                     gameRecord = new GameComplexType(stepList, "DRAW");
-//                    winDialog("DRAW");
                     isFinished = true;
                     return;
 
@@ -241,9 +222,6 @@ public class GameController {
     }
 
     public void winDialog(String winner) {
-        if (gameRoomFXMLBase.timer != null) {
-            gameRoomFXMLBase.timer.cancel();
-        }
         ButtonType yes = new ButtonType("yes", ButtonBar.ButtonData.OK_DONE);
         ButtonType no = new ButtonType("no", ButtonBar.ButtonData.CANCEL_CLOSE);
         if (!winner.equals("DRAW")) {
@@ -254,7 +232,7 @@ public class GameController {
 
         Platform.runLater(() -> {
             Alert a = new Alert(Alert.AlertType.INFORMATION,
-                    ".",
+                    "",
                     yes,
                     no);
             a.setTitle("Result");
@@ -263,15 +241,11 @@ public class GameController {
             Optional<ButtonType> option = a.showAndWait();
             if (option.get() == yes) {
                 saveGameRecordToXml();
-                myGUI.createMainScreen();
-                myModle.currentShowenAlerts.remove(a);
-            } else if (option.get() == no) {
-                myGUI.createMainScreen();
-                myModle.currentShowenAlerts.remove(a);
-            } else {
-                myModle.currentShowenAlerts.remove(a);
             }
+            myModle.currentShowenAlerts.remove(a);
             resetGameState();
+            myGUI.createMainScreen();
+
         });
     }
 
@@ -287,7 +261,7 @@ public class GameController {
 
             marshel.marshal(gameRecord,
                     new File(".\\records\\"
-                            + names.get(0) + "VS" + names.get(1) + " " + formattedDate + ".xml"));
+                            + inGamePlayer0.getPlayerName() + "VS" + inGamePlayer1.getPlayerName() + " " + formattedDate + ".xml"));
 
             System.out.println("Record is done");
             marshel.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -321,7 +295,7 @@ public class GameController {
             gameRecord.setStep(steps);
 
         } catch (ParserConfigurationException | SAXException | IOException ex) {
-            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+            showAlert("Sorry", "Bad record", "Can't rendering this recording.");
         }
         return gameRecord;
     }
@@ -338,7 +312,6 @@ public class GameController {
 
     //current player surrender or leave spectate.
     public void withdraw() throws RemoteException {
-        //remove Mysilfe ...
         ArrayList<String> temp = new ArrayList<>(myModle.gameRoom.getPlayers().keySet());
         if (temp.indexOf(myModle.me.getPlayerUserName()) > 1) {
             myModle.gameRoom.getPlayers().forEach((e, client) -> {
@@ -379,6 +352,7 @@ public class GameController {
                 }
             }else
                 return "Server is down now." + "\n" + "Try again later.";
+
         } catch (RemoteException ex) {
             serverUnavilable();
         }
@@ -401,16 +375,15 @@ public class GameController {
 
     public void showPlayerList() throws RemoteException {
         try {
-            ArrayList<PlayerList> list = myModle.getServerInstance().initOnlineList();
+            myModle.onlineList = myModle.getServerInstance().initOnlineList();
 
-            for (PlayerList pl : list) {
+            for (PlayerList pl : myModle.onlineList) {
                 if (pl.getName().equals(myModle.me.getPlayerUserName())) {
-                    list.remove(pl);
+                    myModle.onlineList.remove(pl);
                     break;
                 }
-
             }
-            myGUI.getPlayerListData(list);
+            myGUI.getPlayerListData(myModle.onlineList);
         } catch (java.rmi.ConnectException e) {
             serverUnavilable();
         }
@@ -432,10 +405,12 @@ public class GameController {
     public void setGameState(GameState gameState) {
         this.positions = gameState.getPositions();
         this.activePlayer = gameState.getActivePlayer();
+        this.inGamePlayer0.setPlayerName(gameState.getInGamePlayer0());
+        this.inGamePlayer1.setPlayerName(gameState.getInGamePlayer1());
     }
 
     public GameState getGameState() {
-        return new GameState(positions, activePlayer);
+        return new GameState(inGamePlayer0.getPlayerName(), inGamePlayer1.getPlayerName(), positions, activePlayer);
     }
 
     public void showRequestNotification(String oppesiteUserName) {

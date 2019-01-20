@@ -152,10 +152,13 @@ public class ServerAppFxmlBase extends AnchorPane {
 //                obj.clients.get(player.getPlayerUserName()).serverUnavilable();
             }
 
-            for (Map.Entry<String, ClientCallBack> entry : obj.clients.entrySet()) {
-                entry.getValue().serverUnavilable();
-//               obj.leaveServer(entry.getKey());
-            }
+            obj.clients.forEach((a,client)->{
+                try {
+                    client.serverUnavilable();
+                } catch (RemoteException ex) {
+                    System.out.println("This Client is out aready");
+                }
+            });
 
             reg.unbind(Service);
             UnicastRemoteObject.unexportObject(obj, true);
