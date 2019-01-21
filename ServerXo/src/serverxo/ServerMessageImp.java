@@ -32,7 +32,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     static String dbName = "gamexo";
     static String url = "jdbc:mysql://localhost:3306/" + dbName;
     static String username = "root";
-    static String password = "0105583448";
+    static String password = "AbdoAmin01";
     static ArrayList<Player> PlayersInformation;
 
     HashMap<String, ClientCallBack> clients = new HashMap<>();
@@ -281,19 +281,20 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     //// some Rawshana
     @Override
     public boolean signUp(String userName, String Name, String upassword, String Email) throws RemoteException {
+        Player newPlayer = null ;
         try {
             for (Player player : PlayersInformation) {
                 if (player.getPlayerUserName().equals(userName)) {
                     return false;
                 }
             }
-            Player player = new Player();
-            player.setPlayerUserName(userName);
-            player.setPlayerName(Name);
-            player.setPlayerPassword(upassword);
-            player.setPlayerEmail(Email);
-            player.setPlayerState("online");
-            PlayersInformation.add(player);
+            newPlayer = new Player();
+            newPlayer.setPlayerUserName(userName);
+            newPlayer.setPlayerName(Name);
+            newPlayer.setPlayerPassword(upassword);
+            newPlayer.setPlayerEmail(Email);
+            newPlayer.setPlayerState("offline");
+            PlayersInformation.add(newPlayer);
             String query = "INSERT INTO `gamexo`.`user` "
                     + "(`UserName`, `Name`, `UserEmail`, `UserPassword`) values (?, ?, ?, ?)";
             PreparedStatement p = (PreparedStatement) connection.prepareStatement(query);
@@ -305,6 +306,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
+            PlayersInformation.remove(newPlayer);
             return false;
         }
     }
