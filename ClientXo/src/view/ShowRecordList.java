@@ -86,7 +86,6 @@ public class ShowRecordList extends AnchorPane {
                 timer.purge();
                 timer = null;
             }
-
             clearAllImages();
             imagesOptacity(0);
 

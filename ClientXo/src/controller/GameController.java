@@ -2,7 +2,6 @@ package controller;
 
 import model.InGamePlayer;
 import model.GameModle;
-import commontxo.ClientCallBack;
 import commontxo.GameState;
 import commontxo.Player;
 import commontxo.PlayerList;
@@ -115,13 +114,13 @@ public class GameController {
         int posPlayed = Integer.valueOf(components[1]);
         System.out.println(myModle.gameRoom.getPlayers().size());
         try {
-            ArrayList<ClientCallBack> playerClientlist = new ArrayList(myModle.gameRoom.getPlayers().values());
-            for (int i = 1; i < playerClientlist.size(); i++) {
-                playerClientlist.get(i).play(posPlayed);
+            ArrayList<String> playerClientlist = new ArrayList(myModle.gameRoom.getPlayers().keySet());
+            for (int i = 0; i < playerClientlist.size(); i++) {
+                if (!inGamePlayer0.getPlayerName().equals(playerClientlist.get(i))) {
+                    myModle.gameRoom.getPlayers().get(playerClientlist.get(i)).play(posPlayed);
+                }
             }
-            if (playerClientlist.size() > 0) {
-                playerClientlist.get(0).play(posPlayed);
-            }
+            myModle.gameRoom.getPlayers().get(inGamePlayer0.getPlayerName()).play(posPlayed);
         } catch (RemoteException ex) {
             serverUnavilable();
         }

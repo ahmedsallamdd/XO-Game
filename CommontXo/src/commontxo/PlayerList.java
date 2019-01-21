@@ -53,6 +53,9 @@ public class PlayerList implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return name.equals(((PlayerList) obj).name);
+        if (obj != null) {
+            return name.equals(((PlayerList) obj).name);
+        }
+        return false;
     }
 }
