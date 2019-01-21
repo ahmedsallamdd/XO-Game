@@ -272,6 +272,11 @@ public class ShowRecordList extends AnchorPane {
         exit.setImage(new Image(getClass().getResource("../images/backward.png").toExternalForm()));
         exit.setOnMouseClicked((e -> {
             myGui.createMainScreen();
+            if (isTimerRunning == true && timer != null) {
+                timer.cancel();
+                timer.purge();
+                timer = null;
+            }
         }));
 
         getChildren().add(play);

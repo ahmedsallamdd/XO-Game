@@ -46,7 +46,7 @@ public class LoginFXBase extends AnchorPane {
         setNodeOrientation(javafx.geometry.NodeOrientation.LEFT_TO_RIGHT);
         setPrefHeight(650.0);
         setPrefWidth(600.0);
-        setStyle("-fx-background-color: linear-gradient( #173551 0%,#62828f 50% ,#173551 100%);");
+        setStyle("-fx-background-color: linear-gradient( #247ba0 0%,#70c1b3 50% ,#247ba0 100%);");
         getStyleClass().add(".border");
         getStylesheets().add("/trydesign/../myCss.css");
 

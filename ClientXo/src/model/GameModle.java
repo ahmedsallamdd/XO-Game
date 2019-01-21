@@ -15,10 +15,13 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import view.gameRoomFXMLBase;
 
 /**
@@ -75,7 +78,24 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     @Override
     public void leaveGameRoom(String winner) throws RemoteException {
-        myController.winDialog(winner);
+        if (gameRoomFXMLBase.mode.equals("player")) {
+            myController.winDialog(winner);
+        } else {
+            Platform.runLater(() -> {
+                ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+                Alert a = new Alert(Alert.AlertType.INFORMATION,
+                        "",
+                        ok);
+                a.setTitle("Result");
+                a.setHeaderText(winner + " has won!");
+                currentShowenAlerts.add(a);
+                a.showAndWait();
+
+                currentShowenAlerts.remove(a);
+                myController.resetGameState();
+                myController.myGUI.createMainScreen();
+            });
+        }
         gameRoom = null;
     }
 

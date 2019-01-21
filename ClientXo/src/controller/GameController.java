@@ -1,4 +1,3 @@
-
 package controller;
 
 import model.InGamePlayer;
@@ -15,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -39,7 +37,7 @@ import xml.StepComplexType;
 
 public class GameController {
 
-    MyGui myGUI;
+    public MyGui myGUI;
     public GameModle myModle;
 
     int[] positions = new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2};
@@ -64,7 +62,6 @@ public class GameController {
 
     public GameController(MyGui g) {
         myGUI = g;
-        stepList = new ArrayList<>();
 //        readFromXML();
 
         try {
@@ -90,6 +87,8 @@ public class GameController {
         System.out.println(isYourTurn);
 
         reDrawGameBoard();
+        stepList = new ArrayList<>();
+        
     }
 
     void getSelectedImgView(String id) {
@@ -123,7 +122,6 @@ public class GameController {
             if (playerClientlist.size() > 0) {
                 playerClientlist.get(0).play(posPlayed);
             }
-
         } catch (RemoteException ex) {
             serverUnavilable();
         }
@@ -179,7 +177,7 @@ public class GameController {
                                     .notifiyGameResult(roomName, inGamePlayer0.getPlayerName());
                             myModle.me.setPlayerScore(myModle.me.getPlayerScore() + 10);
                         }
-                        gameRecord = new GameComplexType(stepList, inGamePlayer0.getPlayerName() + " is a winner");
+                        gameRecord = new GameComplexType(stepList, inGamePlayer0.getPlayerName() + " is the winner");
 
                         result = inGamePlayer0.getPlayerName();
                     } catch (RemoteException ex) {
@@ -197,26 +195,27 @@ public class GameController {
                         if (myModle.me.getPlayerUserName().equals(inGamePlayer1.getPlayerName())) {
                             myModle.me.setPlayerScore(myModle.me.getPlayerScore() + 10);
                         }
-                        gameRecord = new GameComplexType(stepList, inGamePlayer1.getPlayerName() + " is a winner");
+                        gameRecord = new GameComplexType(stepList, inGamePlayer1.getPlayerName() + " is the winner");
                         result = inGamePlayer1.getPlayerName();
                     } catch (RemoteException ex) {
                         Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     return;
                 }
-            } else if (movesCounter == 9 && isFinished != true) {
-                System.out.println("It's a draw!");
-                try {
-                    if (myModle.me.getPlayerUserName().equals(inGamePlayer0.getPlayerName())) {
-                        myModle.getServerInstance().notifiyGameResult(roomName, "DRAW");
-                    }
-                    gameRecord = new GameComplexType(stepList, "DRAW");
-                    isFinished = true;
-                    return;
-
-                } catch (RemoteException ex) {
-                    serverUnavilable();
+            }
+        }
+        if (isFinished == false && movesCounter == 9) {
+            System.out.println("It's a draw!");
+            try {
+                if (myModle.me.getPlayerUserName().equals(inGamePlayer0.getPlayerName())) {
+                    myModle.getServerInstance().notifiyGameResult(roomName, "DRAW");
                 }
+                gameRecord = new GameComplexType(stepList, "DRAW");
+                isFinished = true;
+                return;
+
+            } catch (RemoteException ex) {
+                serverUnavilable();
             }
         }
     }
@@ -227,7 +226,7 @@ public class GameController {
         if (!winner.equals("DRAW")) {
             header = winner + " has won!" + "\n" + "Do you want record this game";
         } else {
-            header = "DRAW";
+            header = "DRAW" + "\n" + "Do you want record this game";
         }
 
         Platform.runLater(() -> {
@@ -350,8 +349,9 @@ public class GameController {
                 } else if (p != null && p.getPlayerState().equals("Already logged in")) {
                     return p.getPlayerState();
                 }
-            }else
+            } else {
                 return "Server is down now." + "\n" + "Try again later.";
+            }
 
         } catch (RemoteException ex) {
             serverUnavilable();
@@ -474,6 +474,7 @@ public class GameController {
         movesCounter = 0;
         isFinished = false;
         activePlayer = 0;
+//        stepList.clear();
     }
 
 }
