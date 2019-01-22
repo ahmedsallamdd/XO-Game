@@ -20,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.text.Font;
 
 public class ServerAppFxmlBase extends AnchorPane {
@@ -42,47 +43,49 @@ public class ServerAppFxmlBase extends AnchorPane {
         btnRefresh = new Button();
 
         setId("AnchorPane");
-        setPrefHeight(729.0);
-        setPrefWidth(888.0);
+        setPrefHeight(600.0);
+        setPrefWidth(650.0);
+        setStyle("-fx-background-color:  linear-gradient( #247ba0 0%,#70c1b3 50% ,#247ba0 100%);");
 
         listView.setLayoutX(14.0);
         listView.setLayoutY(9.0);
         listView.setPrefHeight(568.0);
         listView.setPrefWidth(853.0);
 
-        AnchorPane.setTopAnchor(btnOpen, 620.0);
-        btnOpen.setLayoutX(172.0);
-        btnOpen.setLayoutY(631.0);
+        AnchorPane.setTopAnchor(btnOpen, 605.0);
+        btnOpen.setLayoutX(120.0);
+        btnOpen.setLayoutY(625.0);
         btnOpen.setMnemonicParsing(false);
         btnOpen.setPrefHeight(44.0);
-        btnOpen.setPrefWidth(87.0);
-        btnOpen.setStyle("-fx-background-color: #ff7764; -fx-background-radius: 10;");
-        btnOpen.setText("Open");
+        btnOpen.setPrefWidth(200.0);
+        btnOpen.setStyle("-fx-background-color:  #0b3c49; -fx-background-radius: 10;");
+        btnOpen.setText("Open Server");
         btnOpen.setTextFill(javafx.scene.paint.Color.WHITE);
         btnOpen.setFont(new Font(19.0));
 
-        AnchorPane.setTopAnchor(btnOpen, 620.0);
+        AnchorPane.setTopAnchor(btnRefresh, 605.0);
         btnRefresh.setLayoutX(370.0);
-        btnRefresh.setLayoutY(625.0);
+        btnRefresh.setLayoutY(610.0);
         btnRefresh.setMnemonicParsing(false);
         btnRefresh.setPrefHeight(44.0);
-        btnRefresh.setPrefWidth(87.0);
-        btnRefresh.setStyle("-fx-background-color: #ff7764; -fx-background-radius: 10;");
-        btnRefresh.setText("refresh");
+        btnRefresh.setPrefWidth(200.0);
+        btnRefresh.setStyle("-fx-background-color:  #0b3c49; -fx-background-radius: 10;");
+        btnRefresh.setText("Refresh Players List");
         btnRefresh.setTextFill(javafx.scene.paint.Color.WHITE);
         btnRefresh.setFont(new Font(19.0));
 
-        AnchorPane.setTopAnchor(btnClose, 625.0);
-        btnClose.setLayoutX(574.0);
-        btnClose.setLayoutY(631.0);
+        AnchorPane.setTopAnchor(btnClose, 605.0);
+        btnClose.setLayoutX(600.0);
+        btnClose.setLayoutY(625.0);
         btnClose.setMnemonicParsing(false);
         btnClose.setPrefHeight(44.0);
-        btnClose.setPrefWidth(87.0);
-        btnClose.setStyle("-fx-background-color: #ff7764; -fx-background-radius: 10;");
-        btnClose.setText("Close");
+        btnClose.setPrefWidth(200.0);
+        btnClose.setStyle("-fx-background-color:  #0b3c49; -fx-background-radius: 10;");
+        btnClose.setText("Close Server");
         btnClose.setTextFill(javafx.scene.paint.Color.WHITE);
         btnClose.setFont(new Font(19.0));
-
+        btnClose.setDisable(true);
+        btnRefresh.setDisable(true);
         getChildren().add(listView);
         getChildren().add(btnOpen);
         getChildren().add(btnClose);
@@ -113,10 +116,10 @@ public class ServerAppFxmlBase extends AnchorPane {
 
     private void showList(ArrayList<Player> k) {
         if (k.size() != 0) {
-            playersInListView.add("Score" + "\t\t\t\t\t" + "UserName" + "\t \t \t \t \t" + "state");
+            playersInListView.add("Score" + "\t\t\t\t\t" + "state" + "\t \t \t \t \t" + " \t UserName");
         }
         for (Player player : k) {
-            playersInListView.add(player.getPlayerScore() + "\t \t \t \t \t    \t" + player.getPlayerUserName() + "\t \t \t \t \t   " + player.getPlayerState());
+            playersInListView.add(player.getPlayerScore() + "\t \t \t \t \t    \t" + player.getPlayerState() + "\t \t \t \t \t   " + player.getPlayerUserName());
 
         }
         ListProperty<String> listProperty = new SimpleListProperty<>();
@@ -136,6 +139,7 @@ public class ServerAppFxmlBase extends AnchorPane {
             }
             reg.rebind(Service, obj);
             btnClose.setDisable(false);
+            btnRefresh.setDisable(false);
             btnOpen.setDisable(true);
         } catch (RemoteException ex) {
             System.err.println(ex.getMessage() + "ok");
@@ -152,13 +156,10 @@ public class ServerAppFxmlBase extends AnchorPane {
 //                obj.clients.get(player.getPlayerUserName()).serverUnavilable();
             }
 
-            obj.clients.forEach((a,client)->{
-                try {
-                    client.serverUnavilable();
-                } catch (RemoteException ex) {
-                    System.out.println("This Client is out aready");
-                }
-            });
+            for (Map.Entry<String, ClientCallBack> entry : obj.clients.entrySet()) {
+                entry.getValue().serverUnavilable();
+//               obj.leaveServer(entry.getKey());
+            }
 
             reg.unbind(Service);
             UnicastRemoteObject.unexportObject(obj, true);
@@ -167,6 +168,7 @@ public class ServerAppFxmlBase extends AnchorPane {
             showList(obj.PlayersInformation);
             obj = null;
             btnClose.setDisable(true);
+            btnRefresh.setDisable(true);
             btnOpen.setDisable(false);
         } catch (RemoteException ex) {
             System.err.println(ex.getMessage() + "h");

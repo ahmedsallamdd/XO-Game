@@ -61,13 +61,11 @@ public class GameController {
 
     public GameController(MyGui g) {
         myGUI = g;
-//        readFromXML();
 
         try {
             myModle = new GameModle(this);
             inGamePlayer0 = new InGamePlayer();
             inGamePlayer1 = new InGamePlayer();
-
         } catch (RemoteException ex) {
             serverUnavilable();
         }

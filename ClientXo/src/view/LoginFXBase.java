@@ -86,10 +86,10 @@ public class LoginFXBase extends AnchorPane {
         passwordField.setFont(new Font(16.0));
 
         signInBtn.setMnemonicParsing(false);
-        signInBtn.setStyle("-fx-background-radius: 10; -fx-background-color: #ff7764;");
-        signInBtn.setText("SignIn");
-        signInBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fffbfb"));
-        signInBtn.setFont(new Font("Arial", 24.0));
+        signInBtn.setStyle("-fx-background-radius: 10; -fx-background-color: #0b3c49;");
+        signInBtn.setText("Sign in");
+        signInBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fff"));
+        signInBtn.setFont(new Font("System Bold", 18.0));
         VBox.setMargin(signInBtn, new Insets(0.0, 100.0, 20.0, 100.0));
 
         signInBtn.setOnAction((ActionEvent event) -> {
@@ -118,9 +118,7 @@ public class LoginFXBase extends AnchorPane {
                 }
             } else {
                 Alert alerForSignIn = new Alert(Alert.AlertType.WARNING);
-                // alerForSignIn.setTitle("Error");
                 alerForSignIn.setHeaderText(null);
-
                 alerForSignIn.setContentText("Fill all fileds!");
                 alerForSignIn.show();
 
@@ -128,11 +126,11 @@ public class LoginFXBase extends AnchorPane {
 
         });
         signUpBtn.setMnemonicParsing(false);
-        signUpBtn.setStyle("-fx-background-color: #ff7764; -fx-background-radius: 10;");
-        signUpBtn.setText("SignUp");
-        signUpBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fffdfd"));
+        signUpBtn.setStyle("-fx-background-color: #0b3c49; -fx-background-radius: 10;");
+        signUpBtn.setText("Sign up");
+        signUpBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fff"));
         VBox.setMargin(signUpBtn, new Insets(20.0, 0.0, 0.0, 0.0));
-        signUpBtn.setFont(new Font("Arial", 23.0));
+        signUpBtn.setFont(new Font("System Bold", 18.0));
         setOpaqueInsets(new Insets(0.0));
         signUpBtn.setOnAction((e) -> {
             myGui.createSignUpScreen();

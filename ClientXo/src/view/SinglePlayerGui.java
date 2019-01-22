@@ -63,15 +63,19 @@ public class SinglePlayerGui extends AnchorPane {
         this.parentScreen = parentScreen;
         
         setId("AnchorPane");
-        setPrefHeight(400.0);
+        setPrefHeight(650.0);
         setPrefWidth(600.0);
-        
-        gridPane.setAlignment(javafx.geometry.Pos.CENTER);
+        setStyle("-fx-background-color: linear-gradient( #247ba0 0%,#70c1b3 50% ,#247ba0 100%);;");
+
+        AnchorPane.setBottomAnchor(gridPane, 70.0);
+        AnchorPane.setLeftAnchor(gridPane, 60.0);
+        AnchorPane.setRightAnchor(gridPane, 60.0);
+        AnchorPane.setTopAnchor(gridPane, 70.0);
         gridPane.setGridLinesVisible(true);
-        gridPane.setLayoutX(28.0);
-        gridPane.setLayoutY(16.0);
-        gridPane.setPrefHeight(369.0);
-        gridPane.setPrefWidth(544.0);
+        gridPane.setLayoutX(60.0);
+        gridPane.setLayoutY(58.0);
+        gridPane.setPrefHeight(240.0);
+        gridPane.setPrefWidth(481.0);
         
         columnConstraints.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
         columnConstraints.setMinWidth(10.0);
@@ -96,10 +100,9 @@ public class SinglePlayerGui extends AnchorPane {
         rowConstraints1.setMinHeight(10.0);
         rowConstraints1.setPrefHeight(30.0);
         rowConstraints1.setVgrow(javafx.scene.layout.Priority.SOMETIMES);
-        setStyle("-fx-background-color: linear-gradient( #173551 0%,#62828f 50% ,#173551 100%);");
         
-        img_0.setFitHeight(120.0);
-        img_0.setFitWidth(180.0);
+        img_0.setFitHeight(170.0);
+        img_0.setFitWidth(160.0);
         img_0.setId("img_0");
         img_0.setOnMousePressed(this::changeImg);
         img_0.setPickOnBounds(true);
@@ -107,8 +110,8 @@ public class SinglePlayerGui extends AnchorPane {
         img_0.requestFocus();
         
         GridPane.setColumnIndex(img_1, 1);
-        img_1.setFitHeight(120.0);
-        img_1.setFitWidth(180.0);
+        img_1.setFitHeight(170.0);
+        img_1.setFitWidth(160.0);
         img_1.setId("img_1");
         img_1.setLayoutX(10.0);
         img_1.setLayoutY(12.0);
@@ -117,83 +120,69 @@ public class SinglePlayerGui extends AnchorPane {
         img_1.setPreserveRatio(true);
         
         GridPane.setColumnIndex(img_2, 2);
-        img_2.setFitHeight(120.0);
-        img_2.setFitWidth(180.0);
+        img_2.setFitHeight(170.0);
+        img_2.setFitWidth(160.0);
         img_2.setId("img_2");
-        img_2.setLayoutX(10.0);
-        img_2.setLayoutY(12.0);
         img_2.setOnMousePressed(this::changeImg);
         img_2.setPickOnBounds(true);
         img_2.setPreserveRatio(true);
         
         GridPane.setRowIndex(img_3, 1);
-        img_3.setFitHeight(120.0);
-        img_3.setFitWidth(180.0);
+        img_3.setFitHeight(170.0);
+        img_3.setFitWidth(160.0);
         img_3.setId("img_3");
-        img_3.setLayoutX(10.0);
-        img_3.setLayoutY(12.0);
         img_3.setOnMousePressed(this::changeImg);
         img_3.setPickOnBounds(true);
         img_3.setPreserveRatio(true);
         
         GridPane.setColumnIndex(img_4, 1);
         GridPane.setRowIndex(img_4, 1);
-        img_4.setFitHeight(120.0);
-        img_4.setFitWidth(180.0);
+        img_4.setFitHeight(170.0);
+        img_4.setFitWidth(160.0);
         img_4.setId("img_4");
-        img_4.setLayoutX(10.0);
-        img_4.setLayoutY(12.0);
         img_4.setOnMousePressed(this::changeImg);
         img_4.setPickOnBounds(true);
         img_4.setPreserveRatio(true);
         
         GridPane.setColumnIndex(img_5, 2);
         GridPane.setRowIndex(img_5, 1);
-        img_5.setFitHeight(120.0);
-        img_5.setFitWidth(180.0);
+        img_5.setFitHeight(170.0);
+        img_5.setFitWidth(160.0);
         img_5.setId("img_5");
-        img_5.setLayoutX(10.0);
-        img_5.setLayoutY(12.0);
         img_5.setOnMousePressed(this::changeImg);
         img_5.setPickOnBounds(true);
         img_5.setPreserveRatio(true);
         
         GridPane.setRowIndex(img_6, 2);
-        img_6.setFitHeight(120.0);
-        img_6.setFitWidth(180.0);
+        img_6.setFitHeight(170.0);
+        img_6.setFitWidth(160.0);
         img_6.setId("img_6");
-        img_6.setLayoutX(10.0);
-        img_6.setLayoutY(12.0);
         img_6.setOnMousePressed(this::changeImg);
         img_6.setPickOnBounds(true);
         img_6.setPreserveRatio(true);
         
         GridPane.setColumnIndex(img_7, 1);
         GridPane.setRowIndex(img_7, 2);
-        img_7.setFitHeight(120.0);
-        img_7.setFitWidth(180.0);
+        img_7.setFitHeight(170.0);
+        img_7.setFitWidth(160.0);
         img_7.setId("img_7");
-        img_7.setLayoutX(10.0);
-        img_7.setLayoutY(12.0);
         img_7.setOnMousePressed(this::changeImg);
         img_7.setPickOnBounds(true);
         img_7.setPreserveRatio(true);
         
         GridPane.setColumnIndex(img_8, 2);
         GridPane.setRowIndex(img_8, 2);
-        img_8.setFitHeight(120.0);
-        img_8.setFitWidth(180.0);
+        img_8.setFitHeight(170.0);
+        img_8.setFitWidth(160.0);
         img_8.setId("img_8");
-        img_8.setLayoutX(10.0);
-        img_8.setLayoutY(12.0);
         img_8.setOnMousePressed(this::changeImg);
         img_8.setPickOnBounds(true);
         img_8.setPreserveRatio(true);
         
         back.setFitHeight(41.0);
-        back.setFitWidth(37.0);
-        back.setLayoutX(10.0);
-        back.setLayoutY(400.0);
+        back.setFitWidth(35.0);
+        back.setLayoutX(14.0);
+        back.setLayoutY(14.0);
         back.setPickOnBounds(true);
         back.setPreserveRatio(true);
         back.setImage(new Image(getClass().getResource("../images/backward.png").toExternalForm()));
@@ -237,7 +226,6 @@ public class SinglePlayerGui extends AnchorPane {
         if (imgView.getImage() == null) {
             if (activePlayer == 0) {
                 imgView.setImage(new Image("/images/X_image.png"));
-                //System.out.println(imgView.getParent().getId());
                 modifyPositionsArray(mouseEvent.getPickResult().getIntersectedNode().getId(), activePlayer);
                 activePlayer = 1;
                 computerTurn();
@@ -250,7 +238,6 @@ public class SinglePlayerGui extends AnchorPane {
         int pos = Integer.valueOf(_id[1]);
         positions[pos] = player;
         checkGameResult(positions);
-//        System.out.println(pos);
     }
     
     protected void checkGameResult(int[] gameState) {
@@ -261,12 +248,10 @@ public class SinglePlayerGui extends AnchorPane {
                 
                 if (gameState[winningPosition[0]] == 0) {
                     System.out.println("X has won!");
-                    //movesCounter=9;
                     isFinished = true;
                     return;
                 } else {
                     System.out.println("O has won!");
-                    //movesCounter=9;   
                     isFinished = true;
                     return;
                 }
@@ -284,7 +269,6 @@ public class SinglePlayerGui extends AnchorPane {
             int pos = pickRandomImageView();
             String imgViewId = constructImgeViewId(pos);
             imgView = (ImageView) gridPane.lookup("#" + imgViewId);
-            //System.out.println(imgView.getId());
             imgView.setImage(new Image("/images/O_image.png"));
             modifyPositionsArray(imgViewId, 1);
             activePlayer = 0;
