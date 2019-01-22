@@ -20,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import view.ShowRecordList;
 import javafx.stage.WindowEvent;
+import view.RegisterFXBase;
 import view.SinglePlayerGui;
 import view.gameRoomFXMLBase;
 
@@ -31,6 +32,7 @@ public class MyGui extends Application {
     private Scene scene;
 
     WelcomeFXMLBase welcome;
+    RegisterFXBase signUpScreen;
     LoginFXBase login;
     SignUpFXBase signUp;
     MainScreenBase mainScreen;
@@ -102,9 +104,9 @@ public class MyGui extends Application {
     }
 
     public void createSignUpScreen() {
-        signUp = new SignUpFXBase(this);
-        scene = new Scene(signUp, signUp.getPrefWidth(), signUp.getPrefHeight());
-        scene.setRoot(signUp);
+        signUpScreen = new RegisterFXBase(this);
+        scene = new Scene(signUpScreen, signUpScreen.getPrefWidth(), signUpScreen.getPrefHeight());
+        scene.setRoot(signUpScreen);
         stage.setScene(scene);
 
     }
@@ -215,7 +217,7 @@ public class MyGui extends Application {
         stage.setScene(scene);
     }
 
-    void serverUnavilable() {
+   public void serverUnavilable() {
         ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
 
         Platform.runLater(() -> {
@@ -262,5 +264,9 @@ public class MyGui extends Application {
                 myController.myModle.currentShowenAlerts.remove(a);
             }
         });
+    }
+    public boolean setValidationForRegister(String userName,String name,String email,String password){
+    return myController.setValidationForRegister(userName, name, email, password);
+    
     }
 }

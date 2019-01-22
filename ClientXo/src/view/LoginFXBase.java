@@ -87,7 +87,7 @@ public class LoginFXBase extends AnchorPane {
 
         signInBtn.setMnemonicParsing(false);
         signInBtn.setStyle("-fx-background-radius: 10; -fx-background-color: #0b3c49;");
-        signInBtn.setText("Sign in");
+        signInBtn.setText("Log In");
         signInBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fff"));
         signInBtn.setFont(new Font("System Bold", 18.0));
         VBox.setMargin(signInBtn, new Insets(0.0, 100.0, 20.0, 100.0));
@@ -127,7 +127,7 @@ public class LoginFXBase extends AnchorPane {
         });
         signUpBtn.setMnemonicParsing(false);
         signUpBtn.setStyle("-fx-background-color: #0b3c49; -fx-background-radius: 10;");
-        signUpBtn.setText("Sign up");
+        signUpBtn.setText("Register");
         signUpBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fff"));
         VBox.setMargin(signUpBtn, new Insets(20.0, 0.0, 0.0, 0.0));
         signUpBtn.setFont(new Font("System Bold", 18.0));
