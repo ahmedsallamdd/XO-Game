@@ -1,5 +1,6 @@
 package view;
 
+import commontxo.ServerNullExeption;
 import controller.MyGui;
 import java.io.File;
 import java.util.ArrayList;
@@ -270,7 +271,11 @@ public class ShowRecordList extends AnchorPane {
         exit.setPreserveRatio(true);
         exit.setImage(new Image(getClass().getResource("../images/backward.png").toExternalForm()));
         exit.setOnMouseClicked((e -> {
-            myGui.createMainScreen();
+            try {
+                myGui.createMainScreen();
+            } catch (ServerNullExeption ex) {
+                myGui.myController.serverUnavilable();
+            }
             if (isTimerRunning == true && timer != null) {
                 timer.cancel();
                 timer.purge();
@@ -299,6 +304,7 @@ public class ShowRecordList extends AnchorPane {
         getChildren().add(exit);
         populateListView();
     }
+
     public void populateListView() {
 //        ObservableList<GameComplexType> list = FXCollections.observableArrayList(playerList);
 //        listView.setItems(list);

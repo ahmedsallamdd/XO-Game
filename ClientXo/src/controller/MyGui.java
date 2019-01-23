@@ -5,9 +5,9 @@ import view.LoginFXBase;
 import view.MainScreenBase;
 import view.WelcomeFXMLBase;
 import commontxo.PlayerList;
+import commontxo.ServerNullExeption;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -82,6 +82,8 @@ public class MyGui extends Application {
                 try {
                     MyGui.myController.leaveServer();
                     myController.myModle.currentShowenAlerts.remove(alert);
+                } catch (ServerNullExeption ex) {
+                    serverUnavilable();
                 } catch (RemoteException ex) {
                     Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
@@ -109,11 +111,11 @@ public class MyGui extends Application {
 
     }
 
-    public String checkIfUserExists(String username, String password) {
+    public String checkIfUserExists(String username, String password) throws ServerNullExeption {
         return myController.signIn(username, password);
     }
 
-    public void createMainScreen() {
+    public void createMainScreen() throws ServerNullExeption {
         mainScreen = new MainScreenBase(this);
         try {
             getPlayerListData();
@@ -125,11 +127,11 @@ public class MyGui extends Application {
         stage.setScene(scene);
     }
 
-    public boolean checkUserName(String userName) {
+    public boolean checkUserName(String userName) throws ServerNullExeption {
         return myController.checkUserName(userName);
     }
 
-    public boolean signUp(String userName, String fullName, String email, String password) throws RemoteException {
+    public boolean signUp(String userName, String fullName, String email, String password) throws RemoteException, ServerNullExeption {
         return myController.signUp(userName, fullName, email, password);
     }
 
@@ -137,16 +139,16 @@ public class MyGui extends Application {
         mainScreen.populateListView(playerList);
     }
 
-    public void getPlayerListData() throws RemoteException {
+    public void getPlayerListData() throws RemoteException, ServerNullExeption {
         myController.showPlayerList();
     }
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws ServerNullExeption {
         launch(args);
         myController.myModle.getServerInstance();
     }
 
-    public void signOut() {
+    public void signOut() throws ServerNullExeption {
         try {
             myController.signOut();
             createLoginScreen();
@@ -178,9 +180,9 @@ public class MyGui extends Application {
         mainScreen.refuseGameRequest(oppesiteUserName);
     }
 
-     public void createMultiPlayerGui() {
+    public void createMultiPlayerGui() {
         multiPlayerScreen = new gameRoomFXMLBase(this);
-        scene = new Scene(multiPlayerScreen, 
+        scene = new Scene(multiPlayerScreen,
                 this.multiPlayerScreen.getPrefWidth(), multiPlayerScreen.getPrefHeight());
         scene.setRoot(multiPlayerScreen);
         stage.setScene(scene);
@@ -188,7 +190,7 @@ public class MyGui extends Application {
 
     public void createMultiPlayerGui(gameRoomFXMLBase multiplayerScreen) {
         this.multiPlayerScreen = multiplayerScreen;
-        scene = new Scene(multiPlayerScreen, 
+        scene = new Scene(multiPlayerScreen,
                 this.multiPlayerScreen.getPrefWidth(), multiPlayerScreen.getPrefHeight());
         scene.setRoot(multiplayerScreen);
         stage.setScene(scene);

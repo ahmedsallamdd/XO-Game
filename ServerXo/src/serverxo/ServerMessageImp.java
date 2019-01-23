@@ -32,7 +32,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     static String dbName = "gamexo";
     static String url = "jdbc:mysql://localhost:3306/" + dbName;
     static String username = "root";
-    static String password = "0105583448";
+    static String password = "AbdoAmin01";
     static ArrayList<Player> PlayersInformation;
 
     HashMap<String, ClientCallBack> clients = new HashMap<>();
@@ -178,6 +178,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             });
         }
         if (gameRooms.containsKey(roomName)) {
+            GameState gameState = clients.get(roomName).getGameState();
             gameRooms.get(roomName).getPlayers().forEach((e, client) -> {
                 try {
                     client.leaveGameRoom(winnerUserName);
@@ -191,8 +192,9 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                     .filter(room -> !room.equals(roomName))
                     .collect(
                             Collectors.toMap(x -> x, y -> y)));
-            leftChatRoom(gameRooms.get(roomName).getPlayers().keySet().toArray()[0].toString(),
-                    gameRooms.get(roomName).getPlayers().keySet().toArray()[1].toString());
+            
+            leftChatRoom(gameState.getInGamePlayer0(),
+                    gameState.getInGamePlayer1());
             gameRooms.remove(roomName);
             updateList();
 

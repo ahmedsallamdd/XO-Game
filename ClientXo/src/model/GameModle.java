@@ -8,6 +8,7 @@ import commontxo.GameRoom;
 import commontxo.GameState;
 import commontxo.Player;
 import commontxo.PlayerList;
+import commontxo.ServerNullExeption;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -15,7 +16,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -44,14 +44,14 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
         this.myController = myController;
     }
 
-    public ServerCallBack getServerInstance() {
+    public ServerCallBack getServerInstance() throws ServerNullExeption {
         if (server == null) {
             try {
-                Registry reg = LocateRegistry.getRegistry(/*"10.0.1.182",*/1099);
+                Registry reg = LocateRegistry.getRegistry("10.0.1.182",1099);
                 server = (ServerCallBack) reg.lookup("GameService");
 
             } catch (RemoteException | NotBoundException e) {
-                System.err.println(e.getMessage());
+                throw new ServerNullExeption();
             }
         }
         return server;
@@ -93,7 +93,11 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
                 currentShowenAlerts.remove(a);
                 myController.resetGameState();
-                myController.myGUI.createMainScreen();
+                try {
+                    myController.myGUI.createMainScreen();
+                } catch (ServerNullExeption ex) {
+                    myController.serverUnavilable();
+                }
             });
         }
         gameRoom = null;
@@ -101,8 +105,12 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     @Override
     public void play(int position) throws RemoteException {
-        //get the playerSymbol from the playerUserName.
-        myController.modifyPositionsArray(position);
+        try {
+            //get the playerSymbol from the playerUserName.
+            myController.modifyPositionsArray(position);
+        } catch (ServerNullExeption ex) {
+            serverUnavilable();
+        }
     }
 
     @Override
@@ -110,6 +118,8 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
         Platform.runLater(() -> {
             try {
                 myController.showPlayerList();
+            } catch (ServerNullExeption ex) {
+                myController.serverUnavilable();
             } catch (RemoteException ex) {
                 System.out.println("Server Error");
             }
@@ -192,7 +202,11 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 //    }
     @Override
     public void acceptGameRequest(String oppesiteUserName) throws RemoteException {
-        myController.acceptGameRequest(oppesiteUserName);
+        try {
+            myController.acceptGameRequest(oppesiteUserName);
+        } catch (ServerNullExeption ex) {
+            myController.serverUnavilable();
+        }
     }
 
     @Override
@@ -207,8 +221,13 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     @Override
     public void serverUnavilable() throws RemoteException {
-        myController.signOut();
-        myController.serverUnavilable();
+        try {
+            myController.signOut();
+        } catch (ServerNullExeption ex) {
+        } finally {
+            myController.serverUnavilable();
+        }
+
     }
 
     @Override

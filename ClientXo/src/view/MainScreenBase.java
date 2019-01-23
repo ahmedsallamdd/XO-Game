@@ -1,6 +1,7 @@
 package view;
 
 import commontxo.PlayerList;
+import commontxo.ServerNullExeption;
 import controller.MyGui;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -130,14 +131,14 @@ public class MainScreenBase extends AnchorPane {
         label1.setFont(new Font("System Bold", 20.0));
 
         label1.setEffect(dropShadow1);
-        
+
         lblScore.setText("123");
         lblScore.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         lblScore.setTextFill(javafx.scene.paint.Color.WHITE);
         lblScore.setFont(new Font("System Bold", 20.0));
 
         lblScore.setEffect(dropShadow2);
-        
+
         Platform.runLater(() -> {
             lblScore.setText(String.valueOf(myGui.myController.myModle.me.getPlayerScore()));
         });
@@ -152,6 +153,8 @@ public class MainScreenBase extends AnchorPane {
         refresh.setOnAction((e -> {
             try {
                 myGui.getPlayerListData();
+            } catch (ServerNullExeption ex) {
+                myGui.myController.serverUnavilable();
             } catch (RemoteException ex) {
                 Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -166,7 +169,11 @@ public class MainScreenBase extends AnchorPane {
         imageView.setPreserveRatio(true);
         imageView.setImage(new Image(getClass().getResource("../images/signout.png").toExternalForm()));
         imageView.setOnMousePressed(e -> {
-            myGui.signOut();
+            try {
+                myGui.signOut();
+            } catch (ServerNullExeption ex) {
+                myGui.myController.serverUnavilable();
+            }
         });
         AnchorPane.setBottomAnchor(vBox0, 25.0);
         AnchorPane.setLeftAnchor(vBox0, 35.0);
@@ -232,15 +239,17 @@ public class MainScreenBase extends AnchorPane {
                     myGui.myController.myModle.currentShowenAlerts.remove(a);
                     myGui.myController.myModle.acceptGameRequest(oppesiteUserName);
                 } catch (RemoteException ex) {
-                   MyGui.myController.showAlert("Error", "No Connection", "This Client Not responde");
+                    MyGui.myController.showAlert("Error", "No Connection", "This Client Not responde");
                 }
             } else {
                 try {
                     myGui.myController.myModle.currentShowenAlerts.remove(a);
                     myGui.myController.myModle.getServerInstance()
                             .refuseGameRequest(myGui.myController.myModle.me.getPlayerUserName(), oppesiteUserName);
+                } catch (ServerNullExeption ex) {
+                    myGui.myController.serverUnavilable();
                 } catch (RemoteException ex) {
-                    MyGui.myController.serverUnavilable();
+                    Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });

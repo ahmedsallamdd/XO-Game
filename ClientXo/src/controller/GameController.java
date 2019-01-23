@@ -5,6 +5,7 @@ import model.GameModle;
 import commontxo.GameState;
 import commontxo.Player;
 import commontxo.PlayerList;
+import commontxo.ServerNullExeption;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -44,7 +45,7 @@ public class GameController {
         {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
         {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
 
-    private int movesCounter = 0;
+    public int movesCounter = 0;
     public boolean isFinished = false;
     public int activePlayer = 0;
 
@@ -87,7 +88,7 @@ public class GameController {
 
         reDrawGameBoard();
         stepList = new ArrayList<>();
-        
+
     }
 
     void getSelectedImgView(String id) {
@@ -99,7 +100,7 @@ public class GameController {
         }
     }
 
-    public void modifyPositionsArray(int posPlayed) {
+    public void modifyPositionsArray(int posPlayed) throws ServerNullExeption {
         positions[posPlayed] = activePlayer;
         stepList.add(new StepComplexType(activePlayer, posPlayed));
         movesCounter++;
@@ -161,7 +162,7 @@ public class GameController {
         return "img_" + String.valueOf(pos);
     }
 
-    private void checkGameResult() {
+    private void checkGameResult() throws ServerNullExeption {
         for (int[] winningPosition : winningPositions) {
             if (positions[winningPosition[0]] != 2
                     && positions[winningPosition[0]] == positions[winningPosition[1]]
@@ -220,6 +221,7 @@ public class GameController {
     }
 
     public void winDialog(String winner) {
+        isFinished = true;
         ButtonType yes = new ButtonType("yes", ButtonBar.ButtonData.OK_DONE);
         ButtonType no = new ButtonType("no", ButtonBar.ButtonData.CANCEL_CLOSE);
         if (!winner.equals("DRAW")) {
@@ -242,7 +244,11 @@ public class GameController {
             }
             myModle.currentShowenAlerts.remove(a);
             resetGameState();
-            myGUI.createMainScreen();
+            try {
+                myGUI.createMainScreen();
+            } catch (ServerNullExeption ex) {
+                    serverUnavilable();
+                }
 
         });
     }
@@ -299,7 +305,7 @@ public class GameController {
     }
 
     //Client Exit
-    public void leaveServer() throws RemoteException {
+    public void leaveServer() throws RemoteException, ServerNullExeption {
         if (myModle.me != null) {
             if (myModle.gameRoom != null) {
                 withdraw();
@@ -309,7 +315,7 @@ public class GameController {
     }
 
     //current player surrender or leave spectate.
-    public void withdraw() throws RemoteException {
+    public void withdraw() throws RemoteException, ServerNullExeption {
         ArrayList<String> temp = new ArrayList<>(myModle.gameRoom.getPlayers().keySet());
         if (temp.indexOf(myModle.me.getPlayerUserName()) > 1) {
             myModle.gameRoom.getPlayers().forEach((e, client) -> {
@@ -328,7 +334,7 @@ public class GameController {
         }
     }
 
-    public boolean signUp(String userName, String name, String email, String password) throws RemoteException {
+    public boolean signUp(String userName, String name, String email, String password) throws RemoteException, ServerNullExeption {
         if (myModle.getServerInstance().signUp(userName, name, password, email)) {
             signIn(userName, password);
             return true;
@@ -336,7 +342,7 @@ public class GameController {
         return false;
     }
 
-    public String signIn(String userName, String password) {
+    public String signIn(String userName, String password) throws ServerNullExeption {
 
         try {
             if (myModle.getServerInstance() != null) {
@@ -359,7 +365,7 @@ public class GameController {
         return "Wrong username or password!";
     }
 
-    public boolean checkUserName(String userName) {
+    public boolean checkUserName(String userName) throws ServerNullExeption {
         try {
             return myModle.getServerInstance().checkUserName(userName);
         } catch (RemoteException ex) {
@@ -372,7 +378,7 @@ public class GameController {
         System.out.println("playing with computer");
     }
 
-    public void showPlayerList() throws RemoteException {
+    public void showPlayerList() throws RemoteException, ServerNullExeption {
         try {
             myModle.onlineList = myModle.getServerInstance().initOnlineList();
 
@@ -389,7 +395,7 @@ public class GameController {
 
     }
 
-    public void signOut() throws RemoteException {
+    public void signOut() throws RemoteException, ServerNullExeption {
         try {
             myModle.getServerInstance().signOut(myModle.me);
         } catch (java.rmi.ConnectException e) {
@@ -420,7 +426,7 @@ public class GameController {
         myGUI.refuseGameRequest(oppesiteUserName);
     }
 
-    public void acceptGameRequest(String oppesiteUserName) throws RemoteException {
+    public void acceptGameRequest(String oppesiteUserName) throws RemoteException, ServerNullExeption {
         try {
             myModle.getServerInstance().startGameRoom(oppesiteUserName, myModle.me.getPlayerUserName());
         } catch (java.rmi.ConnectException e) {

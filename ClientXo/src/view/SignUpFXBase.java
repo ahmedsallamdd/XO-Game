@@ -1,5 +1,6 @@
 package view;
 
+import commontxo.ServerNullExeption;
 import controller.MyGui;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
@@ -25,9 +26,8 @@ public class SignUpFXBase extends AnchorPane {
     protected final TextField userNameField;
     protected final TextField fullNameField;
     protected final TextField emailField;
-    protected final PasswordField  passwordField;
+    protected final PasswordField passwordField;
     protected final Button signUpBtn;
-    
 
 //    GameController controller = new GameController();
     MyGui myGui;
@@ -108,36 +108,36 @@ public class SignUpFXBase extends AnchorPane {
         setOpaqueInsets(new Insets(0.0));
 
         signUpBtn.setOnAction((e -> {
-            if (userNameField.getText().equals("") || fullNameField.getText().equals("") || emailField.getText().equals("") || passwordField.getText().equals("")) {
-                Alert alerForSignUp = new Alert(Alert.AlertType.WARNING);
-                alerForSignUp.setTitle("Warning");
-                alerForSignUp.setHeaderText(null);
+            try {
+                if (userNameField.getText().equals("") || fullNameField.getText().equals("") || emailField.getText().equals("") || passwordField.getText().equals("")) {
+                    Alert alerForSignUp = new Alert(Alert.AlertType.WARNING);
+                    alerForSignUp.setTitle("Warning");
+                    alerForSignUp.setHeaderText(null);
 
-                alerForSignUp.setContentText("Fill all fileds!");
-                alerForSignUp.show();
+                    alerForSignUp.setContentText("Fill all fileds!");
+                    alerForSignUp.show();
 
+                } else if (myGui.checkUserName(userNameField.getText())) {
+                    Alert alerForSignUp = new Alert(Alert.AlertType.WARNING);
+                    alerForSignUp.setTitle("Warning");
+                    alerForSignUp.setHeaderText(null);
 
-            } else if (myGui.checkUserName(userNameField.getText())) {
-                Alert alerForSignUp = new Alert(Alert.AlertType.WARNING);
-                alerForSignUp.setTitle("Warning");
-                alerForSignUp.setHeaderText(null);
+                    alerForSignUp.setContentText("Username already exist, try another username!");
+                    alerForSignUp.show();
 
-                alerForSignUp.setContentText("Username already exist, try another username!");
-                alerForSignUp.show();
+                } else {
+                    try {
+                        boolean isRegistered = myGui.signUp(userNameField.getText(), fullNameField.getText(), emailField.getText(), passwordField.getText());
 
-
-
-            } else {
-                try {
-                    boolean isRegistered = myGui.signUp(userNameField.getText(), fullNameField.getText(), emailField.getText(), passwordField.getText());
-                 
-                    if(isRegistered)
-                    {
-                        myGui.createMainScreen();
+                        if (isRegistered) {
+                            myGui.createMainScreen();
+                        }
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(SignUpFXBase.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } catch (RemoteException ex) {
-                    Logger.getLogger(SignUpFXBase.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            } catch (ServerNullExeption ex) {
+                MyGui.myController.serverUnavilable();
             }
         }));
         back.setFitHeight(41.0);

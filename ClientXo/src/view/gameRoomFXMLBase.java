@@ -1,6 +1,7 @@
 package view;
 
 import commontxo.PlayerList;
+import commontxo.ServerNullExeption;
 import controller.MyGui;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -223,7 +224,7 @@ public class gameRoomFXMLBase extends AnchorPane {
                 : MyGui.myController.myModle.onlineList.get(
                         MyGui.myController.myModle.onlineList
                                 .indexOf(
-                        new PlayerList(MyGui.myController.inGamePlayer0.getPlayerName()))).getScore() + "");
+                                        new PlayerList(MyGui.myController.inGamePlayer0.getPlayerName()))).getScore() + "");
 
         label1.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         label1.setTextFill(javafx.scene.paint.Color.valueOf("#6681c5"));
@@ -475,6 +476,7 @@ public class gameRoomFXMLBase extends AnchorPane {
             public void run() {
                 if (MyGui.myController.isFinished) {
                     timer.cancel();
+                    return;
                 }
                 Platform.runLater(() -> {
                     secondsLeft--;
@@ -482,15 +484,15 @@ public class gameRoomFXMLBase extends AnchorPane {
                     label5.setText((secondsLeft / 60 < 10 ? "0" + secondsLeft / 60 : secondsLeft / 60 + "")
                             + ":"
                             + (secondsLeft % 60 < 10 ? "0" + secondsLeft % 60 : secondsLeft % 60 + ""));
-                    if (secondsLeft == -1) {
+                    if (secondsLeft == 0) {
 
                         timer.cancel();
                         try {
-                            if (MyGui.myController.isYourTurn && !mode.equals("spectator")) {
-                                MyGui.myController.withdraw();
+                            if (myGui.myController.isYourTurn && !mode.equals("spectator")) {
+                                myGui.myController.withdraw();
                             }
-                        } catch (RemoteException ex) {
-                            Logger.getLogger(gameRoomFXMLBase.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (ServerNullExeption | RemoteException ex) {
+                            myGui.myController.serverUnavilable();
                         }
                     }
                 });

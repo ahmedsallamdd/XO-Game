@@ -1,5 +1,6 @@
 package view;
 
+import commontxo.ServerNullExeption;
 import controller.MyGui;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -93,39 +94,41 @@ public class LoginFXBase extends AnchorPane {
         VBox.setMargin(signInBtn, new Insets(0.0, 100.0, 20.0, 100.0));
 
         signInBtn.setOnAction((ActionEvent event) -> {
-            String isFound;
-            if (!(userNameField.getText().equals("") || passwordField.getText().equals(""))) {
-                isFound = myGui.checkIfUserExists(userNameField.getText(), passwordField.getText());
+            try {
+                String isFound;
+                if (!(userNameField.getText().equals("") || passwordField.getText().equals(""))) {
+                    isFound = myGui.checkIfUserExists(userNameField.getText(), passwordField.getText());
 
-                if (isFound.equals("Wrong username or password!")) {
-                    Alert alerForSignIn = new Alert(Alert.AlertType.ERROR);
-                    alerForSignIn.setHeight(10);
+                    if (isFound.equals("Wrong username or password!")) {
+                        Alert alerForSignIn = new Alert(Alert.AlertType.ERROR);
+                        alerForSignIn.setHeight(10);
+                        alerForSignIn.setHeaderText(null);
+                        alerForSignIn.setContentText(isFound);
+                        alerForSignIn.show();
+
+                    } else if (isFound.equals("hello")) {
+                        myGui.createMainScreen();
+                    } else if (isFound.equals("Already logged in")) {
+                        Alert alerForSignIn = new Alert(Alert.AlertType.ERROR);
+                        alerForSignIn.setHeight(10);
+                        alerForSignIn.setHeaderText(null);
+                        alerForSignIn.setContentText(isFound);
+                        alerForSignIn.show();
+                    } else {
+                        myGui.myController.showAlert("Login error", "", isFound);
+                    }
+                } else {
+                    Alert alerForSignIn = new Alert(Alert.AlertType.WARNING);
+                    // alerForSignIn.setTitle("Error");
                     alerForSignIn.setHeaderText(null);
-                    alerForSignIn.setContentText(isFound);
+
+                    alerForSignIn.setContentText("Fill all fileds!");
                     alerForSignIn.show();
 
-                } else if(isFound.equals("hello")){
-                    myGui.createMainScreen();
                 }
-                else if(isFound.equals("Already logged in")){
-                    Alert alerForSignIn = new Alert(Alert.AlertType.ERROR);
-                    alerForSignIn.setHeight(10);
-                    alerForSignIn.setHeaderText(null);
-                    alerForSignIn.setContentText(isFound);
-                    alerForSignIn.show();
-                }else{
-                    myGui.myController.showAlert("Login error", "", isFound);
-                }
-            } else {
-                Alert alerForSignIn = new Alert(Alert.AlertType.WARNING);
-                // alerForSignIn.setTitle("Error");
-                alerForSignIn.setHeaderText(null);
-
-                alerForSignIn.setContentText("Fill all fileds!");
-                alerForSignIn.show();
-
+            } catch (ServerNullExeption ex) {
+                MyGui.myController.serverUnavilable();
             }
-
         });
         signUpBtn.setMnemonicParsing(false);
         signUpBtn.setStyle("-fx-background-color: #ff7764; -fx-background-radius: 10;");

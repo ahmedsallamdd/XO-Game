@@ -1,10 +1,13 @@
 package xml;
 
+import commontxo.ServerNullExeption;
 import controller.MyGui;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -269,7 +272,11 @@ public abstract class ShowRecordListModified extends AnchorPane {
         exit.setPreserveRatio(true);
         exit.setImage(new Image(getClass().getResource("../images/backward.png").toExternalForm()));
         exit.setOnMouseClicked((e -> {
-            myGui.createMainScreen();
+            try {
+                myGui.createMainScreen();
+            } catch (ServerNullExeption ex) {
+                myGui.myController.serverUnavilable();
+            }
         }));
 
         getChildren().add(play);
@@ -293,6 +300,7 @@ public abstract class ShowRecordListModified extends AnchorPane {
         getChildren().add(exit);
         populateListView();
     }
+
     public void populateListView() {
 //        ObservableList<GameComplexType> list = FXCollections.observableArrayList(playerList);
 //        listView.setItems(list);

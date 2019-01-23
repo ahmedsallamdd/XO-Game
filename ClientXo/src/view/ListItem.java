@@ -1,6 +1,7 @@
 package view;
 
 import commontxo.PlayerList;
+import commontxo.ServerNullExeption;
 import controller.MyGui;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
@@ -57,16 +58,16 @@ class ListItem extends ListCell<PlayerList> {
                                 .sendGameRequest(
                                         MyGui.myController.myModle.me.getPlayerUserName(),
                                         item.getName());
-                    } catch (RemoteException ex) {
-                        Logger.getLogger(ListItem.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (ServerNullExeption | RemoteException ex) {
+                        MyGui.myController.serverUnavilable();
                     }
                 } else {
                     try {
                         MyGui.myController.myModle.getServerInstance()
                                 .spectateGame(MyGui.myController.myModle.me.getPlayerUserName(),
                                         item.getRoomName());
-                    } catch (RemoteException ex) {
-                        Logger.getLogger(ListItem.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (ServerNullExeption | RemoteException ex) {
+                        MyGui.myController.serverUnavilable();
                     }
                 }
             });
