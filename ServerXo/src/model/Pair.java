@@ -44,5 +44,4 @@ public class Pair<K> {
         return (((Pair) obj).first.equals(first) || ((Pair) obj).first.equals(secoend))
                 && (((Pair) obj).secoend.equals(first) || ((Pair) obj).secoend.equals(secoend));
     }
-
 }
