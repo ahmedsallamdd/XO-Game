@@ -45,7 +45,7 @@ public class ServerAppFxmlBase extends AnchorPane {
         setId("AnchorPane");
         setPrefHeight(600.0);
         setPrefWidth(650.0);
-        setStyle("-fx-background-color:  linear-gradient( #247ba0 0%,#70c1b3 50% ,#247ba0 100%);");
+        setStyle("-fx-background-color: linear-gradient(#247ba0 0%,#70c1b3 50% ,#247ba0 100%);");
 
         listView.setLayoutX(14.0);
         listView.setLayoutY(9.0);
@@ -115,11 +115,12 @@ public class ServerAppFxmlBase extends AnchorPane {
     }
 
     private void showList(ArrayList<Player> k) {
-        if (k.size() != 0) {
+        if (!k.isEmpty()) {
             playersInListView.add("Score" + "\t\t\t\t\t" + "state" + "\t \t \t \t \t" + " \t UserName");
         }
         for (Player player : k) {
-            playersInListView.add(player.getPlayerScore() + "\t \t \t \t \t    \t" + player.getPlayerState() + "\t \t \t \t \t   " + player.getPlayerUserName());
+            playersInListView.add(player.getPlayerScore() + "\t \t \t \t \t    \t" 
+                    + player.getPlayerState() + "\t \t \t \t \t   " + player.getPlayerUserName());
 
         }
         ListProperty<String> listProperty = new SimpleListProperty<>();

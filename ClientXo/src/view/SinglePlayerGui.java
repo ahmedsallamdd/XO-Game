@@ -2,6 +2,8 @@ package view;
 
 import controller.MyGui;
 import java.util.Random;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -9,6 +11,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.text.Font;
+import model.ToggleBtn;
 
 public class SinglePlayerGui extends AnchorPane {
     
@@ -192,6 +196,17 @@ public class SinglePlayerGui extends AnchorPane {
             }else if(this.parentScreen.equals("main"))
                 myGui.createMainScreen();
         });
+        ToggleBtn toggleBtn = new ToggleBtn();
+        toggleBtn.setLayoutX(this.getPrefWidth()/2 - 40);
+        toggleBtn.setLayoutY(35);
+        
+        Button btnStartGame = new Button();
+        btnStartGame.setStyle("-fx-background-color: #0b3c49; -fx-background-radius: 10;");
+        btnStartGame.setText("Start Game");
+        btnStartGame.setTextFill(javafx.scene.paint.Color.WHITE);
+        btnStartGame.setFont(new Font("System Bold", 22.0));
+        btnStartGame.setLayoutX(this.getPrefWidth()/2 - 70);
+        btnStartGame.setLayoutY(this.getPrefHeight()-60);
         
         gridPane.getColumnConstraints().add(columnConstraints);
         gridPane.getColumnConstraints().add(columnConstraints0);
@@ -210,11 +225,12 @@ public class SinglePlayerGui extends AnchorPane {
         gridPane.getChildren().add(img_8);
         getChildren().add(back);
         getChildren().add(gridPane);
+        getChildren().add(toggleBtn);
+        getChildren().add(btnStartGame);
         
         positions = new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2};
         winningPositions = new int[][]{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
         {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
-        
     }
     
     protected void changeImg(MouseEvent mouseEvent) {
@@ -249,10 +265,12 @@ public class SinglePlayerGui extends AnchorPane {
                 if (gameState[winningPosition[0]] == 0) {
                     System.out.println("X has won!");
                     isFinished = true;
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     return;
                 } else {
                     System.out.println("O has won!");
                     isFinished = true;
+                    myGui.myController.showAlert("Result", "Oops! \n You Lost!", "");
                     return;
                 }
             }
@@ -260,6 +278,7 @@ public class SinglePlayerGui extends AnchorPane {
         if (movesCounter == 9) {
             System.out.println("It's a draw!");
             isFinished = true;
+            myGui.myController.showAlert("Result", "Draw!", "");
         }
     }
     
@@ -286,5 +305,16 @@ public class SinglePlayerGui extends AnchorPane {
     
     private String constructImgeViewId(int pos) {
         return "img_" + String.valueOf(pos);
+    }
+    private void disableAllImages(boolean state) {
+        img_0.setDisable(state);
+        img_1.setDisable(state);
+        img_2.setDisable(state);
+        img_3.setDisable(state);
+        img_4.setDisable(state);
+        img_5.setDisable(state);
+        img_6.setDisable(state);
+        img_7.setDisable(state);
+        img_8.setDisable(state);
     }
 }

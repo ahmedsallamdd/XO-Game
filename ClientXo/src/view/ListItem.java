@@ -18,6 +18,7 @@ class ListItem extends ListCell<PlayerList> {
 
     HBox hbox = new HBox();
     Label lblUsername = new Label("(empty)");
+    
     Label lblScore = new Label("(empty)");
     Pane pane = new Pane();
     Pane pane1 = new Pane();
@@ -31,13 +32,16 @@ class ListItem extends ListCell<PlayerList> {
         super();
         btnJoinRoom.setStyle("-fx-background-color: #0b3c49; -fx-border-radius: 10;");
         btnJoinRoom.setTextFill(javafx.scene.paint.Color.valueOf("#f3ffbd"));
+        lblUsername.setMaxWidth(80.0);
         hbox.setStyle("-fx-background-radius: 10;");
         hbox.setStyle("-fx-border-radius: 10;");
+        pane1.setMaxSize(15.0, 5.0);
+        pane2.setMaxSize(15.0, 5.0);
 
         hbox.getChildren().addAll(lblUsername, pane, lblScore, pane1, imgViewState, pane2, btnJoinRoom);
-        HBox.setHgrow(pane, Priority.ALWAYS);
-        HBox.setHgrow(pane1, Priority.ALWAYS);
-        HBox.setHgrow(pane2, Priority.ALWAYS);
+        HBox.setHgrow(pane, Priority.SOMETIMES);
+        HBox.setHgrow(pane1, Priority.SOMETIMES);
+        HBox.setHgrow(pane2, Priority.SOMETIMES);
 
         myMainScreenBase = m;
     }

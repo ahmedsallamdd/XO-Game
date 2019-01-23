@@ -210,6 +210,7 @@ public class MainScreenBase extends AnchorPane {
     }
 
     public void populateListView(ArrayList<PlayerList> playerList) {
+        
         ObservableList<PlayerList> list = FXCollections.observableArrayList(playerList);
         listView.setItems(list);
         listView.setCellFactory((ListView<PlayerList> param) -> new ListItem(this));
