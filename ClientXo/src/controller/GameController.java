@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
@@ -59,16 +61,20 @@ public class GameController {
     public ArrayList<StepComplexType> stepList;
     private String result;
     String header;
-
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX
+            =Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+    
+    public  static final Pattern VALID_PASSWORD_REGEX
+            =Pattern.compile("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,}$");
+    public static final Pattern VALID_NAME_REGEX=Pattern.compile("^([A-Z][a-z]*((\\s)))+[A-Z][a-z]*$");
+      public static final Pattern VALID_USER_NAME_REGEX=Pattern.compile("^[a-zA-Z0-9_.]+$");
     public GameController(MyGui g) {
         myGUI = g;
-//        readFromXML();
 
         try {
             myModle = new GameModle(this);
             inGamePlayer0 = new InGamePlayer();
             inGamePlayer1 = new InGamePlayer();
-
         } catch (RemoteException ex) {
             serverUnavilable();
         }
@@ -481,5 +487,83 @@ public class GameController {
         activePlayer = 0;
 //        stepList.clear();
     }
+
+    boolean setValidationForRegister(String userName, String name, String email, String password) throws ServerNullExeption {
+ boolean validEmail,validPass,validName,validUserName;
+        String alerMessage="Error ";
+        if(userName.trim().length()==0||name.trim().length()==0|| email.trim().length()==0|| password.trim().length()==0)
+        {
+         Alert alerForSpaces = new Alert(Alert.AlertType.WARNING);
+                alerForSpaces.setTitle("Warning");
+                alerForSpaces.setHeaderText(null);
+
+                alerForSpaces.setContentText("Enter Valid Data");
+                alerForSpaces.show();
+        
+        
+        }
+        else
+        {
+        Matcher matcherUserName=VALID_USER_NAME_REGEX.matcher(userName);
+          validUserName =matcherUserName.matches();
+
+          if(!validUserName)
+          alerMessage=alerMessage+", Invalid UserName";
+          
+            Matcher matcherName=VALID_NAME_REGEX.matcher(name);
+          validName=(matcherName.find());
+          if(!validName)
+          alerMessage=alerMessage+", Invalid Name";
+         
+          
+      Matcher matcherEmail = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
+      validEmail = matcherEmail.find();
+      if(!validEmail)
+          alerMessage=alerMessage+", Invalid Email";
+          Matcher matcherPass=VALID_PASSWORD_REGEX.matcher(password);
+          validPass=matcherPass.find();
+          if(!validPass)
+          alerMessage=alerMessage+", Invalid Password";
+              
+        
+          if(validUserName && validEmail && validName && validPass)
+          {
+              
+             if(checkUserName(userName)){
+                 Alert alerForUserName = new Alert(Alert.AlertType.WARNING);
+                alerForUserName.setTitle("Warning");
+                alerForUserName.setHeaderText(null);
+
+                alerForUserName.setContentText("Username already exist, try another username!");
+                alerForUserName.show();
+                return false;
+                
+             }
+             else 
+                 return true;
+
+          }
+          else
+          {
+               Alert alerForValidate = new Alert(Alert.AlertType.WARNING);
+                alerForValidate.setTitle("Warning");
+                alerForValidate.setHeaderText(null);
+
+                alerForValidate.setContentText(alerMessage);
+                alerForValidate.show();
+              
+              
+              return false;
+          
+          }
+        
+        
+        }
+        return false;
+
+
+    }
+
+  
 
 }

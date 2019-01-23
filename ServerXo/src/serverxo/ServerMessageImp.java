@@ -48,7 +48,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
 
         try {
             Statement stmt = connection.createStatement();
-            String query = "select * from user ";
+            String query = "select * from user order by UserScore desc ";
             ResultSet s = stmt.executeQuery(query);
 
             while (s.next()) {

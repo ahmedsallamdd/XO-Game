@@ -33,13 +33,13 @@ public class WelcomeFXMLBase extends AnchorPane {
         singleBtn = new Button();
         onlineBtn = new Button();
         gameImage = new ImageView();
-
         //controller = new GameController();
         this.myGui = myGUI;
 
         setId("AnchorPane");
         setPrefHeight(650.0);
         setPrefWidth(600.0);
+        setStyle("-fx-background-color: linear-gradient( #247ba0 0%,#70c1b3 50% ,#247ba0 100%);;");
 
         borderPane.setPrefHeight(650.0);
         borderPane.setPrefWidth(600.0);
@@ -67,9 +67,9 @@ public class WelcomeFXMLBase extends AnchorPane {
         Description.setLayoutY(112.0);
         Description.setPrefHeight(88.0);
         Description.setPrefWidth(278.0);
-        Description.setText("A simple game To play");
+        Description.setText("A Simple Game To Play");
         Description.setTextFill(javafx.scene.paint.Color.valueOf("#dadada"));
-        Description.setFont(new Font(23.0));
+        Description.setFont(new Font("System Bold", 20.0));
         Description.setPadding(new Insets(0.0, 20.0, 0.0, 20.0));
         borderPane.setTop(anchorPane);
 
@@ -78,10 +78,10 @@ public class WelcomeFXMLBase extends AnchorPane {
         singleBtn.setMnemonicParsing(false);
         singleBtn.setPrefHeight(80.0);
         singleBtn.setPrefWidth(150.0);
-        singleBtn.setStyle("-fx-background-radius: 10; -fx-background-color: #ff7764;");
+        singleBtn.setStyle("-fx-background-radius: 10; -fx-background-color: #0b3c49;");
         singleBtn.setText("Single Player");
-        singleBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fcfafa"));
-        singleBtn.setFont(new Font(17.0));
+        singleBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fff"));
+        singleBtn.setFont(new Font("System Bold", 17.0));
         BorderPane.setMargin(singleBtn, new Insets(0.0, 0.0, 0.0, 30.0));
         borderPane.setLeft(singleBtn);
         singleBtn.setOnAction((e -> {
@@ -94,10 +94,10 @@ public class WelcomeFXMLBase extends AnchorPane {
         onlineBtn.setMnemonicParsing(false);
         onlineBtn.setPrefHeight(77.0);
         onlineBtn.setPrefWidth(150.0);
-        onlineBtn.setStyle("-fx-background-radius: 10; -fx-background-color: #ff7764;");
-        onlineBtn.setText("Multi Players");
-        onlineBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fffbfb"));
-        onlineBtn.setFont(new Font(17.0));
+        onlineBtn.setStyle("-fx-background-radius: 10; -fx-background-color: #0b3c49;");
+        onlineBtn.setText("Multiplayer");
+        onlineBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fff"));
+        onlineBtn.setFont(new Font("System Bold", 17.0));
         BorderPane.setMargin(onlineBtn, new Insets(0.0, 30.0, 0.0, 0.0));
         borderPane.setRight(onlineBtn);
 

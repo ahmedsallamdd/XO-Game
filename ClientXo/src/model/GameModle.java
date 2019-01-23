@@ -16,8 +16,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
@@ -47,7 +45,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     public ServerCallBack getServerInstance() throws ServerNullExeption {
         if (server == null) {
             try {
-                Registry reg = LocateRegistry.getRegistry("10.0.1.182",1099);
+                Registry reg = LocateRegistry.getRegistry(/*"10.0.1.182",*/1099);
                 server = (ServerCallBack) reg.lookup("GameService");
 
             } catch (RemoteException | NotBoundException e) {
