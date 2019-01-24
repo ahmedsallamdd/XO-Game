@@ -50,19 +50,19 @@ public class SignUpFXBase extends AnchorPane {
         setMinHeight(USE_PREF_SIZE);
         setMinWidth(USE_PREF_SIZE);
         setNodeOrientation(javafx.geometry.NodeOrientation.LEFT_TO_RIGHT);
-        setPrefHeight(700.0);
-        setPrefWidth(600.0);
+        setPrefHeight(600.0);
+        setPrefWidth(650.0);
         setStyle("-fx-background-color: linear-gradient( #247ba0 0%,#70c1b3 50% ,#247ba0 100%);");
 
-        AnchorPane.setBottomAnchor(vBox, 50.0);
+        AnchorPane.setBottomAnchor(vBox, 80.0);
         AnchorPane.setLeftAnchor(vBox, 130.0);
         AnchorPane.setRightAnchor(vBox, 130.0);
-        AnchorPane.setTopAnchor(vBox, 50.0);
+        AnchorPane.setTopAnchor(vBox, 60.0);
         vBox.setAlignment(javafx.geometry.Pos.BASELINE_CENTER);
         vBox.setFillWidth(false);
         vBox.setLayoutX(131.0);
-        vBox.setLayoutY(33.0);
-        vBox.setPrefHeight(594.0);
+        vBox.setLayoutY(25.0);
+        vBox.setPrefHeight(500.0);
         vBox.setPrefWidth(339.0);
         vBox.setStyle("-fx-background-color: FFF; -fx-background-radius: 10;");
 
@@ -78,33 +78,37 @@ public class SignUpFXBase extends AnchorPane {
         userNameField.setMaxWidth(Double.MAX_VALUE);
         userNameField.setPrefHeight(73.0);
         userNameField.setPrefWidth(280.0);
-        userNameField.setPromptText("User Name");
+        userNameField.setPromptText("username");
         VBox.setMargin(userNameField, new Insets(0.0, 15.0, 0.0, 15.0));
         userNameField.setFont(new Font(17.0));
+        userNameField.setFocusTraversable(false);
 
         fullNameField.setPrefHeight(54.0);
         fullNameField.setPrefWidth(279.0);
-        fullNameField.setPromptText("Full Name");
+        fullNameField.setPromptText("full name");
         fullNameField.setFont(new Font(16.0));
         VBox.setMargin(fullNameField, new Insets(0.0, 15.0, 0.0, 15.0));
+        fullNameField.setFocusTraversable(false);
 
         emailField.setPrefHeight(54.0);
         emailField.setPrefWidth(279.0);
-        emailField.setPromptText("Email");
+        emailField.setPromptText("email");
         emailField.setFont(new Font(16.0));
+        emailField.setFocusTraversable(false);
 
         passwordField.setPrefHeight(54.0);
         passwordField.setPrefWidth(280.0);
-        passwordField.setPromptText("Password");
+        passwordField.setPromptText("password");
         VBox.setMargin(passwordField, new Insets(0.0, 15.0, 0.0, 15.0));
         passwordField.setFont(new Font(16.0));
+        passwordField.setFocusTraversable(false);
 
         signUpBtn.setMnemonicParsing(false);
-        signUpBtn.setStyle("-fx-background-color: #ff7764; -fx-background-radius: 10;");
+        signUpBtn.setStyle("-fx-background-color: #0b3c49; -fx-background-radius: 10;");
         signUpBtn.setText("Register");
-        signUpBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fff6f6"));
-        signUpBtn.setFont(new Font("Arial", 24.0));
-        VBox.setMargin(signUpBtn, new Insets(20.0, 0.0, 50.0, 0.0));
+        signUpBtn.setTextFill(javafx.scene.paint.Color.valueOf("#fff"));
+        signUpBtn.setFont(new Font("System Bold", 18.0));
+        VBox.setMargin(signUpBtn, new Insets(0.0, 15.0, 0.0, 15.0));
         setOpaqueInsets(new Insets(0.0));
 
         signUpBtn.setOnAction((e -> {
@@ -133,7 +137,7 @@ public class SignUpFXBase extends AnchorPane {
                             myGui.createMainScreen();
                         }
                     } catch (RemoteException ex) {
-                        Logger.getLogger(SignUpFXBase.class.getName()).log(Level.SEVERE, null, ex);
+                        MyGui.myController.serverUnavilable();
                     }
                 }
             } catch (ServerNullExeption ex) {

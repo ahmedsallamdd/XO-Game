@@ -29,7 +29,7 @@ public class ServerXo extends Application {
 
         ServerAppFxmlBase root = new ServerAppFxmlBase();
 
-        Scene scene = new Scene(root, 1000, 700);
+        Scene scene = new Scene(root, 888, 670);
 
         primaryStage.setTitle("Server");
         primaryStage.setScene(scene);

@@ -48,7 +48,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
 
         try {
             Statement stmt = connection.createStatement();
-            String query = "select * from user ";
+            String query = "select * from user order by UserScore desc ";
             ResultSet s = stmt.executeQuery(query);
 
             while (s.next()) {
@@ -73,7 +73,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             try {
                 client.notifiyOnlineList();
             } catch (RemoteException ex) {
-                Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
+                removePlayerWhileError(e);
             }
         });
     }
@@ -164,7 +164,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             updateList();
 
         } catch (RemoteException ex) {
-            Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
+//            removePlayerWhileError()
         }
     }
 
@@ -184,8 +184,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                     client.leaveGameRoom(winnerUserName);
 
                 } catch (RemoteException ex) {
-                    Logger.getLogger(ServerMessageImp.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                   removePlayerWhileError(e);
                 }
             });
             clientMapGameRoom = new HashMap(clientMapGameRoom.entrySet().stream()
@@ -239,8 +238,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                     client.addPlayerToGameRoom(myUserName, clients.get(myUserName));
 
                 } catch (RemoteException ex) {
-                    Logger.getLogger(ServerMessageImp.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    removePlayerWhileError(e);
                 }
             });
             //this parameters are deprecated and useless 
@@ -262,8 +260,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                     client.leftGameRoom(myUserName);
 
                 } catch (RemoteException ex) {
-                    Logger.getLogger(ServerMessageImp.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    removePlayerWhileError(e);
                 }
             });
             removeClient(myUserName);
@@ -307,7 +304,6 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             p.execute();
             return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
             PlayersInformation.remove(newPlayer);
             return false;
         }
@@ -343,7 +339,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
         return null;
     }
 
-    public void removeClient(String userName) throws RemoteException {
+    public void removeClient(String userName){
         if (clients.containsKey(userName)) {
             clients.remove(userName);
             for (Player p : PlayersInformation) {
@@ -356,7 +352,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     }
 
     @Override
-    public void removeClientMapGameRoom(String userName) throws RemoteException {
+    public void removeClientMapGameRoom(String userName) {
         if (clientMapGameRoom.containsKey(userName)) {
             clientMapGameRoom.remove(userName);
         }
@@ -391,5 +387,9 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
         } catch (SQLException ex) {
             Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    void removePlayerWhileError(String playerUserName){
+        removeClientMapGameRoom(playerUserName);
+        removeClient(playerUserName);
     }
 }
