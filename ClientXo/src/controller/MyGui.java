@@ -145,9 +145,14 @@ public class MyGui extends Application {
         myController.showPlayerList();
     }
 
-    public static void main(String args[]) throws ServerNullExeption {
+    public static void main(String args[]) {
         launch(args);
-        myController.myModle.getServerInstance();
+        
+        try {
+            myController.myModle.getServerInstance();
+        } catch (ServerNullExeption ex) {
+            System.out.println("Server is down");
+        }
     }
 
     public void signOut() throws ServerNullExeption {
@@ -194,6 +199,7 @@ public class MyGui extends Application {
         this.multiPlayerScreen = multiplayerScreen;
         scene = new Scene(multiPlayerScreen,
                 this.multiPlayerScreen.getPrefWidth(), multiPlayerScreen.getPrefHeight());
+        
         scene.setRoot(multiplayerScreen);
         stage.setScene(scene);
     }
@@ -219,7 +225,7 @@ public class MyGui extends Application {
         stage.setScene(scene);
     }
 
-   public void serverUnavilable() {
+    public void serverUnavilable() {
         ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
 
         Platform.runLater(() -> {
@@ -230,6 +236,7 @@ public class MyGui extends Application {
             a.setHeaderText("Server is Down, try again later.");
             myController.myModle.currentShowenAlerts.add(a);
             a.showAndWait();
+            myController.myModle.clearServer();
             createLoginScreen();
             myController.myModle.currentShowenAlerts.remove(a);
         });
@@ -267,8 +274,9 @@ public class MyGui extends Application {
             }
         });
     }
-    public boolean setValidationForRegister(String userName,String name,String email,String password) throws ServerNullExeption{
-    return myController.setValidationForRegister(userName, name, email, password);
-    
+
+    public boolean setValidationForRegister(String userName, String name, String email, String password) throws ServerNullExeption {
+        return myController.setValidationForRegister(userName, name, email, password);
+
     }
 }

@@ -2,6 +2,8 @@ package serverxo;
 
 import commontxo.ClientCallBack;
 import commontxo.Player;
+import java.io.IOException;
+import java.net.Socket;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -10,6 +12,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +20,7 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
@@ -119,7 +123,7 @@ public class ServerAppFxmlBase extends AnchorPane {
             playersInListView.add("Score" + "\t\t\t\t\t" + "state" + "\t \t \t \t \t" + " \t UserName");
         }
         for (Player player : k) {
-            playersInListView.add(player.getPlayerScore() + "\t \t \t \t \t    \t" 
+            playersInListView.add(player.getPlayerScore() + "\t \t \t \t \t    \t"
                     + player.getPlayerState() + "\t \t \t \t \t   " + player.getPlayerUserName());
 
         }
@@ -130,22 +134,28 @@ public class ServerAppFxmlBase extends AnchorPane {
     }
 
     private void openServer(String Service, int port) throws ClassNotFoundException, SQLException {
-
-        try {
-            obj = new ServerMessageImp();
-
-            showList(obj.PlayersInformation);
-            if (reg == null) {
-                reg = LocateRegistry.createRegistry(port);
+        if (isPortInUse(port) == false) {
+            try {
+                obj = new ServerMessageImp();
+                if (reg == null) {
+                    reg = LocateRegistry.createRegistry(port);
+                    showList(obj.PlayersInformation);
+                }
+                reg.rebind(Service, obj);
+                btnClose.setDisable(false);
+                btnRefresh.setDisable(false);
+                btnOpen.setDisable(true);
+            } catch (RemoteException ex) {
+                System.err.println(ex.getMessage() + "ok");
             }
-            reg.rebind(Service, obj);
-            btnClose.setDisable(false);
-            btnRefresh.setDisable(false);
-            btnOpen.setDisable(true);
-        } catch (RemoteException ex) {
-            System.err.println(ex.getMessage() + "ok");
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeight(10);
+            alert.setHeaderText(null);
+            alert.setContentText("Server is already open!");
+            alert.showAndWait();
+            System.exit(0);
         }
-
     }
 
     public void closeServer(String Service) throws NoSuchObjectException {
@@ -156,12 +166,21 @@ public class ServerAppFxmlBase extends AnchorPane {
                 obj.updateScore(player.getPlayerUserName(), player.getPlayerScore());
 //                obj.clients.get(player.getPlayerUserName()).serverUnavilable();
             }
-
-            for (Map.Entry<String, ClientCallBack> entry : obj.clients.entrySet()) {
-                entry.getValue().serverUnavilable();
-//               obj.leaveServer(entry.getKey());
+            ArrayList<ClientCallBack> x = new ArrayList<>(obj.clients.values());
+            for (Iterator<ClientCallBack> it = x.iterator(); it.hasNext();) {
+                ClientCallBack client = it.next();
+                try {
+                    client.serverUnavilable();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
+//            for (Iterator<Map.Entry<String, ClientCallBack>> it = obj.clients.entrySet().iterator(); it.hasNext();) {
+//                Map.Entry<String, ClientCallBack> entry = it.next();
+//                entry.getValue().serverUnavilable();
+////               obj.leaveServer(entry.getKey());
+//            }
             reg.unbind(Service);
             UnicastRemoteObject.unexportObject(obj, true);
             playersInListView.clear();
@@ -171,6 +190,7 @@ public class ServerAppFxmlBase extends AnchorPane {
             btnClose.setDisable(true);
             btnRefresh.setDisable(true);
             btnOpen.setDisable(false);
+
         } catch (RemoteException ex) {
             System.err.println(ex.getMessage() + "h");
         } catch (NotBoundException ex) {
@@ -178,6 +198,20 @@ public class ServerAppFxmlBase extends AnchorPane {
         } catch (NullPointerException ex) {
             System.err.println("you have to Open Server first");
         }
+
+    }
+
+    boolean isPortInUse(int portNumber) {
+        boolean result;
+        try {
+            Socket s = new Socket("127.0.0.1", portNumber);
+            s.close();
+            result = true;
+        } catch (IOException e) {
+            result = false;
+        }
+
+        return result;
 
     }
 }

@@ -4,8 +4,6 @@ import commontxo.PlayerList;
 import commontxo.ServerNullExeption;
 import controller.MyGui;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -19,7 +17,7 @@ class ListItem extends ListCell<PlayerList> {
 
     HBox hbox = new HBox();
     Label lblUsername = new Label("(empty)");
-    
+
     Label lblScore = new Label("(empty)");
     Pane pane = new Pane();
     Pane pane1 = new Pane();

@@ -19,29 +19,28 @@ import javafx.scene.text.Font;
  */
 public class ToggleBtn extends Label {
 
-    private SimpleBooleanProperty switchedOn = new SimpleBooleanProperty(true);
-
+    public SimpleBooleanProperty switchedOn = new SimpleBooleanProperty(true);
+    Button btnToggle;
     public ToggleBtn() {
-        Button ToggleBtn = new Button();
-        ToggleBtn.setStyle("-fx-background-color: #0b3c49; -fx-background-radius: 10;");
+        btnToggle = new Button();
+        btnToggle.setStyle("-fx-background-color: #0b3c49; -fx-background-radius: 10;");
 
-        ToggleBtn.setPrefWidth(40);
-        ToggleBtn.setOnAction((ActionEvent t) -> {
+        btnToggle.setPrefWidth(40);
+        btnToggle.setOnAction((ActionEvent t) -> {
             switchedOn.set(!switchedOn.get());
         });
-
-        setGraphic(ToggleBtn);
+        setGraphic(btnToggle);
 
         switchedOn.addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
             if (t1) {
                 setText("Easy");
                 setFont(new Font("System Bold", 18.0));
-                setStyle("-fx-background-color: green;-fx-text-fill:white;-fx-background-radius: 10;");
+                setStyle("-fx-background-color: green;-fx-text-fill:white; -fx-background-radius: 10;");
                 setContentDisplay(ContentDisplay.RIGHT);
             } else {
                 setText("Hard");
                 setFont(new Font("System Bold", 18.0));
-                setStyle("-fx-background-color: red;-fx-text-fill:white;-fx-background-radius: 10;");
+                setStyle("-fx-background-color: red;-fx-text-fill:white; -fx-background-radius: 10;");
                 setContentDisplay(ContentDisplay.LEFT);
             }
         });

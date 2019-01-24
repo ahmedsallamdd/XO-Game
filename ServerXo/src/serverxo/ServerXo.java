@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -23,16 +24,17 @@ import javafx.stage.WindowEvent;
  * @author Mohamed
  */
 public class ServerXo extends Application {
-
+    
     @Override
     public void start(Stage primaryStage) throws RemoteException, ClassNotFoundException, SQLException {
-
+        
         ServerAppFxmlBase root = new ServerAppFxmlBase();
-
+        
         Scene scene = new Scene(root, 888, 670);
-
+        
         primaryStage.setTitle("Server");
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
         primaryStage.setOnCloseRequest((WindowEvent event) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -58,5 +60,5 @@ public class ServerXo extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
+    
 }

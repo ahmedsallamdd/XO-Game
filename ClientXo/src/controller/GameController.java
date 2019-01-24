@@ -1,5 +1,6 @@
 package controller;
 
+import commontxo.ClientCallBack;
 import model.InGamePlayer;
 import model.GameModle;
 import commontxo.GameState;
@@ -13,6 +14,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,12 +64,13 @@ public class GameController {
     private String result;
     String header;
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX
-            =Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-    
-    public  static final Pattern VALID_PASSWORD_REGEX
-            =Pattern.compile("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,}$");
-    public static final Pattern VALID_NAME_REGEX=Pattern.compile("^([A-Z][a-z]*((\\s)))+[A-Z][a-z]*$");
-      public static final Pattern VALID_USER_NAME_REGEX=Pattern.compile("^[a-zA-Z0-9_.]+$");
+            = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+    public static final Pattern VALID_PASSWORD_REGEX
+            = Pattern.compile("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,}$");
+    public static final Pattern VALID_NAME_REGEX = Pattern.compile("^([A-Z][a-z]*((\\s)))+[A-Z][a-z]*$");
+    public static final Pattern VALID_USER_NAME_REGEX = Pattern.compile("^[a-zA-Z0-9_.]+$");
+
     public GameController(MyGui g) {
         myGUI = g;
 
@@ -211,13 +214,13 @@ public class GameController {
             }
         }
         if (isFinished == false && movesCounter == 9) {
+            isFinished = true;
             System.out.println("It's a draw!");
             try {
                 if (myModle.me.getPlayerUserName().equals(inGamePlayer0.getPlayerName())) {
                     myModle.getServerInstance().notifiyGameResult(roomName, "DRAW");
                 }
                 gameRecord = new GameComplexType(stepList, "DRAW");
-                isFinished = true;
                 return;
 
             } catch (RemoteException ex) {
@@ -253,8 +256,8 @@ public class GameController {
             try {
                 myGUI.createMainScreen();
             } catch (ServerNullExeption ex) {
-                    serverUnavilable();
-                }
+                serverUnavilable();
+            }
 
         });
     }
@@ -324,13 +327,20 @@ public class GameController {
     public void withdraw() throws RemoteException, ServerNullExeption {
         ArrayList<String> temp = new ArrayList<>(myModle.gameRoom.getPlayers().keySet());
         if (temp.indexOf(myModle.me.getPlayerUserName()) > 1) {
-            myModle.gameRoom.getPlayers().forEach((e, client) -> {
-                try {
-                    client.leftGameRoom(myModle.me.getPlayerUserName());
-                } catch (RemoteException ex) {
-                    Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            });
+
+            ArrayList<ClientCallBack> x = new ArrayList<>(myModle.gameRoom.getPlayers().values());
+            for (Iterator<ClientCallBack> it = x.iterator(); it.hasNext();) {
+                ClientCallBack client = it.next();
+                client.leftGameRoom(myModle.me.getPlayerUserName());
+            }
+
+//            myModle.gameRoom.getPlayers().forEach((e, client) -> {
+//                try {
+//                    client.leftGameRoom(myModle.me.getPlayerUserName());
+//                } catch (RemoteException ex) {
+//                    Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            });
             myModle.gameRoom = null;
             myModle.getServerInstance().removeClientMapGameRoom(myModle.me.getPlayerUserName());
             myModle.getServerInstance().removePlayerFromGameRoom(myModle.me.getPlayerUserName(), myModle.gameRoom.getRoomName());
@@ -489,81 +499,71 @@ public class GameController {
     }
 
     boolean setValidationForRegister(String userName, String name, String email, String password) throws ServerNullExeption {
- boolean validEmail,validPass,validName,validUserName;
-        String alerMessage="Error ";
-        if(userName.trim().length()==0||name.trim().length()==0|| email.trim().length()==0|| password.trim().length()==0)
-        {
-         Alert alerForSpaces = new Alert(Alert.AlertType.WARNING);
-                alerForSpaces.setTitle("Warning");
-                alerForSpaces.setHeaderText(null);
+        boolean validEmail, validPass, validName, validUserName;
+        String alerMessage = "Error ";
+        if (userName.trim().length() == 0 || name.trim().length() == 0 || email.trim().length() == 0 || password.trim().length() == 0) {
+            Alert alerForSpaces = new Alert(Alert.AlertType.WARNING);
+            alerForSpaces.setTitle("Warning");
+            alerForSpaces.setHeaderText(null);
 
-                alerForSpaces.setContentText("Enter Valid Data");
-                alerForSpaces.show();
-        
-        
-        }
-        else
-        {
-        Matcher matcherUserName=VALID_USER_NAME_REGEX.matcher(userName);
-          validUserName =matcherUserName.matches();
+            alerForSpaces.setContentText("Enter Valid Data");
+            alerForSpaces.show();
 
-          if(!validUserName)
-          alerMessage=alerMessage+", Invalid UserName";
-          
-            Matcher matcherName=VALID_NAME_REGEX.matcher(name);
-          validName=(matcherName.find());
-          if(!validName)
-          alerMessage=alerMessage+", Invalid Name";
-         
-          
-      Matcher matcherEmail = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
-      validEmail = matcherEmail.find();
-      if(!validEmail)
-          alerMessage=alerMessage+", Invalid Email";
-          Matcher matcherPass=VALID_PASSWORD_REGEX.matcher(password);
-          validPass=matcherPass.find();
-          if(!validPass)
-          alerMessage=alerMessage+", Invalid Password";
-              
-        
-          if(validUserName && validEmail && validName && validPass)
-          {
-              
-             if(checkUserName(userName)){
-                 Alert alerForUserName = new Alert(Alert.AlertType.WARNING);
-                alerForUserName.setTitle("Warning");
-                alerForUserName.setHeaderText(null);
+        } else {
+            Matcher matcherUserName = VALID_USER_NAME_REGEX.matcher(userName);
+            validUserName = matcherUserName.matches();
 
-                alerForUserName.setContentText("Username already exist, try another username!");
-                alerForUserName.show();
-                return false;
-                
-             }
-             else 
-                 return true;
+            if (!validUserName) {
+                alerMessage = alerMessage + ", Invalid UserName";
+            }
 
-          }
-          else
-          {
-               Alert alerForValidate = new Alert(Alert.AlertType.WARNING);
+            Matcher matcherName = VALID_NAME_REGEX.matcher(name);
+            validName = (matcherName.find());
+            if (!validName) {
+                alerMessage = alerMessage + ", Invalid Name";
+            }
+
+            Matcher matcherEmail = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
+            validEmail = matcherEmail.find();
+            if (!validEmail) {
+                alerMessage = alerMessage + ", Invalid Email";
+            }
+            Matcher matcherPass = VALID_PASSWORD_REGEX.matcher(password);
+            validPass = matcherPass.find();
+            if (!validPass) {
+                alerMessage = alerMessage + ", Invalid Password";
+            }
+
+            if (validUserName && validEmail && validName && validPass) {
+
+                if (checkUserName(userName)) {
+                    Alert alerForUserName = new Alert(Alert.AlertType.WARNING);
+                    alerForUserName.setTitle("Warning");
+                    alerForUserName.setHeaderText(null);
+
+                    alerForUserName.setContentText("Username already exist, try another username!");
+                    alerForUserName.show();
+                    return false;
+
+                } else {
+                    return true;
+                }
+
+            } else {
+                Alert alerForValidate = new Alert(Alert.AlertType.WARNING);
                 alerForValidate.setTitle("Warning");
                 alerForValidate.setHeaderText(null);
 
                 alerForValidate.setContentText(alerMessage);
                 alerForValidate.show();
-              
-              
-              return false;
-          
-          }
-        
-        
+
+                return false;
+
+            }
+
         }
         return false;
 
-
     }
-
-  
 
 }
