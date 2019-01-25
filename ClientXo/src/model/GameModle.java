@@ -21,6 +21,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import org.controlsfx.control.Notifications;
 import view.gameRoomFXMLBase;
 
 /**
@@ -77,7 +78,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     @Override
     public void leaveGameRoom(String winner) throws RemoteException {
-         myController.isFinished = true;
+        myController.isFinished = true;
         if (gameRoomFXMLBase.mode.equals("player")) {
             myController.winDialog(winner);
         } else {
@@ -114,9 +115,12 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
     }
 
     @Override
-    public void notifiyOnlineList() throws RemoteException {
+    public void notifiyOnlineList(String playerUserName, String state) throws RemoteException {
         Platform.runLater(() -> {
             try {
+                if (playerUserName != null && !playerUserName.equals(me.getPlayerUserName())) {
+                    Notifications.create().title(state).text(playerUserName + " is " + state + " Now.").showInformation();
+                }
                 myController.showPlayerList();
             } catch (ServerNullExeption | RemoteException ex) {
                 myController.serverUnavilable();

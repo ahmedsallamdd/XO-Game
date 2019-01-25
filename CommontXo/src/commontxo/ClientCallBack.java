@@ -48,7 +48,7 @@ public interface ClientCallBack extends Remote {
     public void sendMessage(String senderName, String message) throws RemoteException;
 
     //realTime Response // just a bouns feature
-    void notifiyOnlineList() throws RemoteException;
+    void notifiyOnlineList(String playerUserName,String state) throws RemoteException;
 
     public void showAlert(String title, String headerText, String message) throws RemoteException;
 

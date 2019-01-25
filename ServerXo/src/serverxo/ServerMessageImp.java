@@ -72,12 +72,12 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
 
     }
 
-    public void updateList() {
+    public void updateList(String playerUserName,String state) {
         ArrayList<ClientCallBack> x = new ArrayList<>(clients.values());
         for (Iterator<ClientCallBack> it = x.iterator(); it.hasNext();) {
             ClientCallBack client = it.next();
             try {
-                client.notifiyOnlineList();
+                client.notifiyOnlineList(playerUserName,state);
             } catch (RemoteException ex) {
 
                 removePlayerWhileError(Utilites.getKeyByValue(clients, client));
@@ -95,7 +95,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public void register(ClientCallBack clientRef, String playerUserName) throws RemoteException {
         clients.put(playerUserName, clientRef);
-        updateList();
+        updateList(playerUserName,"online");
     }
 
     @Override
@@ -170,16 +170,16 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                 if (notifications.contains(request)) {
                     notifications.remove(request);
                 }
-                updateList();
+                updateList(null,null);
 
             } catch (RemoteException ex) {
                 try {
-                    clients.get(myUserName).notifiyOnlineList();
+                    clients.get(myUserName).notifiyOnlineList(null,null);
                 } catch (RemoteException ex1) {
                     removePlayerWhileError(Utilites.getKeyByValue(clients, clients.get(myUserName)));
                 }
                 try {
-                    clients.get(oppesiteUserName).notifiyOnlineList();
+                    clients.get(oppesiteUserName).notifiyOnlineList(null,null);
                 } catch (RemoteException ex1) {
                     removePlayerWhileError(Utilites.getKeyByValue(clients, clients.get(myUserName)));
                 }
@@ -195,7 +195,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             if (notifications.contains(request)) {
                 notifications.remove(request);
             }
-            updateList();
+            updateList(null,null);
 
         }
     }
@@ -229,7 +229,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             leftChatRoom(gameState.getInGamePlayer0(),
                     gameState.getInGamePlayer1());
             gameRooms.remove(roomName);
-            updateList();
+            updateList(null,null);
 
             return true;
         }
@@ -279,7 +279,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             }
             //this parameters are deprecated and useless 
             clients.get(myUserName).startGame(/*myUserName, clients.get(myUserName), */"spectator");
-            updateList();
+            updateList(null,null);
         }
     }
 
@@ -301,7 +301,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
                     removePlayerWhileError(Utilites.getKeyByValue(clients, client));
                 }
             }
-            updateList();
+            updateList(myUserName,"ofline");
         }
     }
 

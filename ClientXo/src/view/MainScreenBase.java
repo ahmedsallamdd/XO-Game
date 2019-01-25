@@ -236,6 +236,7 @@ public class MainScreenBase extends AnchorPane {
             if (a.showAndWait().get() == yes) {
                 try {
                     myGui.myController.myModle.currentShowenAlerts.remove(a);
+                    myGui.myController.resetGameState();
                     myGui.myController.myModle.acceptGameRequest(oppesiteUserName);
                 } catch (RemoteException ex) {
                     MyGui.myController.showAlert("Error", "No Connection", "This Client Not responde");
