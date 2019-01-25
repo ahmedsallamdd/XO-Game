@@ -317,6 +317,7 @@ public class GameController {
     //Client Exit
     public void leaveServer() throws RemoteException, ServerNullExeption {
         if (myModle.me != null) {
+             isFinished=true;
             if (myModle.gameRoom != null) {
                 withdraw();
             }
@@ -414,9 +415,9 @@ public class GameController {
         } catch (java.rmi.ConnectException e) {
             serverUnavilable();
         }
+        myModle.gameRoom = null;
         leaveServer();
         myModle.me = null;
-        myModle.gameRoom = null;
         myModle.clearServer();
     }
 

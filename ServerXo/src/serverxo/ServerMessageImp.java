@@ -95,8 +95,6 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public void register(ClientCallBack clientRef, String playerUserName) throws RemoteException {
         clients.put(playerUserName, clientRef);
-        String a = Utilites.getKeyByValue(clients, clientRef);
-        System.out.println(a);
         updateList();
     }
 
