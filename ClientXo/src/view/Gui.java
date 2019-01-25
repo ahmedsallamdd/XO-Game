@@ -1,6 +1,5 @@
 package view;
 
-import controller.GameController;
 import controller.MyGui;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -30,6 +29,7 @@ public class Gui extends AnchorPane {
     String SelectedImgId = "";
 //    GameController controller;
     MyGui myGui;
+
     public Gui(MyGui g) {
 //        controller = new GameController();
 //        controller.reDrawGameBoard();

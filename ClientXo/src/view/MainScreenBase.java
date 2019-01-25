@@ -153,10 +153,8 @@ public class MainScreenBase extends AnchorPane {
         refresh.setOnAction((e -> {
             try {
                 myGui.getPlayerListData();
-            } catch (ServerNullExeption ex) {
+            } catch (ServerNullExeption | RemoteException ex) {
                 myGui.myController.serverUnavilable();
-            } catch (RemoteException ex) {
-                Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
             }
         }));
 
@@ -217,7 +215,7 @@ public class MainScreenBase extends AnchorPane {
     }
 
     public void populateListView(ArrayList<PlayerList> playerList) {
-        
+
         ObservableList<PlayerList> list = FXCollections.observableArrayList(playerList);
         listView.setItems(list);
         listView.setCellFactory((ListView<PlayerList> param) -> new ListItem(this));
@@ -247,10 +245,8 @@ public class MainScreenBase extends AnchorPane {
                     myGui.myController.myModle.currentShowenAlerts.remove(a);
                     myGui.myController.myModle.getServerInstance()
                             .refuseGameRequest(myGui.myController.myModle.me.getPlayerUserName(), oppesiteUserName);
-                } catch (ServerNullExeption ex) {
+                } catch (ServerNullExeption | RemoteException ex) {
                     myGui.myController.serverUnavilable();
-                } catch (RemoteException ex) {
-                    Logger.getLogger(MainScreenBase.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });

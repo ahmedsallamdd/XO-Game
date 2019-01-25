@@ -6,6 +6,7 @@ import commontxo.GameState;
 import commontxo.Player;
 import commontxo.PlayerList;
 import commontxo.ServerCallBack;
+import commontxo.Utilites;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -16,10 +17,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
+import javafx.application.Platform;
 import model.Pair;
 
 /**
@@ -64,18 +67,22 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             }
             stmt.close();
         } catch (SQLException e) {
+            ServerXo.showErrorAlert();
         }
 
     }
 
     public void updateList() {
-        clients.forEach((e, client) -> {
+        ArrayList<ClientCallBack> x = new ArrayList<>(clients.values());
+        for (Iterator<ClientCallBack> it = x.iterator(); it.hasNext();) {
+            ClientCallBack client = it.next();
             try {
                 client.notifiyOnlineList();
             } catch (RemoteException ex) {
-                removePlayerWhileError(e);
+
+                removePlayerWhileError(Utilites.getKeyByValue(clients, client));
             }
-        });
+        }
     }
 
     public ServerMessageImp() throws RemoteException, ClassNotFoundException, SQLException {
@@ -88,6 +95,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     @Override
     public void register(ClientCallBack clientRef, String playerUserName) throws RemoteException {
         clients.put(playerUserName, clientRef);
+        String a = Utilites.getKeyByValue(clients, clientRef);
+        System.out.println(a);
         updateList();
     }
 
@@ -123,48 +132,73 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     }
 
     @Override
-    public void startGameRoom(String myUserName, String oppesiteUserName) throws RemoteException {
-        HashMap<String, ClientCallBack> temp = new HashMap<String, ClientCallBack>() {
-            {
-                put(myUserName, clients.get(myUserName));
-                put(oppesiteUserName, clients.get(oppesiteUserName));
+    public void startGameRoom(String myUserName, String oppesiteUserName) {
+        if (clients.containsKey(myUserName) && clients.containsKey(oppesiteUserName)) {
+
+            HashMap<String, ClientCallBack> temp = new HashMap<String, ClientCallBack>() {
+                {
+                    put(myUserName, clients.get(myUserName));
+                    put(oppesiteUserName, clients.get(oppesiteUserName));
+                }
+            };
+            GameRoom newGameRoom = new GameRoom(myUserName, temp);
+            gameRooms.put(myUserName, newGameRoom);
+            clientMapGameRoom.put(myUserName, newGameRoom.getRoomName());
+            clientMapGameRoom.put(oppesiteUserName, newGameRoom.getRoomName());
+            try {
+                //Init GameRoom at Client Side
+                clients.get(myUserName).joinGameRoom(myUserName, clients.get(myUserName));
+                clients.get(oppesiteUserName).joinGameRoom(myUserName, clients.get(myUserName));
+
+                //pass CleintInterFace
+                clients.get(myUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
+                clients.get(oppesiteUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
+
+                joinChatRoom(myUserName, oppesiteUserName);
+
+                GameState gameState = new GameState(myUserName, oppesiteUserName, new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2}, 0);
+                clients.get(myUserName).setGameState(gameState);
+                clients.get(oppesiteUserName).setGameState(gameState);
+
+                //start game gui 
+                clients.get(myUserName).startGame("player");
+                clients.get(oppesiteUserName).startGame("player");
+
+                //end any request
+                clients.get(myUserName).closeAllAlert();
+                clients.get(oppesiteUserName).closeAllAlert();
+
+                Pair request = new Pair(myUserName, oppesiteUserName);
+                if (notifications.contains(request)) {
+                    notifications.remove(request);
+                }
+                updateList();
+
+            } catch (RemoteException ex) {
+                try {
+                    clients.get(myUserName).notifiyOnlineList();
+                } catch (RemoteException ex1) {
+                    removePlayerWhileError(Utilites.getKeyByValue(clients, clients.get(myUserName)));
+                }
+                try {
+                    clients.get(oppesiteUserName).notifiyOnlineList();
+                } catch (RemoteException ex1) {
+                    removePlayerWhileError(Utilites.getKeyByValue(clients, clients.get(myUserName)));
+                }
+
             }
-        };
-        GameRoom newGameRoom = new GameRoom(myUserName, temp);
-        gameRooms.put(myUserName, newGameRoom);
-        clientMapGameRoom.put(myUserName, newGameRoom.getRoomName());
-        clientMapGameRoom.put(oppesiteUserName, newGameRoom.getRoomName());
-        try {
-            //Init GameRoom at Client Side
-            clients.get(myUserName).joinGameRoom(myUserName, clients.get(myUserName));
-            clients.get(oppesiteUserName).joinGameRoom(myUserName, clients.get(myUserName));
-
-            //pass CleintInterFace
-            clients.get(myUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
-            clients.get(oppesiteUserName).addPlayerToGameRoom(oppesiteUserName, clients.get(oppesiteUserName));
-
-            joinChatRoom(myUserName, oppesiteUserName);
-
-            GameState gameState = new GameState(myUserName, oppesiteUserName, new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2}, 0);
-            clients.get(myUserName).setGameState(gameState);
-            clients.get(oppesiteUserName).setGameState(gameState);
-
-            //start game gui 
-            clients.get(myUserName).startGame("player");
-            clients.get(oppesiteUserName).startGame("player");
-
-            //end any request
-            clients.get(myUserName).closeAllAlert();
-            clients.get(oppesiteUserName).closeAllAlert();
-
+        } else {
+            try {
+                clients.get(oppesiteUserName).showAlert("Oops!", "The other player has logged out!", "");
+            } catch (RemoteException ex) {
+                removePlayerWhileError(Utilites.getKeyByValue(clients, clients.get(oppesiteUserName)));
+            }
             Pair request = new Pair(myUserName, oppesiteUserName);
             if (notifications.contains(request)) {
                 notifications.remove(request);
             }
             updateList();
 
-        } catch (RemoteException ex) {
-//            removePlayerWhileError()
         }
     }
 
@@ -179,19 +213,21 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
         }
         if (gameRooms.containsKey(roomName)) {
             GameState gameState = clients.get(roomName).getGameState();
-            gameRooms.get(roomName).getPlayers().forEach((e, client) -> {
+
+            ArrayList<ClientCallBack> xx = new ArrayList<>(gameRooms.get(roomName).getPlayers().values());
+            for (Iterator<ClientCallBack> it = xx.iterator(); it.hasNext();) {
+                ClientCallBack client = it.next();
                 try {
                     client.leaveGameRoom(winnerUserName);
-
                 } catch (RemoteException ex) {
-                   removePlayerWhileError(e);
+                    removePlayerWhileError(Utilites.getKeyByValue(clients, client));
                 }
-            });
+            }
             clientMapGameRoom = new HashMap(clientMapGameRoom.entrySet().stream()
                     .filter(room -> !room.equals(roomName))
                     .collect(
                             Collectors.toMap(x -> x, y -> y)));
-            
+
             leftChatRoom(gameState.getInGamePlayer0(),
                     gameState.getInGamePlayer1());
             gameRooms.remove(roomName);
@@ -233,14 +269,16 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             }
             gameRooms.get(roomName).addPlayer(myUserName, clients.get(myUserName));
             clientMapGameRoom.put(myUserName, roomName);
-            gameRooms.get(roomName).getPlayers().forEach((e, client) -> {
+
+            ArrayList<ClientCallBack> xx = new ArrayList<>(gameRooms.get(roomName).getPlayers().values());
+            for (Iterator<ClientCallBack> it = xx.iterator(); it.hasNext();) {
+                ClientCallBack client = it.next();
                 try {
                     client.addPlayerToGameRoom(myUserName, clients.get(myUserName));
-
                 } catch (RemoteException ex) {
-                    removePlayerWhileError(e);
+                    removePlayerWhileError(Utilites.getKeyByValue(clients, client));
                 }
-            });
+            }
             //this parameters are deprecated and useless 
             clients.get(myUserName).startGame(/*myUserName, clients.get(myUserName), */"spectator");
             updateList();
@@ -248,28 +286,31 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     }
 
     @Override
-    public void leaveServer(String myUserName) throws RemoteException {
+    public void leaveServer(String myUserName) {
         if (clients.containsKey(myUserName)) {
             if (clientMapGameRoom.containsKey(myUserName)) {
                 removePlayerFromGameRoom(myUserName, clientMapGameRoom.get(myUserName));
                 removeClientMapGameRoom(myUserName);
             }
-            clients.forEach((e, client) -> {
+            removeClient(myUserName);
+            ArrayList<ClientCallBack> x = new ArrayList<>(clients.values());
+            for (Iterator<ClientCallBack> it = x.iterator(); it.hasNext();) {
+                ClientCallBack client = it.next();
                 try {
                     client.leftChatRoom(myUserName);
                     client.leftGameRoom(myUserName);
-
                 } catch (RemoteException ex) {
-                    removePlayerWhileError(e);
+                    removePlayerWhileError(Utilites.getKeyByValue(clients, client));
                 }
-            });
-            removeClient(myUserName);
+            }
+            updateList();
         }
     }
 
     @Override
     public boolean checkUserName(String userName) throws RemoteException {
-        for (Player p : PlayersInformation) {
+        for (Iterator<Player> it = PlayersInformation.iterator(); it.hasNext();) {
+            Player p = it.next();
             if (p.getPlayerUserName().equals(userName)) {
                 return true;
             }
@@ -280,9 +321,10 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     //// some Rawshana
     @Override
     public boolean signUp(String userName, String Name, String upassword, String Email) throws RemoteException {
-        Player newPlayer = null ;
+        Player newPlayer = null;
         try {
-            for (Player player : PlayersInformation) {
+            for (Iterator<Player> it = PlayersInformation.iterator(); it.hasNext();) {
+                Player player = it.next();
                 if (player.getPlayerUserName().equals(userName)) {
                     return false;
                 }
@@ -311,7 +353,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
 
     @Override
     public void signOut(Player player) throws RemoteException {
-        for (Player p : PlayersInformation) {
+        for (Iterator<Player> it = PlayersInformation.iterator(); it.hasNext();) {
+            Player p = it.next();
             if (p.getPlayerUserName().equals(player.getPlayerUserName())) {
                 leaveServer(player.getPlayerUserName());
                 break;
@@ -321,7 +364,8 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
 
     @Override
     public Player signIn(String userName, String PlayerPassword) throws RemoteException {
-        for (Player p : PlayersInformation) {
+        for (Iterator<Player> it = PlayersInformation.iterator(); it.hasNext();) {
+            Player p = it.next();
             if (p.getPlayerUserName().equals(userName)
                     && p.getPlayerPassword().equals(PlayerPassword)) {
                 if (p.getPlayerState().equals("offline")) {
@@ -339,15 +383,15 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
         return null;
     }
 
-    public void removeClient(String userName){
+    public void removeClient(String userName) {
         if (clients.containsKey(userName)) {
             clients.remove(userName);
-            for (Player p : PlayersInformation) {
+            for (Iterator<Player> it = PlayersInformation.iterator(); it.hasNext();) {
+                Player p = it.next();
                 if (p.getPlayerUserName().equals(userName)) {
                     p.setPlayerState("offline");
                 }
             }
-            updateList();
         }
     }
 
@@ -359,7 +403,7 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
     }
 
     @Override
-    public void removePlayerFromGameRoom(String userName, String gameRoom) throws RemoteException {
+    public void removePlayerFromGameRoom(String userName, String gameRoom) {
         if (gameRooms.containsKey(gameRoom)) {
             gameRooms.get(gameRoom).removePlayer(userName);
         }
@@ -385,11 +429,11 @@ public class ServerMessageImp extends UnicastRemoteObject implements ServerCallB
             stmt.executeUpdate(query);
 
         } catch (SQLException ex) {
-            Logger.getLogger(ServerMessageImp.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Can't Update This Player: " + userName + "\nKeep in Log File To Handle his score is: " + newScore);
         }
     }
-    void removePlayerWhileError(String playerUserName){
-        removeClientMapGameRoom(playerUserName);
-        removeClient(playerUserName);
+
+    void removePlayerWhileError(String playerUserName) {
+        leaveServer(playerUserName);
     }
 }

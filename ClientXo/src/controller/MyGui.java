@@ -48,12 +48,8 @@ public class MyGui extends Application {
     }
 
     public MyGui(GameController c) {
-        try {
-            myController = c;
-            //welcomeFXMLBase = new WelcomeFXMLBase(this);
-        } catch (Exception ex) {
-            Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        myController = c;
+        //welcomeFXMLBase = new WelcomeFXMLBase(this);
     }
 
     public static void onImgViewClicked(MouseEvent mouseEvent) {
@@ -84,12 +80,11 @@ public class MyGui extends Application {
                 try {
                     MyGui.myController.leaveServer();
                     myController.myModle.currentShowenAlerts.remove(alert);
-                } catch (ServerNullExeption ex) {
+                } catch (ServerNullExeption | RemoteException ex) {
                     serverUnavilable();
-                } catch (RemoteException ex) {
-                    Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
                     Platform.exit();
+                    System.exit(0);
                 }
             } else {
                 event.consume();
@@ -122,7 +117,7 @@ public class MyGui extends Application {
         try {
             getPlayerListData();
         } catch (RemoteException ex) {
-            Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
+            serverUnavilable();
         }
         scene = new Scene(mainScreen, mainScreen.getPrefWidth(), mainScreen.getPrefHeight());
         scene.setRoot(mainScreen);
@@ -145,9 +140,14 @@ public class MyGui extends Application {
         myController.showPlayerList();
     }
 
-    public static void main(String args[]) throws ServerNullExeption {
+    public static void main(String args[]) {
         launch(args);
-        myController.myModle.getServerInstance();
+
+        try {
+            myController.myModle.getServerInstance();
+        } catch (ServerNullExeption ex) {
+            myController.serverUnavilable();
+        }
     }
 
     public void signOut() throws ServerNullExeption {
@@ -156,7 +156,7 @@ public class MyGui extends Application {
             createLoginScreen();
 
         } catch (RemoteException ex) {
-            Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
+            serverUnavilable();
         }
     }
 
@@ -194,6 +194,7 @@ public class MyGui extends Application {
         this.multiPlayerScreen = multiplayerScreen;
         scene = new Scene(multiPlayerScreen,
                 this.multiPlayerScreen.getPrefWidth(), multiPlayerScreen.getPrefHeight());
+
         scene.setRoot(multiplayerScreen);
         stage.setScene(scene);
     }
@@ -219,7 +220,7 @@ public class MyGui extends Application {
         stage.setScene(scene);
     }
 
-   public void serverUnavilable() {
+    public void serverUnavilable() {
         ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
 
         Platform.runLater(() -> {
@@ -246,30 +247,14 @@ public class MyGui extends Application {
             a.setTitle(title);
             a.setHeaderText(headerText);
             myController.myModle.currentShowenAlerts.add(a);
-//<<<<<<< HEAD
-//
-//            a.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
-//                if (myController.myModle.currentShowenAlerts.contains(a)) {
-//                    myController.myModle.currentShowenAlerts.remove(a);
-//                }
-//            });
-//            Optional<ButtonType> result = a.showAndWait();
-//            result.ifPresent(res -> {
-//                if (res.equals(ok)) {
-//                    if (myController.myModle.currentShowenAlerts.contains(a)) {
-//                        myController.myModle.currentShowenAlerts.remove(a);
-//                    }
-//                }
-//            });
-//=======
             a.showAndWait();
             if (myController.myModle.currentShowenAlerts.contains(a)) {
                 myController.myModle.currentShowenAlerts.remove(a);
             }
         });
     }
-    public boolean setValidationForRegister(String userName,String name,String email,String password) throws ServerNullExeption{
-    return myController.setValidationForRegister(userName, name, email, password);
-    
+
+    public boolean setValidationForRegister(String userName, String name, String email, String password) throws ServerNullExeption {
+        return myController.setValidationForRegister(userName, name, email, password);
     }
 }

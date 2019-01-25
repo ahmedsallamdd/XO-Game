@@ -2,9 +2,13 @@ package view;
 
 import commontxo.ServerNullExeption;
 import controller.MyGui;
+import java.util.Optional;
 import java.util.Random;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -40,6 +44,9 @@ public class SinglePlayerGui extends AnchorPane {
     protected int[][] winningPositions;
     protected boolean isFinished = false;
     ImageView imgView;
+    ToggleBtn toggleBtn;
+    Button btnStartGame;
+    public static String mode = "";
 
     MyGui myGui;
     String parentScreen;
@@ -64,13 +71,15 @@ public class SinglePlayerGui extends AnchorPane {
         img_8 = new ImageView();
         back = new ImageView();
 
+        toggleBtn = new ToggleBtn();
+        btnStartGame = new Button();
+
         myGui = g;
         this.parentScreen = parentScreen;
 
         setId("AnchorPane");
         setPrefHeight(650.0);
         setPrefWidth(600.0);
-        
 //        gridPane.setAlignment(javafx.geometry.Pos.CENTER);
         setStyle("-fx-background-color: linear-gradient( #247ba0 0%,#70c1b3 50% ,#247ba0 100%);;");
 
@@ -78,12 +87,13 @@ public class SinglePlayerGui extends AnchorPane {
         AnchorPane.setLeftAnchor(gridPane, 60.0);
         AnchorPane.setRightAnchor(gridPane, 60.0);
         AnchorPane.setTopAnchor(gridPane, 70.0);
+
         gridPane.setGridLinesVisible(true);
         gridPane.setLayoutX(60.0);
         gridPane.setLayoutY(58.0);
         gridPane.setPrefHeight(240.0);
         gridPane.setPrefWidth(481.0);
-        
+
         columnConstraints.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
         columnConstraints.setMinWidth(10.0);
         columnConstraints.setPrefWidth(100.0);
@@ -108,7 +118,6 @@ public class SinglePlayerGui extends AnchorPane {
         rowConstraints1.setPrefHeight(30.0);
         rowConstraints1.setVgrow(javafx.scene.layout.Priority.SOMETIMES);
 
-        
         img_0.setFitHeight(170.0);
         img_0.setFitWidth(160.0);
         img_0.setId("img_0");
@@ -194,6 +203,7 @@ public class SinglePlayerGui extends AnchorPane {
         back.setPickOnBounds(true);
         back.setPreserveRatio(true);
         back.setImage(new Image(getClass().getResource("../images/backward.png").toExternalForm()));
+
         back.setOnMousePressed(e -> {
             if (this.parentScreen.equals("welcome")) {
                 myGui.createWelcomeScreen();
@@ -205,18 +215,30 @@ public class SinglePlayerGui extends AnchorPane {
                 }
             }
         });
+
         ToggleBtn toggleBtn = new ToggleBtn();
-        toggleBtn.setLayoutX(this.getPrefWidth()/2 - 40);
+        toggleBtn.setLayoutX(this.getPrefWidth() / 2 - 40);
         toggleBtn.setLayoutY(35);
-        
-        Button btnStartGame = new Button();
+
         btnStartGame.setStyle("-fx-background-color: #0b3c49; -fx-background-radius: 10;");
         btnStartGame.setText("Start Game");
         btnStartGame.setTextFill(javafx.scene.paint.Color.WHITE);
         btnStartGame.setFont(new Font("System Bold", 22.0));
-        btnStartGame.setLayoutX(this.getPrefWidth()/2 - 70);
-        btnStartGame.setLayoutY(this.getPrefHeight()-60);
-        
+        btnStartGame.setLayoutX(this.getPrefWidth() / 2 - 70);
+        btnStartGame.setLayoutY(this.getPrefHeight() - 60);
+
+        btnStartGame.setOnAction((e) -> {
+            btnStartGame.setDisable(true);
+            disableAllImages(false);
+            toggleBtn.setDisable(true);
+            mode = toggleBtn.getText();
+            positions = new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2};
+            movesCounter = 0;
+            isFinished = false;
+            activePlayer = 0;
+            System.out.println(mode);
+        });
+
         gridPane.getColumnConstraints().add(columnConstraints);
         gridPane.getColumnConstraints().add(columnConstraints0);
         gridPane.getColumnConstraints().add(columnConstraints1);
@@ -236,10 +258,11 @@ public class SinglePlayerGui extends AnchorPane {
         getChildren().add(gridPane);
         getChildren().add(toggleBtn);
         getChildren().add(btnStartGame);
-        
+
         positions = new int[]{2, 2, 2, 2, 2, 2, 2, 2, 2};
         winningPositions = new int[][]{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
         {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
+        disableAllImages(true);
     }
 
     protected void changeImg(MouseEvent mouseEvent) {
@@ -253,7 +276,7 @@ public class SinglePlayerGui extends AnchorPane {
                 imgView.setImage(new Image("/images/X_image.png"));
                 modifyPositionsArray(mouseEvent.getPickResult().getIntersectedNode().getId(), activePlayer);
                 activePlayer = 1;
-                computerTurn("hard");
+                computerTurn();
             }
         }
     }
@@ -274,12 +297,13 @@ public class SinglePlayerGui extends AnchorPane {
                 if (gameState[winningPosition[0]] == 0) {
                     System.out.println("X has won!");
                     isFinished = true;
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    gameResultDialog("Congratulations,\nYou Won!");
                     return;
                 } else {
                     System.out.println("O has won!");
                     isFinished = true;
-                    myGui.myController.showAlert("Result", "Oops! \n You Lost!", "");
+                    gameResultDialog("Oops!\nYou Lost!");
+
                     return;
                 }
             }
@@ -287,16 +311,43 @@ public class SinglePlayerGui extends AnchorPane {
         if (movesCounter == 9) {
             System.out.println("It's a draw!");
             isFinished = true;
-            myGui.myController.showAlert("Result", "Draw!", "");
+            gameResultDialog("It's a draw!");
         }
     }
 
-    public void computerTurn(String mode) {
+    public void gameResultDialog(String header) {
+        Platform.runLater(() -> {
+            ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+            Alert a = new Alert(Alert.AlertType.INFORMATION, "", ok);
+            a.setTitle("Result");
+            a.setHeaderText(header);
+            myGui.myController.myModle.currentShowenAlerts.add(a);
+            a.showAndWait();
+            clearAllImages();
+            disableAllImages(true);
+            btnStartGame.setDisable(false);
+            toggleBtn.setDisable(false);
+        });
+    }
+
+    private void clearAllImages() {
+        img_0.setImage(null);
+        img_1.setImage(null);
+        img_2.setImage(null);
+        img_3.setImage(null);
+        img_4.setImage(null);
+        img_5.setImage(null);
+        img_6.setImage(null);
+        img_7.setImage(null);
+        img_8.setImage(null);
+    }
+
+    public void computerTurn() {
         if (!isFinished) {
             movesCounter++;
             //abdo code here
             int pos;
-            if (mode.equals("hard")) {
+            if (mode.equals("Hard")) {
                 int whichPosition = 0;
                 int counter = 0;
                 int max = -1;
@@ -377,6 +428,7 @@ public class SinglePlayerGui extends AnchorPane {
     private String constructImgeViewId(int pos) {
         return "img_" + String.valueOf(pos);
     }
+
     private void disableAllImages(boolean state) {
         img_0.setDisable(state);
         img_1.setDisable(state);

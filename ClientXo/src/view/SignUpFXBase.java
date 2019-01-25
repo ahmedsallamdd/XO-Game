@@ -3,8 +3,6 @@ package view;
 import commontxo.ServerNullExeption;
 import controller.MyGui;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;

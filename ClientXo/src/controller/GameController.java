@@ -1,5 +1,6 @@
 package controller;
 
+import commontxo.ClientCallBack;
 import model.InGamePlayer;
 import model.GameModle;
 import commontxo.GameState;
@@ -13,6 +14,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -188,7 +190,7 @@ public class GameController {
 
                         result = inGamePlayer0.getPlayerName();
                     } catch (RemoteException ex) {
-                        Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                        serverUnavilable();
                     }
                     return;
                 } else {
@@ -205,13 +207,14 @@ public class GameController {
                         gameRecord = new GameComplexType(stepList, inGamePlayer1.getPlayerName() + " is the winner");
                         result = inGamePlayer1.getPlayerName();
                     } catch (RemoteException ex) {
-                        Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                        serverUnavilable();
                     }
                     return;
                 }
             }
         }
         if (isFinished == false && movesCounter == 9) {
+            isFinished = true;
             System.out.println("It's a draw!");
             isFinished = true;
             try {
@@ -219,7 +222,6 @@ public class GameController {
                     myModle.getServerInstance().notifiyGameResult(roomName, "DRAW");
                 }
                 gameRecord = new GameComplexType(stepList, "DRAW");
-
                 return;
 
             } catch (RemoteException ex) {
@@ -279,7 +281,7 @@ public class GameController {
             marshel.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
         } catch (JAXBException ex) {
-            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+            showAlert("Record", "Sorry,\nCan't Record This Game.", "");
         }
     }
 
@@ -327,13 +329,11 @@ public class GameController {
         if (!inGamePlayer0.getPlayerName().equals(myModle.me.getPlayerUserName())
                 && !inGamePlayer1.getPlayerName().equals(myModle.me.getPlayerUserName())) {
 
-            myModle.gameRoom.getPlayers().forEach((e, client) -> {
-                try {
-                    client.leftGameRoom(myModle.me.getPlayerUserName());
-                } catch (RemoteException ex) {
-                    Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            });
+            ArrayList<ClientCallBack> x = new ArrayList<>(myModle.gameRoom.getPlayers().values());
+            for (Iterator<ClientCallBack> it = x.iterator(); it.hasNext();) {
+                ClientCallBack client = it.next();
+                client.leftGameRoom(myModle.me.getPlayerUserName());
+            }
             myModle.gameRoom = null;
             myModle.getServerInstance().removeClientMapGameRoom(myModle.me.getPlayerUserName());
             myModle.getServerInstance().removePlayerFromGameRoom(myModle.me.getPlayerUserName(), myModle.gameRoom.getRoomName());
@@ -394,7 +394,8 @@ public class GameController {
         try {
             myModle.onlineList = myModle.getServerInstance().initOnlineList();
 
-            for (PlayerList pl : myModle.onlineList) {
+            for (Iterator<PlayerList> it = myModle.onlineList.iterator(); it.hasNext();) {
+                PlayerList pl = it.next();
                 if (pl.getName().equals(myModle.me.getPlayerUserName())) {
                     myModle.onlineList.remove(pl);
                     break;
@@ -470,7 +471,7 @@ public class GameController {
 
     public void sendMessage(String message) {
         try {
-            displayMessage(myModle.me.getPlayerUserName() + ":" + message);
+            displayMessage(myModle.me.getPlayerUserName() + " : " + message);
 
             myModle.chatRooms.get(new ArrayList<>(myModle.chatRooms.keySet()).get(0)).getOtherClients().sendMessage(myModle.me.getPlayerUserName(), message);
         } catch (RemoteException ex) {

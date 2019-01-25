@@ -12,8 +12,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -33,6 +35,7 @@ public class ServerXo extends Application {
 
         primaryStage.setTitle("Server");
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
         primaryStage.setOnCloseRequest((WindowEvent event) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -42,9 +45,10 @@ public class ServerXo extends Application {
                 try {
                     root.closeServer(root.Service);
                 } catch (NoSuchObjectException ex) {
-                    Logger.getLogger(ServerXo.class.getName()).log(Level.SEVERE, null, ex);
+                    showErrorAlert();
                 } finally {
                     Platform.exit();
+                    System.exit(0);
                 }
             } else {
                 event.consume();
@@ -57,6 +61,19 @@ public class ServerXo extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static void showErrorAlert() {
+        ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.ERROR,
+                    "",
+                    ok);
+            a.setTitle("Error");
+            a.setHeaderText("back to our devoloper,\nthere are a Problem.");
+            a.showAndWait();
+        });
     }
 
 }

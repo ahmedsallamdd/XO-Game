@@ -7,8 +7,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -36,7 +34,7 @@ public class gameRoomFXMLBase extends AnchorPane {
     protected final Label label;
     protected final ScrollPane scrollPane;
     protected final TextArea textArea;
-    protected final TextField textField;
+    public TextField textField;
     protected final Button button;
     protected final AnchorPane anchorPane0;
     protected final SplitPane splitPane;
@@ -67,6 +65,7 @@ public class gameRoomFXMLBase extends AnchorPane {
     protected final ImageView img_6;
     protected final ImageView img_7;
     protected final ImageView img_8;
+    public static String message = "";
 
     MyGui myGui;
 
@@ -164,6 +163,9 @@ public class gameRoomFXMLBase extends AnchorPane {
         textField.setPrefHeight(35.0);
         textField.setPrefWidth(245.0);
         textField.setStyle("-fx-background-radius: 10;");
+        textField.textProperty().addListener((obs, oldText, newText) -> {
+            message = newText;
+        });
 
         button.setLayoutX(275.0);
         button.setLayoutY(544.0);
@@ -449,6 +451,7 @@ public class gameRoomFXMLBase extends AnchorPane {
         }
         textArea.setEditable(false);
         timerWithdraw();
+        textField.setText(message);
     }
 //
 //    public void displayMessage(String myMessage) {
