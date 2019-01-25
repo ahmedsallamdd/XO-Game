@@ -186,8 +186,7 @@ public class GameController {
                                     .notifiyGameResult(roomName, inGamePlayer0.getPlayerName());
                             myModle.me.setPlayerScore(myModle.me.getPlayerScore() + 10);
                         }
-                        gameRecord = new GameComplexType(stepList, inGamePlayer0.getPlayerName() + " is the winner");
-
+//                        gameRecord = new GameComplexType(stepList, inGamePlayer0.getPlayerName() + " is the winner");
                         result = inGamePlayer0.getPlayerName();
                     } catch (RemoteException ex) {
                         serverUnavilable();
@@ -204,7 +203,7 @@ public class GameController {
                         if (myModle.me.getPlayerUserName().equals(inGamePlayer1.getPlayerName())) {
                             myModle.me.setPlayerScore(myModle.me.getPlayerScore() + 10);
                         }
-                        gameRecord = new GameComplexType(stepList, inGamePlayer1.getPlayerName() + " is the winner");
+//                        gameRecord = new GameComplexType(stepList, inGamePlayer1.getPlayerName() + " is the winner");
                         result = inGamePlayer1.getPlayerName();
                     } catch (RemoteException ex) {
                         serverUnavilable();
@@ -221,7 +220,7 @@ public class GameController {
                 if (myModle.me.getPlayerUserName().equals(inGamePlayer0.getPlayerName())) {
                     myModle.getServerInstance().notifiyGameResult(roomName, "DRAW");
                 }
-                gameRecord = new GameComplexType(stepList, "DRAW");
+//                gameRecord = new GameComplexType(stepList, "DRAW");
                 return;
 
             } catch (RemoteException ex) {
@@ -236,8 +235,10 @@ public class GameController {
         ButtonType no = new ButtonType("no", ButtonBar.ButtonData.CANCEL_CLOSE);
         if (!winner.equals("DRAW")) {
             header = winner + " has won!" + "\n" + "Do you want record this game";
+            gameRecord = new GameComplexType(stepList, winner+ " is the winner");
         } else {
             header = "DRAW" + "\n" + "Do you want record this game";
+            gameRecord = new GameComplexType(stepList, "DRAW");
         }
 
         Platform.runLater(() -> {

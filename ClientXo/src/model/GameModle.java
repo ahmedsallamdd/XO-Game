@@ -77,6 +77,7 @@ public class GameModle extends UnicastRemoteObject implements ClientCallBack {
 
     @Override
     public void leaveGameRoom(String winner) throws RemoteException {
+         myController.isFinished = true;
         if (gameRoomFXMLBase.mode.equals("player")) {
             myController.winDialog(winner);
         } else {
