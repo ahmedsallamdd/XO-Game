@@ -5,6 +5,7 @@
  */
 package serverxo;
 
+
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -17,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -36,6 +38,7 @@ public class ServerXo extends Application {
         primaryStage.setTitle("Server");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon.png")));
         primaryStage.show();
         primaryStage.setOnCloseRequest((WindowEvent event) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
